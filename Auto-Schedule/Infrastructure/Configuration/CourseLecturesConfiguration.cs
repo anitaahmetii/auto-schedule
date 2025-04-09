@@ -18,11 +18,13 @@ namespace Infrastructure.Configuration
 
             builder.HasOne(x => x.Lectures)
                    .WithMany(x => x.CourseLectures)
-                   .HasForeignKey(x => x.LecturesId);
+                   .HasForeignKey(x => x.LecturesId)
+                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(ur => ur.Course)
                 .WithMany(r => r.CourseLectures)
-                .HasForeignKey(ur => ur.CourseId);
+                .HasForeignKey(ur => ur.CourseId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }
