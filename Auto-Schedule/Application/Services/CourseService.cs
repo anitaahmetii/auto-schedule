@@ -46,6 +46,55 @@ namespace Application.Services
             }
             return courseModel;
         }
+        public async Task<CourseModel> GetByIdCourseAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var courseId = await _context.Courses.FirstOrDefaultAsync(c => c.Id == Id, cancellationToken);
+                if (courseId == null)
+                {
+                    throw new Exception("Course not found!");
+                }
+
+                return _mapper.Map<CourseModel>(courseId);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the course.", ex);
+            }
+        }
+        public async Task<CourseModel> UpdateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken)
+        {
+            try
+            {
+                ValidateCourseModel(courseModel);
+                var course = await _context.Courses.FindAsync(courseModel.Id);
+                if (course == null)
+                {
+                    throw new Exception("Course not found!");
+                }
+                _mapper.Map(courseModel, course);
+                _context.Courses.Update(course);
+                await _context.SaveChangesAsync(cancellationToken);
+                return courseModel;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while updating the course.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while updating the course.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the course.", ex);
+            }
+        }
         private void ValidateCourseModel(CourseModel courseModel)
         {
             if (courseModel == null)

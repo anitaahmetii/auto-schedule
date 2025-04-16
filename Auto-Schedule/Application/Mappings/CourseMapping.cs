@@ -21,6 +21,15 @@ namespace Application.Mappings
                 .ForMember(x => x.IsLecture, y => y.MapFrom(x => x.IsLecture))
                 .ForMember(x => x.IsExcercise, y => y.MapFrom(x => x.IsExcercise))
                 .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId));
+
+            CreateMap<Course, CourseModel>()
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(x => x.Name, y => y.MapFrom(x => x.Name))
+                .ForMember(x => x.ECTS, y => y.MapFrom(x => x.ECTS))
+                .ForMember(x => x.Semester, y => y.MapFrom(x => x.Semester))
+                .ForMember(x => x.IsLecture, y => y.MapFrom(x => x.IsLecture))
+                .ForMember(x => x.IsExcercise, y => y.MapFrom(x => x.IsExcercise))
+                .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId));
         }
     }
 }
