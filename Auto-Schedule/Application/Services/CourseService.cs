@@ -95,6 +95,26 @@ namespace Application.Services
                 throw new Exception("An error occurred while updating the course.", ex);
             }
         }
+        public async Task<List<CourseModel>> GetAllCoursesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var courses = await _context.Courses.ToListAsync(cancellationToken);
+                if (courses == null || !courses.Any())
+                {
+                    throw new Exception("No course found!");
+                }
+                return _mapper.Map<List<CourseModel>>(courses);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the course.", ex);
+            }
+        }
         private void ValidateCourseModel(CourseModel courseModel)
         {
             if (courseModel == null)

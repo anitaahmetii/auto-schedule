@@ -12,5 +12,6 @@ namespace Domain.Interface
         Task<CourseModel> CreateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken);
         Task<CourseModel> GetByIdCourseAsync(Guid Id, CancellationToken cancellationToken);
         Task<CourseModel> UpdateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken);
+        Task<List<CourseModel>> GetAllCoursesAsync(CancellationToken cancellationToken);
     }
 }
