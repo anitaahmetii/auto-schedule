@@ -115,6 +115,32 @@ namespace Application.Services
                 throw new Exception("An error occurred while retrieving the course.", ex);
             }
         }
+        public async Task<CourseModel> DeleteCourseModel(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var courseToDelete = await _context.Courses.FirstOrDefaultAsync(c => c.Id == Id, cancellationToken);
+                if (courseToDelete == null)
+                {
+                    throw new Exception("No course found to be deleted!");
+                }
+                _context.Courses.Remove(courseToDelete);
+                await _context.SaveChangesAsync(cancellationToken);
+                return _mapper.Map<CourseModel>(courseToDelete);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while deleting the course.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while deleting the course.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the course.", ex);
+            }
+        }
         private void ValidateCourseModel(CourseModel courseModel)
         {
             if (courseModel == null)

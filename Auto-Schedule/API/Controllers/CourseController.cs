@@ -139,5 +139,35 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCourseModel(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var courseToBeDeleted = await _courseService.DeleteCourseModel(Id, cancellationToken);
+                if (courseToBeDeleted == null)
+                {
+                    throw new Exception("No course found to be deleted!");
+                }
+                return Ok(courseToBeDeleted);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"A database error occurred while deleting the course. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+
+        }
     }
 }
