@@ -144,7 +144,7 @@ namespace API.Controllers
         {
             try
             {
-                var courseToBeDeleted = await _courseService.DeleteCourseModel(Id, cancellationToken);
+                var courseToBeDeleted = await _courseService.DeleteCourseAsync(Id, cancellationToken);
                 if (courseToBeDeleted == null)
                 {
                     throw new Exception("No course found to be deleted!");

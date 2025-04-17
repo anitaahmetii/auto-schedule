@@ -13,6 +13,6 @@ namespace Domain.Interface
         Task<CourseModel> GetByIdCourseAsync(Guid Id, CancellationToken cancellationToken);
         Task<CourseModel> UpdateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken);
         Task<List<CourseModel>> GetAllCoursesAsync(CancellationToken cancellationToken);
-        Task<CourseModel> DeleteCourseModel(Guid Id, CancellationToken cancellationToken);
+        Task<CourseModel> DeleteCourseAsync(Guid Id, CancellationToken cancellationToken);
     }
 }

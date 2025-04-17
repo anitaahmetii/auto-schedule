@@ -115,7 +115,7 @@ namespace Application.Services
                 throw new Exception("An error occurred while retrieving the course.", ex);
             }
         }
-        public async Task<CourseModel> DeleteCourseModel(Guid Id, CancellationToken cancellationToken)
+        public async Task<CourseModel> DeleteCourseAsync(Guid Id, CancellationToken cancellationToken)
         {
             try
             {
