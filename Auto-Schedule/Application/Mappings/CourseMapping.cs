@@ -23,7 +23,7 @@ namespace Application.Mappings
                 .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId));
 
             CreateMap<Course, CourseModel>()
-                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(x => x.Id, y => y.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, y => y.MapFrom(x => x.Name))
                 .ForMember(x => x.ECTS, y => y.MapFrom(x => x.ECTS))
                 .ForMember(x => x.Semester, y => y.MapFrom(x => x.Semester))
