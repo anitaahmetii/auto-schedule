@@ -98,5 +98,42 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllGroupsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var groups = await _groupService.GetAllGroupsAsync(cancellationToken);
+                if (groups == null)
+                {
+                    return NotFound("No group found.");
+                }
+                return Ok(groups);
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499, "Request was cancelled by the client.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return StatusCode(403, "You are not authorized to access this resource.");
+            }
+            catch (TimeoutException)
+            {
+                return StatusCode(504, "The operation timed out. Please try again later.");
+            }
+            catch (NullReferenceException)
+            {
+                return StatusCode(500, "A required object was not properly initialized.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest($"Invalid operation: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }

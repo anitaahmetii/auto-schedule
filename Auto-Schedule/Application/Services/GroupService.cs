@@ -95,6 +95,26 @@ namespace Application.Services
                 throw new Exception("An error occurred while updating the group.", ex);
             }
         }
+        public async Task<List<GroupModel>> GetAllGroupsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var groups = await _context.Groups.ToListAsync(cancellationToken);
+                if (groups == null || !groups.Any())
+                {
+                    throw new Exception("No group found!");
+                }
+                return _mapper.Map<List<GroupModel>>(groups);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving groups.", ex);
+            }
+        }
         private void ValidateGroupModel(GroupModel groupModel)
         {
             if (groupModel == null)

@@ -12,5 +12,6 @@ namespace Domain.Interface
         Task<GroupModel> CreateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken);
         Task<GroupModel> GetByIdGroupAsync(Guid Id, CancellationToken cancellationToken);
         Task<GroupModel> UpdateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken);
+        Task<List<GroupModel>> GetAllGroupsAsync(CancellationToken cancellationToken);
     }
 }
