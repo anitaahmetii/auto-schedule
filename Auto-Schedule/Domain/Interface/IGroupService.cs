@@ -13,5 +13,6 @@ namespace Domain.Interface
         Task<GroupModel> GetByIdGroupAsync(Guid Id, CancellationToken cancellationToken);
         Task<GroupModel> UpdateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken);
         Task<List<GroupModel>> GetAllGroupsAsync(CancellationToken cancellationToken);
+        Task<GroupModel> DeleteGroupAsync(Guid Id, CancellationToken cancellationToken);
     }
 }

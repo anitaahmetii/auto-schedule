@@ -135,5 +135,34 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGroupModel(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var groupToBeDeleted = await _groupService.DeleteGroupAsync(Id, cancellationToken);
+                if (groupToBeDeleted == null)
+                {
+                    throw new Exception("No group found to be deleted!");
+                }
+                return Ok(groupToBeDeleted);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"A database error occurred while deleting the group. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }

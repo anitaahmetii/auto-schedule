@@ -115,6 +115,32 @@ namespace Application.Services
                 throw new Exception("An error occurred while retrieving groups.", ex);
             }
         }
+        public async Task<GroupModel> DeleteGroupAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var groupToDelete = await _context.Groups.FirstOrDefaultAsync(c => c.Id == Id, cancellationToken);
+                if (groupToDelete == null)
+                {
+                    throw new Exception("No group found to be deleted!");
+                }
+                _context.Groups.Remove(groupToDelete);
+                await _context.SaveChangesAsync(cancellationToken);
+                return _mapper.Map<GroupModel>(groupToDelete);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while deleting the group.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while deleting the group.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the group.", ex);
+            }
+        }
         private void ValidateGroupModel(GroupModel groupModel)
         {
             if (groupModel == null)

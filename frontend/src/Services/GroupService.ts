@@ -58,4 +58,17 @@ export class GroupService
           throw error;
         }
     }
+    public static async deleteGroupAsync(id: string): Promise<GroupModel>
+    {
+        try
+        {
+            const response = await axios.delete(`${GroupService.baseURL}/${id}`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error deleting the group:", error);
+            throw error;
+        }
+    }
 }

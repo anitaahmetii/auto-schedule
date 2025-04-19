@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { GroupModel } from "../../Interfaces/GroupModel";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Modal, Table } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import { GroupService } from "../../Services/GroupService";
 
@@ -9,6 +9,8 @@ export default function GroupTable()
     const navigate = useNavigate();
 
     const [groups, setGroups] = useState<GroupModel[]>([]);
+    const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+    const [deleteGroupId, setDeletedGroupId] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,6 +27,18 @@ export default function GroupTable()
     function editGroup(id: string | null)
     {
         navigate(`/EditGroup/${id}`);
+    }
+    function deleteGroup(id: string)
+    {
+        setOpenConfirm(true);
+        setDeletedGroupId(id);
+    }
+    async function confirmToDelete(id: string)
+    {
+        await GroupService.deleteGroupAsync(id);
+        setGroups(groups.filter((group) => group.id !== id));
+        setOpenConfirm(false);
+        setDeletedGroupId("");
     }
     return (
         <Fragment>
@@ -56,12 +70,32 @@ export default function GroupTable()
                                 </Button>
                                 <Button color="red" 
                                         className="mr-2"
-                                        >
+                                        onClick={() => deleteGroup(group.id!)} >
                                     Del
                                 </Button>
                             </Table.Cell>
                         </Table.Row>
                     ))}
+                     <Modal open={openConfirm}
+                            size="mini"
+                            onClose={() => setOpenConfirm(false)}
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            style={{minHeight: 'unset',
+                                    height: 'auto',
+                                    padding: '1rem',
+                                    textAlign: 'center',
+                                    position: 'fixed',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    zIndex: 1000}}>
+                        <Modal.Content>Are you sure you want to delete this group?</Modal.Content>
+                        <Modal.Actions style={{ justifyContent: 'center', display: 'flex', gap: '1rem' }}>
+                            <Button onClick={() => setOpenConfirm(false)}>Cancel</Button>
+                            <Button color="red" onClick={() => confirmToDelete(deleteGroupId)}>Delete</Button>
+                        </Modal.Actions>
+                    </Modal>
                 </Table.Body>
             </Table>
         </div>
