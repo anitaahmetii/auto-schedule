@@ -44,4 +44,18 @@ export class GroupService
           throw error;
         }
     }
+    public static async getAllGroupsAsync(): Promise<GroupModel[]>
+    {
+        try 
+        {
+            const response = await axios.get(`${GroupService.baseURL}`);
+            console.log(response);
+            return response.data;
+        }
+        catch (error) 
+        {
+          console.error("Error retrieving the groups:", error);
+          throw error;
+        }
+    }
 }

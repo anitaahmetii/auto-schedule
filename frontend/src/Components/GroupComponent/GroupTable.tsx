@@ -1,13 +1,22 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { GroupModel } from "../../Interfaces/GroupModel";
 import { Button, Table } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import { GroupService } from "../../Services/GroupService";
 
 export default function GroupTable()
 {
     const navigate = useNavigate();
 
     const [groups, setGroups] = useState<GroupModel[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await GroupService.getAllGroupsAsync();
+            setGroups(result);
+        };
+        fetchData();
+    }, []);
 
     function addGroup()
     {

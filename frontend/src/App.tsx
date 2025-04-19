@@ -14,7 +14,7 @@ function App() {
         {/* COURSES  */}
         <Route path='/Group' element={ <GroupTable /> } />
         <Route path="/AddGroup" element={ <AddGroup /> } />
-        <Route path='/EditGroup:/id' element={ <EditGroup /> } />
+        <Route path='/EditGroup/:id' element={ <EditGroup /> } />
 
      <Route path="/" element={<StateTable />} />
      <Route path="/EditState/:id" element={<EditState />} />
