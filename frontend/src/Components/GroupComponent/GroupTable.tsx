@@ -13,6 +13,10 @@ export default function GroupTable()
     {
         navigate(`/AddGroup`);
     }
+    function editGroup(id: string | null)
+    {
+        navigate(`/EditGroup/${id}`);
+    }
     return (
         <Fragment>
         <div className="d-flex align-items-center mt-4 mb-3 px-4">
@@ -31,14 +35,14 @@ export default function GroupTable()
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {groups.map((groups) => (
-                        <Table.Row key={groups.id}>
-                            <Table.Cell>{groups.name}</Table.Cell>
-                            <Table.Cell>{groups.capacity}</Table.Cell>
+                    {groups.map((group) => (
+                        <Table.Row key={group.id}>
+                            <Table.Cell>{group.name}</Table.Cell>
+                            <Table.Cell>{group.capacity}</Table.Cell>
                             <Table.Cell>
                                 <Button color="olive" 
                                         className="mr-2"
-                                        >
+                                        onClick={() => editGroup(group.id!)}>
                                     Edit
                                 </Button>
                                 <Button color="red" 
