@@ -1,0 +1,61 @@
+﻿using AutoMapper;
+using Domain.Entities;
+using Domain.Interface;
+using Domain.Model;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Services
+{
+    public class GroupService : IGroupService
+    {
+        private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+
+        public GroupService(AppDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+        public async Task<GroupModel> CreateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken)
+        {
+            try
+            {
+                ValidateGroupModel(groupModel);
+                var groups = _mapper.Map<Group>(groupModel);
+                await _context.Groups.AddAsync(groups, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
+                groupModel.Id = groups.Id;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception("An error occurred while saving the group to the database.", dbEx);
+            }
+            catch (ArgumentException argEx)
+            {
+                throw new Exception("Invalid argument(s) provided.", argEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An unexpected error occurred while creating the group.", ex);
+            }
+            return groupModel;
+        }
+        private void ValidateGroupModel(GroupModel groupModel)
+        {
+            if (groupModel == null)
+                throw new ArgumentNullException(nameof(groupModel), "The group model cannot be null.");
+
+            if (string.IsNullOrWhiteSpace(groupModel.Name))
+                throw new ArgumentException("The name is required.", nameof(groupModel.Name));
+
+            if (groupModel.Capacity == null || groupModel.Capacity < 0)
+                throw new ArgumentOutOfRangeException(nameof(groupModel.Capacity), "The capacity must be a positive number.");
+        }
+    }
+}
