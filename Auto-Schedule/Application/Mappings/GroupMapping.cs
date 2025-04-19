@@ -18,6 +18,12 @@ namespace Application.Mappings
                 .ForMember(x => x.Name, y => y.MapFrom(y => y.Name))
                 .ForMember(x => x.Capacity, y => y.MapFrom(y => y.Capacity))
                 .ForMember(x => x.UserId, y => y.MapFrom(y => y.UserId));
+
+            CreateMap<Group, GroupModel>()
+                .ForMember(x => x.Id, y => y.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, y => y.MapFrom(y => y.Name))
+                .ForMember(x => x.Capacity, y => y.MapFrom(y => y.Capacity))
+                .ForMember(x => x.UserId, y => y.MapFrom(y => y.UserId));
         }
     }
 }

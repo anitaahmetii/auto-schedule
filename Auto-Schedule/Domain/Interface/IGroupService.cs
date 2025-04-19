@@ -10,5 +10,7 @@ namespace Domain.Interface
     public interface IGroupService
     {
         Task<GroupModel> CreateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken);
+        Task<GroupModel> GetByIdGroupAsync(Guid Id, CancellationToken cancellationToken);
+        Task<GroupModel> UpdateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken);
     }
 }

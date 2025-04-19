@@ -46,6 +46,55 @@ namespace Application.Services
             }
             return groupModel;
         }
+        public async Task<GroupModel> GetByIdGroupAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var groupId = await _context.Groups.FirstOrDefaultAsync(c => c.Id == Id, cancellationToken);
+                if (groupId == null)
+                {
+                    throw new Exception("Group not found!");
+                }
+
+                return _mapper.Map<GroupModel>(groupId);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the group.", ex);
+            }
+        }
+        public async Task<GroupModel> UpdateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken)
+        {
+            try
+            {
+                ValidateGroupModel(groupModel);
+                var group = await _context.Groups.FindAsync(groupModel.Id);
+                if (group == null)
+                {
+                    throw new Exception("Group not found!");
+                }
+                _mapper.Map(groupModel, group);
+                _context.Groups.Update(group);
+                await _context.SaveChangesAsync(cancellationToken);
+                return groupModel;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while updating the group.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while updating the group.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the group.", ex);
+            }
+        }
         private void ValidateGroupModel(GroupModel groupModel)
         {
             if (groupModel == null)
