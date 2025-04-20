@@ -1,8 +1,8 @@
 import React from 'react';
 import StateTable from "./Components/StateTable";
 import EditState from "./Components/EditState";
-import ReportTable from "./Components/ReportTable";
-import EditReport from "./Components/EditReport";
+import ReportTable from "./Components/Report/ReportTable";
+import EditReport from "./Components/Report/EditReport";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {

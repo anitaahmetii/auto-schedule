@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ReportModel } from '../Interfaces/ReportModel';
-import { ReportService } from '../Services/ReportService';
+import { ReportModel } from '../../Interfaces/ReportModel';
+import { ReportService } from '../../Services/ReportService';
 
 export default function EditReport() {
   const { id } = useParams<{ id: string }>();

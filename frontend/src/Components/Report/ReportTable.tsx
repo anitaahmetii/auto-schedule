@@ -10,8 +10,8 @@ import {
   TableCell,
 } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import { ReportModel } from "../Interfaces/ReportModel";
-import { ReportService } from "../Services/ReportService";
+import { ReportModel } from "../../Interfaces/ReportModel";
+import { ReportService } from "../../Services/ReportService";
 
 export default function ReportsTable() {
   const [reports, setReports] = useState<ReportModel[]>([]);
