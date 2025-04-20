@@ -57,6 +57,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
