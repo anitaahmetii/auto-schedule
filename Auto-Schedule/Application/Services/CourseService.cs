@@ -100,7 +100,7 @@ namespace Application.Services
             try
             {
                 var courses = await _context.Courses.ToListAsync(cancellationToken);
-                if (courses == null || !courses.Any())
+                if (courses == null)
                 {
                     throw new Exception("No course found!");
                 }
