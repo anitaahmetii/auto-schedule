@@ -56,8 +56,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ICourseService, CourseService>(); 
+
 
 var app = builder.Build();
 

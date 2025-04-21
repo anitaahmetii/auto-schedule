@@ -36,3 +36,6 @@ obj/
 *.deploy
 *.msi
 *.zip
+
+#Ignore Infrastructure files
+Infrastructure/Migrations/
