@@ -1,6 +1,8 @@
 import React from 'react';
 import StateTable from "./Components/StateTable";
 import EditState from "./Components/EditState";
+import ScheduleTypeTable from "./Components/ScheduleType/ScheduleTypeTable"; 
+import EditScheduleType from "./Components/ScheduleType/EditScheduleType"; 
 import UserTable from "./Components/User/UserTable";
 import EditUser from "./Components/User/EditUser";
 import ReportTable from "./Components/Report/ReportTable";
@@ -19,10 +21,15 @@ function App() {
 
     <Router>
      <Routes>
-       {/* STATES */}
+        {/* STATES */}
           <Route path="/" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
+
+          {/* SCHEDULE TYPES */}
+          <Route path="/scheduleType" element={<ScheduleTypeTable />} />
+          <Route path="/EditScheduleType/:id" element={<EditScheduleType />} />
+          <Route path="/AddScheduleType" element={<EditScheduleType />} />
 
           {/* USERS */}
           <Route path="/user" element={<UserTable />} />
@@ -35,9 +42,9 @@ function App() {
           <Route path="/AddReport" element={<EditReport />} />
 
           {/* GROUPS */}
-          <Route path='/Group' element={ <GroupTable /> } />
-          <Route path="/AddGroup" element={ <AddGroup /> } />
-          <Route path='/EditGroup/:id' element={ <EditGroup /> } />
+          <Route path='/Group' element={<GroupTable />} />
+          <Route path="/AddGroup" element={<AddGroup />} />
+          <Route path='/EditGroup/:id' element={<EditGroup />} />
 
           {/* COURSES */}
           <Route path='/Course' element={<CourseTable />} />

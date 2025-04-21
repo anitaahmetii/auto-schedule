@@ -63,6 +63,7 @@ builder.Services.AddScoped<IStateService, StateService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ICourseService, CourseService>(); 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IScheduleTypeService, ScheduleTypeService>();
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {
@@ -73,6 +74,7 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
+
 
 
 var app = builder.Build();
