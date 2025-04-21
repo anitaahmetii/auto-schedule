@@ -1,7 +1,9 @@
 import React from 'react';
 import StateTable from "./Components/StateTable";
 import EditState from "./Components/EditState";
-import CourseTable  from "./Components/CourseComponent/CourseTable";
+import ReportTable from "./Components/Report/ReportTable";
+import EditReport from "./Components/Report/EditReport";
+import CourseTable from "./Components/CourseComponent/CourseTable";
 import AddCourse from './Components/CourseComponent/AddCourse';
 import EditCourse from './Components/CourseComponent/EditCourse';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -15,20 +17,28 @@ function App() {
 
     <Router>
      <Routes>
-        {/* GROUPS  */}
-        <Route path='/Group' element={ <GroupTable /> } />
-        <Route path="/AddGroup" element={ <AddGroup /> } />
-        <Route path='/EditGroup/:id' element={ <EditGroup /> } />
-          {/* COURSES  */}
-          <Route path='/Course' element={<CourseTable /> } />
-          <Route path="/AddCourse" element={<AddCourse />} />
-          <Route path='/EditCourse/:id' element={<EditCourse />} />
-          {/* STATES  */}
+        {/* STATES */}
           <Route path="/" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
+
+          {/* REPORTS */}
+          <Route path="/reports" element={<ReportTable />} />
+          <Route path="/EditReport/:id" element={<EditReport />} />
+          <Route path="/AddReport" element={<EditReport />} />
+
+          {/* GROUPS */}
+          <Route path='/Group' element={ <GroupTable /> } />
+          <Route path="/AddGroup" element={ <AddGroup /> } />
+          <Route path='/EditGroup/:id' element={ <EditGroup /> } />
+
+          {/* COURSES */}
+          <Route path='/Course' element={<CourseTable /> } />
+          <Route path="/AddCourse" element={<AddCourse />} />
+          <Route path='/EditCourse/:id' element={<EditCourse />} />
         </Routes>
       </Router>
+
      </>
   );
 }
