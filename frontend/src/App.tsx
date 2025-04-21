@@ -1,6 +1,8 @@
 import React from 'react';
 import StateTable from "./Components/StateTable";
 import EditState from "./Components/EditState";
+import UserTable from "./Components/User/UserTable";
+import EditUser from "./Components/User/EditUser";
 import ReportTable from "./Components/Report/ReportTable";
 import EditReport from "./Components/Report/EditReport";
 import CourseTable from "./Components/CourseComponent/CourseTable";
@@ -17,10 +19,15 @@ function App() {
 
     <Router>
      <Routes>
-        {/* STATES */}
+       {/* STATES */}
           <Route path="/" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
+
+          {/* USERS */}
+          <Route path="/user" element={<UserTable />} />
+          <Route path="/EditUser/:id" element={<EditUser />} />
+          <Route path="/AddUser" element={<EditUser />} />
 
           {/* REPORTS */}
           <Route path="/reports" element={<ReportTable />} />
@@ -33,12 +40,11 @@ function App() {
           <Route path='/EditGroup/:id' element={ <EditGroup /> } />
 
           {/* COURSES */}
-          <Route path='/Course' element={<CourseTable /> } />
+          <Route path='/Course' element={<CourseTable />} />
           <Route path="/AddCourse" element={<AddCourse />} />
           <Route path='/EditCourse/:id' element={<EditCourse />} />
         </Routes>
       </Router>
-
      </>
   );
 }
