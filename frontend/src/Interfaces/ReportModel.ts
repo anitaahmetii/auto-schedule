@@ -5,4 +5,5 @@ export interface ReportModel {
     dateTime: string; // ose Date, nëse e konverton
     userId: string;
     scheduleId: string;
+    userName?: string;
   }

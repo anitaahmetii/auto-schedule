@@ -12,49 +12,47 @@ export default function EditReport() {
     comment: '',
     dateTime: '',
     userId: '', // Default to empty string
-    scheduleId: '', // Default to empty string
+    scheduleId: '', // Use ScheduleTypeId instead of scheduleId
   });
 
   const [users, setUsers] = useState<any[]>([]); // Users dropdown options
-  const [schedules, setSchedules] = useState<any[]>([]); // Schedules dropdown options
+  const [scheduleTypes, setScheduleTypes] = useState<any[]>([]); // ScheduleTypes dropdown options
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Merrni të gjithë raportet
+        // Fetch the report data
         const reports = await ReportService.GetAllReports();
-        
-        // Gjeni raportin që përputhet me id
-        const report = reports.find(r => r.id === id);
-  
+        const report = reports.find((r) => r.id === id);
+
         if (report) {
           setValues({
             id: report.id,
             absence: report.absence,
             comment: report.comment,
             dateTime: report.dateTime,
-            userId: report.userId || '',
-            scheduleId: report.scheduleId || '',
+            userId: report.userId || '',  // Set userId if available
+            scheduleId: report.scheduleId || '', // Set scheduleTypeId if available
           });
         }
       } catch (error) {
         console.error('Error fetching report:', error);
       }
-  
-      // Fetch users dhe schedules për dropdown
+
+      // Fetch users and scheduleTypes for dropdown
       try {
-        const userResponse = await axios.get('https://localhost:7085/api/Users');
+        const userResponse = await axios.get('https://localhost:7085/api/User');
         setUsers(userResponse.data);
-  
-        const scheduleResponse = await axios.get('https://localhost:7085/api/Schedules');
-        setSchedules(scheduleResponse.data);
+
+        const scheduleTypeResponse = await axios.get('https://localhost:7085/api/ScheduleType');
+        setScheduleTypes(scheduleTypeResponse.data);
       } catch (error) {
-        console.error('Error fetching users or schedules:', error);
+        console.error('Error fetching users or scheduleTypes:', error);
       }
     };
-  
+
     fetchData();
   }, [id]);
 
@@ -67,7 +65,7 @@ export default function EditReport() {
         comment: values.comment,
         dateTime: values.dateTime,
         userId: values.userId,
-        scheduleId: values.scheduleId,
+        scheduleId: values.scheduleId, // Use scheduleTypeId instead of scheduleId
       } as ReportModel;
 
       await ReportService.EditOrAddReport(model); // Save the report
@@ -91,42 +89,47 @@ export default function EditReport() {
         Please fill out the form below to {values.id != null ? 'edit' : 'create'} a Report.
       </p>
 
-      <form className='ui form' style={{ backgroundColor: '#f9f9f9', padding: '20px' }} onSubmit={handleSubmit} autoComplete="off">
+      <form
+        className="ui form"
+        style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '8px' }}
+        onSubmit={handleSubmit}
+        autoComplete="off"
+      >
         <div className="form-group">
           <label>Absence</label>
           <input
-            style={{ padding: '5px', margin: '5px' }}
             type="number"
             placeholder="Absence"
             className="form-control"
             name="absence"
             value={values.absence}
             onChange={handleChange}
+            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
           />
         </div>
 
         <div className="form-group">
           <label>Comment</label>
           <input
-            style={{ padding: '5px', margin: '5px' }}
             type="text"
             placeholder="Comment"
             className="form-control"
             name="comment"
             value={values.comment}
             onChange={handleChange}
+            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
           />
         </div>
 
         <div className="form-group">
           <label>Date/Time</label>
           <input
-            style={{ padding: '5px', margin: '5px' }}
             type="datetime-local"
             className="form-control"
             name="dateTime"
             value={values.dateTime}
             onChange={handleChange}
+            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
           />
         </div>
 
@@ -137,7 +140,12 @@ export default function EditReport() {
             value={values.userId}
             onChange={handleChange}
             required
-            style={{ padding: '5px', margin: '5px' }}
+            style={{
+              padding: '10px',
+              marginBottom: '10px',
+              width: '100%',
+              borderRadius: '4px',
+            }}
           >
             <option value="">Select User</option>
             {users.map((user) => (
@@ -149,18 +157,23 @@ export default function EditReport() {
         </div>
 
         <div className="form-group">
-          <label>Schedule</label>
+          <label>Schedule Type</label>
           <select
-            name="scheduleId"
-            value={values.scheduleId}
-            onChange={handleChange}
+            name="scheduleId"  // Këtu ndryshojmë emrin në "scheduleId"
+            value={values.scheduleId}  // Këtu lidhim vlerën me gjendjen e komponentit (scheduleId)
+            onChange={handleChange}  // Kujdes që të ruhet vlera e re në gjendje
             required
-            style={{ padding: '5px', margin: '5px' }}
+            style={{
+              padding: '10px',
+              marginBottom: '10px',
+              width: '100%',
+              borderRadius: '4px',
+            }}
           >
-            <option value="">Select Schedule</option>
-            {schedules.map((schedule) => (
-              <option key={schedule.id} value={schedule.id}>
-                {schedule.name}
+            <option value="">Select Schedule Type</option>
+            {scheduleTypes.map((scheduleType) => (
+              <option key={scheduleType.id} value={scheduleType.id}>
+                {scheduleType.name}  // Emri i schedule type që do të shfaqet
               </option>
             ))}
           </select>
@@ -169,16 +182,16 @@ export default function EditReport() {
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
           <button
             type="button"
-            onClick={() => navigate('/')} // Cancel button
-            className="ui blue basic button"
-            style={{ backgroundColor: 'rgb(32 76 60)', color: '#fff' }}
+            onClick={() => navigate('/')}
+            className="btn btn-secondary"
+            style={{ width: '120px' }}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="ui green button"
-            style={{ backgroundColor: 'rgb(32 76 60)', color: '#fff' }}
+            className="btn btn-success"
+            style={{ width: '120px' }}
           >
             Submit
           </button>

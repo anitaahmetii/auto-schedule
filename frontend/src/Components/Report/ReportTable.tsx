@@ -1,113 +1,143 @@
-import React, { Fragment, useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Confirm,
-  TableHeader,
-  TableRow,
-  TableHeaderCell,
-  TableBody,
-  TableCell,
-} from "semantic-ui-react";
-import { useNavigate } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
 import { ReportModel } from "../../Interfaces/ReportModel";
+import { Button, Modal, Table, Select } from "semantic-ui-react";
+import { useNavigate } from "react-router-dom";
 import { ReportService } from "../../Services/ReportService";
 
-export default function ReportsTable() {
-  const [reports, setReports] = useState<ReportModel[]>([]);
-  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-  const [deleteReportId, setDeleteReportId] = useState<string>("");
+export default function ReportTable() {
+    const navigate = useNavigate();
 
-  const navigate = useNavigate();
+    const [reports, setReports] = useState<ReportModel[]>([]);
+    const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+    const [deleteReportId, setDeletedReportId] = useState<string>("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await ReportService.GetAllReports();
-      setReports(result);
-    };
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await ReportService.GetAllReports();
+            setReports(result);
+        };
+        fetchData();
+    }, []);
 
-  function deleteReport(id: string) {
-    setOpenConfirm(true);
-    setDeleteReportId(id);
-  }
+    function addReport() {
+        navigate("/AddReport");
+    }
 
-  async function confirmedDeleteReport(id: string) {
-    await ReportService.DeleteReport(id);
-    setReports(reports.filter((report) => report.id !== id));
-    setOpenConfirm(false);
-    setDeleteReportId("");
-  }
+    function editReport(id: string | null) {
+        navigate(`/EditReport/${id}`);
+    }
 
-  function sendToDetails(id: string | null) {
-    navigate(`/EditReport/${id}`);
-  }
+    function deleteReport(id: string) {
+        setOpenConfirm(true);
+        setDeletedReportId(id);
+    }
 
-  function addReport() {
-    navigate(`/AddReport`);
-  }
+    async function confirmToDelete(id: string) {
+        await ReportService.DeleteReport(id);
+        setReports(reports.filter((report) => report.id !== id));
+        setOpenConfirm(false);
+        setDeletedReportId("");
+    }
 
-  return (
-    <Fragment>
-      <div className="mt-5 d-flex align-items-center">
-        <h1 style={{ marginLeft: "30px" }}>Reports</h1>
-        <Button
-          type="button"
-          className="ui positive basic button ms-4"
-          onClick={addReport}
-        >
-          Add New Report
-        </Button>
-      </div>
-
-      <Table striped>
-        <TableHeader>
-          <TableRow>
-            <TableHeaderCell>Absence</TableHeaderCell>
-            <TableHeaderCell>Comment</TableHeaderCell>
-            <TableHeaderCell>Date</TableHeaderCell>
-            <TableHeaderCell>User ID</TableHeaderCell>
-            <TableHeaderCell>Schedule ID</TableHeaderCell>
-            <TableHeaderCell>Actions</TableHeaderCell>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {reports.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.absence}</TableCell>
-              <TableCell>{item.comment}</TableCell>
-              <TableCell>{new Date(item.dateTime).toLocaleString()}</TableCell>
-              <TableCell>{item.userId}</TableCell>
-              <TableCell>{item.scheduleId}</TableCell>
-              <TableCell>
+    return (
+        <Fragment>
+            <div className="d-flex align-items-center mt-4 mb-3 px-4">
+                <h1 style={{ marginLeft: "30px" }}>Reports</h1>
                 <Button
-                  type="button"
-                  className="ui green basic button"
-                  onClick={() => sendToDetails(item.id!)}
+                    type="button"
+                    style={{ color: "white" }}
+                    color="olive"
+                    className="ms-auto"
+                    onClick={() => addReport()}
                 >
-                  Edit
+                    Add New Report
                 </Button>
-                <Button
-                  type="button"
-                  className="btn btn-danger"
-                  negative
-                  onClick={() => deleteReport(item.id!)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            </div>
 
-      <Confirm
-        open={openConfirm}
-        onCancel={() => setOpenConfirm(false)}
-        onConfirm={() => confirmedDeleteReport(deleteReportId!)}
-      />
-    </Fragment>
-  );
+            <div className="px-4">
+                <Table className="ui olive single line table">
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Report</Table.HeaderCell>
+                            <Table.HeaderCell>Actions</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {reports.map((report) => (
+                            <Table.Row key={report.id}>
+                                <Table.Cell>
+                                    <Select
+                                        options={[
+                                            {
+                                                key: report.id,
+                                                text: report.comment,
+                                                value: report.id,
+                                            },
+                                        ]}
+                                        value={report.id}
+                                        onChange={() => editReport(report.id)}
+                                    />
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <Button
+                                        color="olive"
+                                        className="mr-2"
+                                        onClick={() => editReport(report.id!)}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        color="red"
+                                        className="mr-2"
+                                        onClick={() => deleteReport(report.id!)}
+                                    >
+                                        Del
+                                    </Button>
+                                </Table.Cell>
+                            </Table.Row>
+                        ))}
+                        <Modal
+                            open={openConfirm}
+                            size="mini"
+                            onClose={() => setOpenConfirm(false)}
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            style={{
+                                minHeight: "unset",
+                                height: "auto",
+                                padding: "1rem",
+                                textAlign: "center",
+                                position: "fixed",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                zIndex: 1000,
+                            }}
+                        >
+                            <Modal.Content>
+                                Are you sure you want to delete this report?
+                            </Modal.Content>
+                            <Modal.Actions
+                                style={{
+                                    justifyContent: "center",
+                                    display: "flex",
+                                    gap: "1rem",
+                                }}
+                            >
+                                <Button onClick={() => setOpenConfirm(false)}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    color="red"
+                                    onClick={() => confirmToDelete(deleteReportId)}
+                                >
+                                    Delete
+                                </Button>
+                            </Modal.Actions>
+                        </Modal>
+                    </Table.Body>
+                </Table>
+            </div>
+        </Fragment>
+    );
 }
