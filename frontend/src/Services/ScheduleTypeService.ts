@@ -25,4 +25,9 @@ export class ScheduleTypeService {
   public static async EditOrAddScheduleType(model: ScheduleTypeModel): Promise<void> {
     const result = await axios.post(`${ScheduleTypeService.baseUrl}`, model);
   }
+
+  public static async GetSelectList() : Promise<ScheduleTypeModel[]>{
+    const result=await axios.get(`${ScheduleTypeService.baseUrl}/GetScheduleTypeSelectListAsync`);
+    return result.data;
+  }
 }

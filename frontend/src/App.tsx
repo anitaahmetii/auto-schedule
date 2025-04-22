@@ -1,6 +1,10 @@
 import React from 'react';
-import StateTable from "./Components/StateTable";
-import EditState from "./Components/EditState";
+import StateTable from './Components/State/StateTable';
+import EditState from './Components/State/EditState';
+import CityTable from './Components/City/CityTable';
+import EditCity from './Components/City/EditCity';
+import LecturesTable from './Components/Lectures/LecturesTable';
+import EditLectures from './Components/Lectures/EditLectures';
 import ScheduleTypeTable from "./Components/ScheduleType/ScheduleTypeTable"; 
 import EditScheduleType from "./Components/ScheduleType/EditScheduleType"; 
 import UserTable from "./Components/User/UserTable";
@@ -28,9 +32,17 @@ function App() {
     <Router>
      <Routes>
         {/* STATES */}
-          <Route path="/state" element={<StateTable />} />
+          <Route path="/" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
+
+          <Route path="/city" element={<CityTable />} />
+          <Route path="/EditCity/:id" element={<EditCity />} />
+          <Route path="/AddCity" element={<EditCity />} />
+
+          <Route path="/lectures" element={<LecturesTable />} />
+          <Route path="/EditLectures/:id" element={<EditLectures />} />
+          <Route path="/AddLectures" element={<EditLectures />} />
 
           {/* SCHEDULE TYPES */}
           <Route path="/scheduleType" element={<ScheduleTypeTable />} />
@@ -65,7 +77,7 @@ function App() {
           <Route path="/EditLocation/:id" element={<EditLocation />} />
           <Route path="/AddLocation" element={<EditLocation />} />
 
-          <Route path="/" element={<ReceptionistTable />} />
+          <Route path="/receptionist" element={<ReceptionistTable />} />
           <Route path="/EditReceptionist/:id" element={<EditReceptionist />} />
           <Route path="/AddReceptionist" element={<EditReceptionist />} />
         </Routes>

@@ -51,5 +51,12 @@ namespace Application.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+
+        [HttpGet("GetScheduleTypeSelectListAsync")]
+        public async Task<IActionResult> GetScheduleTypeSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await service.GetScheduleTypeSelectListAsync(cancellationToken);
+            return Ok(model);
+        }
     }
 }

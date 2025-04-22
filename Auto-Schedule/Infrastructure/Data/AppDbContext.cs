@@ -27,8 +27,8 @@ namespace Infrastructure.Data
         public DbSet<CourseLectures> CourseLectures { get; set; }
         public DbSet<LocationDepartment> LocationDepartment { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Hall> Halls { get; set; }
+        public DbSet<Location> Location { get; set; }
+        public DbSet<Halls> Halls { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Report> Reports { get; set; }
 

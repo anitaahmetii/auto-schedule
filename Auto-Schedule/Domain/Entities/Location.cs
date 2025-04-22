@@ -11,7 +11,7 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
-        public string StreetNo { get; set; }
+        public string streetNo { get; set; }
 
         public string PhoneNumber { get; set; }
         public string ZipCode { get; set; }
@@ -19,7 +19,7 @@ namespace Domain.Entities
         public User User { get; set; }
 
         public ICollection<LocationDepartment> LocationDepartments { get; set; } = new List<LocationDepartment>();
-        public ICollection<Hall> Halls { get; set; } = new List<Hall>();
+        public ICollection<Halls> Halls { get; set; } = new List<Halls>();
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     }
 }

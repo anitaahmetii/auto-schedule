@@ -13,5 +13,7 @@ namespace Domain.Interface
         public Task<ScheduleTypeModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<ScheduleTypeModel> CreateOrUpdate(ScheduleTypeModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
+
+        Task<List<ListItemModel>> GetScheduleTypeSelectListAsync(CancellationToken cancellationToken);
     }
 }

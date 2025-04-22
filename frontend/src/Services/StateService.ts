@@ -17,5 +17,9 @@ export class StateService {
    public static async EditOrAddState(model: StateModel): Promise<void> {
     const result = await axios.post(`${StateService.baseUrl}`, model);
   }
+  public static async GetSelectList() : Promise<StateModel[]> {
+    const result = await axios.get(`${StateService.baseUrl}/GetStateSelectListAsync`);
+    return result.data;
+  }
 }
   

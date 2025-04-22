@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Model
 {
-    public class HallModel
+    public class CityModel
     {
         public Guid? Id { get; set; }
         public string Name { get; set; }
-        public int Capacity { get; set; }
-        public Guid UserId { get; set; }
-        public Guid LocationId { get; set; }
-
-
+        public Guid StateId { get; set; }
     }
 }

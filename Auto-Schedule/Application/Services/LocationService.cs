@@ -23,15 +23,15 @@ namespace Application.Services
             Location location = new Location();
             if (model.Id == null)
             {
-                await appDbContext.Locations.AddAsync(location);
+                await appDbContext.Location.AddAsync(location);
             }
             else
             {
-                location = await appDbContext.Locations.Where(x => x.Id == model.Id).FirstOrDefaultAsync(cancellationToken);
+                location = await appDbContext.Location.Where(x => x.Id == model.Id).FirstOrDefaultAsync(cancellationToken);
             }
             location.Name = model.Name;
             location.City = model.City;
-            location.StreetNo = model.StreetNo;
+            location.streetNo = model.StreetNo;
             location.ZipCode = model.ZipCode;
             location.PhoneNumber = model.PhoneNumber;
             location.UserId = model.UserId;
@@ -42,14 +42,14 @@ namespace Application.Services
         }
         public async Task DeleteById(Guid Id, CancellationToken cancellationToken)
         {
-            var location = await appDbContext.Locations.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
-            appDbContext.Locations.Remove(location);
+            var location = await appDbContext.Location.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
+            appDbContext.Location.Remove(location);
             await appDbContext.SaveChangesAsync();
         }
 
         public async Task<LocationModel> GetById(Guid Id, CancellationToken cancellationToken)
         {
-            var location = await appDbContext.Locations.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
+            var location = await appDbContext.Location.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
 
             var model = mapper.Map<LocationModel>(location);
 
@@ -58,9 +58,20 @@ namespace Application.Services
 
         public async Task<List<LocationModel>> GetAll(CancellationToken cancellationToken)
         {
-            var location = await appDbContext.Locations.ToListAsync(cancellationToken);
+            var location = await appDbContext.Location.ToListAsync(cancellationToken);
 
             var model = mapper.Map<List<LocationModel>>(location);
+
+            return model;
+        }
+
+        public async Task<List<ListItemModel>> GetLocationSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await appDbContext.Location.Select(x => new ListItemModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToListAsync(cancellationToken);
 
             return model;
         }

@@ -66,5 +66,15 @@ namespace Application.Services
 
             return model;
         }
+        public async Task<List<ListItemModel>> GetStateSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await appDbContext.States.Select(x => new ListItemModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToListAsync(cancellationToken);
+
+            return model;
+        }
     }
 }

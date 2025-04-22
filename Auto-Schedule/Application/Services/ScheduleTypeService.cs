@@ -108,5 +108,16 @@ namespace Application.Services
             var model = mapper.Map<ScheduleTypeModel>(scheduleType);
             return model;
         }
+
+        public async Task<List<ListItemModel>> GetScheduleTypeSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await appDbContext.ScheduleType.Select(x => new ListItemModel()
+            {
+                Id = x.Id,
+                scheduleTypes = x.scheduleTypes
+            }).ToListAsync(cancellationToken);
+
+            return model;
+        }
     }
 }

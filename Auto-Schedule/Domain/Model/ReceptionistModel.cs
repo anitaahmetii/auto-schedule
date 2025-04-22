@@ -8,7 +8,7 @@ namespace Domain.Model
 {
     public class ReceptionistModel
     {
+        public Guid? Id { get; set; }
         public string Responsibilities { get; set; }
-        public Guid Id { get; set; }
     }
 }

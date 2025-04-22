@@ -17,5 +17,10 @@ export class LocationService {
    public static async EditOrAddLocation(model: LocationModel): Promise<void> {
     const result = await axios.post(`${LocationService.baseUrl}`, model);
   }
+
+  public static async GetSelectList() : Promise<LocationModel[]>{
+    const result=await axios.get(`${LocationService.baseUrl}/GetLocationSelectListAsync`);
+    return result.data;
+  }
 }
   

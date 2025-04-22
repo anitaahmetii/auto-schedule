@@ -39,12 +39,6 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
-        [HttpGet("GetLocationSelectListAsync")]
-        public async Task<IActionResult> GetLocationSelectListAsync(CancellationToken cancellationToken)
-        {
-            var model = await service.GetLocationSelectListAsync(cancellationToken);
-            return Ok(model);
-        }
 
     }
 }

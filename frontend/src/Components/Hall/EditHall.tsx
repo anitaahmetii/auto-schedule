@@ -2,7 +2,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
-import { LocationModel } from '../../Interfaces/LocationModel';
 import { LocationService } from '../../Services/LocationService';
 import { HallModel } from '../../Interfaces/HallModel';
 import { HallService } from '../../Services/HallService';
@@ -41,8 +40,8 @@ export default function EditHall(){
         fetchData();
     }, [id!]);
 
-    const fetchHallList = async () => {
-        const response = await HallService.GetSelectList();
+    const fetchLocationList = async () => {
+        const response = await LocationService.GetSelectList();
         setStateList(response.map((item, i) => ({
                     key: i,
                     value: item.id,
@@ -52,7 +51,7 @@ export default function EditHall(){
     };
     
     useEffect(()=>{
-        fetchHallList();
+        fetchLocationList();
     }, []);
     
 
@@ -79,7 +78,7 @@ export default function EditHall(){
     };
 
     function sendToOverview(){
-        navigate('/');
+        navigate('/hall');
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +108,7 @@ export default function EditHall(){
                         placeholder="Name"
                         className="form-control"
                         name="name"
-                        value={values.name!}
+                        value={values.name || ''}
                         onChange={handleChange}
                     />
                     <label>Capacity</label>
@@ -119,7 +118,7 @@ export default function EditHall(){
                         placeholder="Capacity"
                         className="form-control"
                         name="capacity"
-                        value={values.capacity ?? ''}
+                        value={values.capacity || ''}
                         onChange={handleChange}
                     />
 

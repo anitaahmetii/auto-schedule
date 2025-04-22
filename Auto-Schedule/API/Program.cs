@@ -60,6 +60,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ILecturesService, LecturesService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ICourseService, CourseService>(); 
 builder.Services.AddScoped<IUserService, UserService>();

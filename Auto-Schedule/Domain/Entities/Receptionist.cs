@@ -9,6 +9,5 @@ namespace Domain.Entities
     public class Receptionist:Staff
     {
         public string Responsibilities { get; set; }
-        public Guid Id { get; set; }
     }
 }

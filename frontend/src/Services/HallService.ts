@@ -17,9 +17,5 @@ export class HallService {
    public static async EditOrAddHall(model: HallModel): Promise<void> {
     const result = await axios.post(`${HallService.baseUrl}`, model);
   }
-  public static async GetSelectList() : Promise<HallModel[]>{
-    const result=await axios.get(`${HallService.baseUrl}/GetHallSelectListAsync`);
-    return result.data;
-  }
 }
   

@@ -11,53 +11,53 @@ import {
   Confirm,
 } from "semantic-ui-react";
 import { Link, useNavigate } from "react-router-dom";
-import { StateModel } from "../Interfaces/StateModel";
-import { StateService } from "../Services/StateService";
+import { LecturesModel } from "../../Interfaces/LecturesModel";
+import { LecturesService } from "../../Services/LecturesService";
 
-export default function CreditCardsTable() {
-  const [states, setStates] = useState<StateModel[]>([]);
+export default function LecturesTable() {
+  const [lectures, setLectures] = useState<LecturesModel[]>([]);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-  const [deleteStateId, setDeleteStateId] = useState<string>("");
+  const [deleteLecturesId, setDeleteLecturesId] = useState<string>("");
   
   const navigate = useNavigate();
   useEffect(()=>{
     const fetchData = async () => {
-      const result = await StateService.GetAllStates();
-      setStates(result);
+      const result = await LecturesService.GetAllLectures();
+      setLectures(result);
     };
     fetchData();
   }, []);
 
-  function deleteStates(id: string) {
+  function deleteLectures(id: string) {
     setOpenConfirm(true);
-    setDeleteStateId(id);
+    setDeleteLecturesId(id);
   }
 
-  async function confirmedDeleteState(id: string) {
-    var result = await StateService.DeleteState(id);
-    setStates(states.filter((state) => state.id !== id));
+  async function confirmedDeleteLectures(id: string) {
+    var result = await LecturesService.DeleteLectures(id);
+    setLectures(lectures.filter((lecture) => lecture.id !== id));
     setOpenConfirm(false);
-    setDeleteStateId("");
+    setDeleteLecturesId("");
   }
 
   function sendToDetails(id:string | null) {
-    navigate(`/EditState/${id}`);
+    navigate(`/EditLectures/${id}`);
   }
 
-  function AddState() {
-    navigate(`/AddState`);
+  function AddLectures() {
+    navigate(`/AddLectures`);
   }
 
   return (
     <Fragment>
       <div className="mt-5 d-flex align-items-center">
-        <h1 style={{ marginLeft: "30px" }}>State</h1>
+        <h1 style={{ marginLeft: "30px" }}>Lecturer</h1>
         <Button
           type="button"
           className="ui positive basic button ms-4"
-          onClick={() => AddState()}
+          onClick={() => AddLectures()}
         >
-          Add New State
+          Add New Lecturer
         </Button>
         <div className="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
       </div>
@@ -65,15 +65,21 @@ export default function CreditCardsTable() {
       <Table striped>
         <TableHeader>
           <TableRow>
-          <TableHeaderCell>Name</TableHeaderCell>
+          <TableHeaderCell>Academic Grade</TableHeaderCell>
+          <TableHeaderCell>Lecturer Rank</TableHeaderCell>
+          <TableHeaderCell>ScheduleTypeId</TableHeaderCell>
+          <TableHeaderCell>UserId</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {states.map((item) => (
+          {lectures.map((item) => (
             <TableRow key={item.id}>
-              <TableCell>{item.name}</TableCell>
+              <TableCell>{item.academicGrade}</TableCell>
+              <TableCell>{item.lectureType}</TableCell>
+              <TableCell>{item.scheduleTypeId}</TableCell>
+              <TableCell>{item.userId}</TableCell>
               <TableCell>
                 <Button
                   type="button"
@@ -86,7 +92,7 @@ export default function CreditCardsTable() {
                   type="button"
                   className="btn btn-danger"
                   negative
-                  onClick={() => deleteStates(item.id!)}
+                  onClick={() => deleteLectures(item.id!)}
                 >
                   Delete
                 </Button>
@@ -96,7 +102,7 @@ export default function CreditCardsTable() {
           <Confirm
             open={openConfirm}
             onCancel={() => setOpenConfirm(false)}
-            onConfirm={() => confirmedDeleteState(deleteStateId!)}
+            onConfirm={() => confirmedDeleteLectures(deleteLecturesId!)}
           />
         </TableBody>
       </Table>

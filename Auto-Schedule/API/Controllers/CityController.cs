@@ -7,12 +7,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationController : ControllerBase
+    public class CityController : ControllerBase
     {
-        private readonly ILocationService service;
-        public LocationController(ILocationService locationService)
+        private readonly ICityService service;
+        public CityController(ICityService cityService)
         {
-            this.service = locationService;
+            this.service = cityService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
@@ -28,23 +28,17 @@ namespace API.Controllers
             return Ok(model);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate(LocationModel model, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOrUpdate(CityModel model, CancellationToken cancellationToken)
         {
-            var location = await service.CreateOrUpdate(model, cancellationToken);
+            var city = await service.CreateOrUpdate(model, cancellationToken);
 
-            return Ok(location);
+            return Ok(city);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {
             await service.DeleteById(id, cancellationToken);
             return Ok();
-        }
-        [HttpGet("GetLocationSelectListAsync")]
-        public async Task<IActionResult> GetLocationSelectListAsync(CancellationToken cancellationToken)
-        {
-            var model = await service.GetLocationSelectListAsync(cancellationToken);
-            return Ok(model);
         }
     }
 }

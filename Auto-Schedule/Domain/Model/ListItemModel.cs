@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Domain.Model
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public ScheduleTypes? scheduleTypes { get; set; }
     }
 }

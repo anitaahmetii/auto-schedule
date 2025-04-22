@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Segment } from 'semantic-ui-react';
-import { StateModel } from '../Interfaces/StateModel';
-import { StateService } from '../Services/StateService';
+import { StateModel } from '../../Interfaces/StateModel';
+import { StateService } from '../../Services/StateService';
 
 export default function EditState() {
   const { id } = useParams<{ id: string}>();

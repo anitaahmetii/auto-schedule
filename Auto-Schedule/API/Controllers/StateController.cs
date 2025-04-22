@@ -40,5 +40,11 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+        [HttpGet("GetStateSelectListAsync")]
+        public async Task<IActionResult> GetStateSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await service.GetStateSelectListAsync(cancellationToken);
+            return Ok(model);
+        }
     }
 }

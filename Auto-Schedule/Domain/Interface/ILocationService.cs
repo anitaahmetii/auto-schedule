@@ -14,7 +14,7 @@ namespace Domain.Interface
         public Task<LocationModel> CreateOrUpdate(LocationModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
 
-
+        Task<List<ListItemModel>> GetLocationSelectListAsync(CancellationToken cancellationToken);
 
     }
 }

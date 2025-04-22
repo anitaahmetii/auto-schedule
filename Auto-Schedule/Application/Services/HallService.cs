@@ -21,7 +21,7 @@ namespace Application.Services
 
         public async Task<HallModel> CreateOrUpdate(HallModel model, CancellationToken cancellationToken)
         {
-            Hall hall = new Hall();
+            Halls hall = new Halls();
 
             if (model.Id == null)
             {
@@ -65,16 +65,7 @@ namespace Application.Services
             return model;
         }
 
-        public async Task<List<ListItemModel>> GetLocationSelectListAsync(CancellationToken cancellationToken)
-        {
-            var model = await appDbContext.Halls.Select(x => new ListItemModel()
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToListAsync(cancellationToken);
-
-            return model;
-        }
+       
 
     }
 }
