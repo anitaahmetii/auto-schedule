@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Domain.Model
 {
-    public class Receptionist:Staff
+    public class ListItemModel
     {
-        public string Responsibilities { get; set; }
         public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -14,6 +14,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import GroupTable from './Components/GroupComponent/GroupTable';
 import AddGroup from './Components/GroupComponent/AddGroup';
 import EditGroup from './Components/GroupComponent/EditGroup';
+import EditLocation from './Components/Location/EditLocation';
+import LocationTable from './Components/Location/LocationTable';
+import EditHall from './Components/Hall/EditHall';
+import HallTable from './Components/Hall/HallTable';
+import ReceptionistTable from './Components/Receptionist/ReceptionistTable';
+import EditReceptionist from './Components/Receptionist/EditReceptionist';
 
 function App() {
   return (
@@ -22,7 +28,7 @@ function App() {
     <Router>
      <Routes>
         {/* STATES */}
-          <Route path="/" element={<StateTable />} />
+          <Route path="/state" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
 
@@ -50,6 +56,18 @@ function App() {
           <Route path='/Course' element={<CourseTable />} />
           <Route path="/AddCourse" element={<AddCourse />} />
           <Route path='/EditCourse/:id' element={<EditCourse />} />
+
+          <Route path="/hall" element={<HallTable />} />
+          <Route path="/EditHall/:id" element={<EditHall />} />
+          <Route path="/AddHall" element={<EditHall />} />
+
+          <Route path="/location" element={<LocationTable />} />
+          <Route path="/EditLocation/:id" element={<EditLocation />} />
+          <Route path="/AddLocation" element={<EditLocation />} />
+
+          <Route path="/" element={<ReceptionistTable />} />
+          <Route path="/EditReceptionist/:id" element={<EditReceptionist />} />
+          <Route path="/AddReceptionist" element={<EditReceptionist />} />
         </Routes>
       </Router>
      </>

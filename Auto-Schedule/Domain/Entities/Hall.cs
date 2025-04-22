@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Location
+    public class Hall
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string City { get; set; }
-        public string StreetNo { get; set; }
+        public int Capacity { get; set; }
 
-        public string PhoneNumber { get; set; }
-        public string ZipCode { get; set; }
         public Guid UserId { get; set; }
         public User User { get; set; }
 
-        public ICollection<LocationDepartment> LocationDepartments { get; set; } = new List<LocationDepartment>();
-        public ICollection<Hall> Halls { get; set; } = new List<Hall>();
+        public Guid LocationId { get; set; }
+        public Location Location { get; set; }
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     }
 }
