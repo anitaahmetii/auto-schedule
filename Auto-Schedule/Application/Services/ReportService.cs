@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using Domain.Entities;
-using Domain.Model;
-using AutoMapper;
-using Domain.Entities;
 using Domain.Interface;
 using Domain.Model;
 using Infrastructure.Data;
@@ -10,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class ReportService: IReportService
+    public class ReportService : IReportService
     {
         private readonly AppDbContext appDbContext;
         private readonly IMapper mapper;
@@ -26,64 +23,82 @@ namespace Application.Services
             this.mapper = mapper;
         }
 
+        // Funksioni për të marrë të gjithë përdoruesit
+        public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken)
+        {
+            var users = await appDbContext.Users.ToListAsync(cancellationToken);
+            return mapper.Map<List<UserModel>>(users);
+        }
+
         public async Task<ReportModel> CreateOrUpdate(ReportModel model, CancellationToken cancellationToken)
         {
-            Report report = new Report();
+            Report report;
 
             if (model.Id == null || model.Id == Guid.Empty)
             {
-                // Mapping nga model -> entity
                 report = mapper.Map<Report>(model);
-                report.Id = Guid.NewGuid(); // e vendos ID nëse është create
+                report.Id = Guid.NewGuid();
+
+                // Sigurohu që UserId është i vendosur kur krijohet një raport i ri
+                if (model.UserId == Guid.Empty)
+                {
+                    throw new Exception("UserId cannot be empty");
+                }
 
                 await appDbContext.Reports.AddAsync(report, cancellationToken);
             }
             else
             {
-                // merr entity-n ekzistues
                 report = await appDbContext.Reports
-                    .Where(x => x.Id == model.Id)
-                    .FirstOrDefaultAsync(cancellationToken);
+                    .FirstOrDefaultAsync(x => x.Id == model.Id, cancellationToken);
 
                 if (report == null)
                     throw new Exception("Report not found");
 
-                // përditëso të dhënat me mapper
-                mapper.Map(model, report); // automatikisht i përditëson fushat që kanë emrat njëjtë
+                mapper.Map(model, report); // përditëson automatikisht fushat
             }
 
             await appDbContext.SaveChangesAsync(cancellationToken);
 
-            // kthe modelin e përditësuar
-            return mapper.Map<ReportModel>(report);
+            // Rikthe entity-n bashkë me User që të mbushet UserName
+            var updatedReport = await appDbContext.Reports
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Id == report.Id, cancellationToken);
+
+            return mapper.Map<ReportModel>(updatedReport);
         }
 
         public async Task DeleteById(Guid Id, CancellationToken cancellationToken)
         {
             var report = await appDbContext.Reports
-                .Where(x => x.Id == Id)
-                .FirstOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+
+            if (report == null)
+                throw new Exception("Report not found");
 
             appDbContext.Reports.Remove(report);
-            await appDbContext.SaveChangesAsync();
+            await appDbContext.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<List<ReportModel>> GetAll(CancellationToken cancellationToken)
         {
-            var report = await appDbContext.Reports.ToListAsync(cancellationToken);
-            var model = mapper.Map<List<ReportModel>>(report);
-            return model;
+            var reports = await appDbContext.Reports
+                .Include(x => x.User)
+                .ToListAsync(cancellationToken);
+
+            return mapper.Map<List<ReportModel>>(reports);
         }
 
         public async Task<ReportModel> GetById(Guid Id, CancellationToken cancellationToken)
         {
             var report = await appDbContext.Reports
-                .Where(x => x.Id == Id)
-                .FirstOrDefaultAsync(cancellationToken);
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
 
-            var model = mapper.Map<ReportModel>(report);
-            return model;
+            if (report == null)
+                throw new Exception("Report not found");
+
+            return mapper.Map<ReportModel>(report);
         }
     }
-
 }
