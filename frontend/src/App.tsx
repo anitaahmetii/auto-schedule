@@ -29,6 +29,7 @@ import DepartmentTable from './Components/Department/DepartmentTable';
 import EditDepartment from './Components/Department/EditDepartment';
 import ScheduleTable from './Components/Schedule/ScheduleTable';
 import EditCoordinator from './Components/Coordinator/EditCoordinator';
+import EditSchedule from './Components/Schedule/EditSchedule';
 
 function App() {
   return (
@@ -36,8 +37,8 @@ function App() {
 
     <Router>
      <Routes>
-        {/* STATES */}
-          <Route path="/" element={<StateTable />} />
+      
+          <Route path="/state" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
 
@@ -90,6 +91,7 @@ function App() {
           <Route path="/AddDepartment" element={<EditDepartment />} />
 
           <Route path="/ScheduleTable" element={<ScheduleTable />} />
+          <Route path="/EditSchedule/:id" element={<EditSchedule />} />
 
         </Routes>
       </Router>

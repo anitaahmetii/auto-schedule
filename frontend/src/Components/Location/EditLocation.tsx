@@ -14,7 +14,6 @@ export default function EditLocation(){
         streetNo:'',
         zipCode:'',
         phoneNumber:'',
-        userId:'',
     }as LocationModel);
 
     const navigate = useNavigate();
@@ -31,8 +30,6 @@ export default function EditLocation(){
                     streetNo: userData.streetNo,
                     zipCode: userData.streetNo,
                     phoneNumber: userData.phoneNumber,
-                    userId:userData.userId,
-
                 }as LocationModel);
             }
 

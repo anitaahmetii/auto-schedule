@@ -15,8 +15,8 @@ namespace Domain.Entities
 
         public string PhoneNumber { get; set; }
         public string ZipCode { get; set; }
-        public Guid UserId { get; set; }
-        public User User { get; set; }
+        //public Guid UserId { get; set; }
+        //public User User { get; set; }
 
         public ICollection<LocationDepartment> LocationDepartments { get; set; } = new List<LocationDepartment>();
         public ICollection<Halls> Halls { get; set; } = new List<Halls>();

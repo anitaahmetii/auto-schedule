@@ -1,4 +1,5 @@
 ﻿using Domain.Interface;
+using Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +44,13 @@ namespace API.Controllers
         {
             await scheduleService.DeleteById(id, cancellationToken);
             return Ok();
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync(ScheduleModel model, CancellationToken cancellationToken)
+        {
+            var schedule = await scheduleService.UpdateAsync(model, cancellationToken);
+
+            return Ok(schedule);
         }
     }
 }

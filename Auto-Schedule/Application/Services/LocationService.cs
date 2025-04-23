@@ -34,7 +34,7 @@ namespace Application.Services
             location.streetNo = model.StreetNo;
             location.ZipCode = model.ZipCode;
             location.PhoneNumber = model.PhoneNumber;
-            location.UserId = model.UserId;
+            //location.UserId = model.UserId;
 
             await appDbContext.SaveChangesAsync();
 

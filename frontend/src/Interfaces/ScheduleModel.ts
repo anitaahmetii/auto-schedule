@@ -3,9 +3,8 @@ export interface ScheduleModel {
     day: string;
     startTime: string;
     endTime: string;
-    courseLecture: string;
-    hall: string;
+    // hall: string;
     location: string;
     department: string;
-    group: string;
+    // group: string;
   }

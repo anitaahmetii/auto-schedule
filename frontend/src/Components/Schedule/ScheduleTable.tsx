@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ScheduleService } from '../../Services/ScheduleService';
 import { ScheduleModel } from '../../Interfaces/ScheduleModel';
 import { Button, Confirm, Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from 'semantic-ui-react';
+import { useNavigate } from 'react-router-dom';
 export default function ScheduleTable(){
   const [file, setFile] = useState<File | null>(null);
   const [schedules, setSchedules] = useState<ScheduleModel[]>([]);
@@ -45,6 +46,10 @@ export default function ScheduleTable(){
     }
   };
 
+  const navigate = useNavigate();
+  function sendToDetails(id:string | null) {
+    navigate(`/EditSchedule/${id}`);
+  }
   return (
     <div className="container mt-4">
         <h1>Schedule</h1>
@@ -61,9 +66,9 @@ export default function ScheduleTable(){
           <TableHeaderCell>End</TableHeaderCell>
           {/* <TableHeaderCell>Course</TableHeaderCell> */}
           <TableHeaderCell>Department</TableHeaderCell>
-          <TableHeaderCell>Hall</TableHeaderCell> 
+          {/* <TableHeaderCell>Hall</TableHeaderCell>  */}
           <TableHeaderCell>Location</TableHeaderCell> 
-          <TableHeaderCell>Group</TableHeaderCell> 
+          {/* <TableHeaderCell>Group</TableHeaderCell>  */}
           <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -75,14 +80,14 @@ export default function ScheduleTable(){
               <TableCell>{new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',  hour12: false })}</TableCell>
               {/* <TableCell>{item.userName}</TableCell> */}
               <TableCell>{item.department}</TableCell>
-              <TableCell>{item.hall}</TableCell>
+              {/* <TableCell>{item.hall}</TableCell> */}
               <TableCell>{item.location}</TableCell>
-              <TableCell>{item.group}</TableCell>
+              {/* <TableCell>{item.group}</TableCell> */}
               <TableCell>
                 <Button
-                //   type="button"
-                //   className="btn ui green basic button"
-                //   onClick={() => sendToDetails(item.id!)}
+                  type="button"
+                className="btn ui green basic button"
+               onClick={() => sendToDetails(item.id!)}
                 >
                   Edit
                 </Button>

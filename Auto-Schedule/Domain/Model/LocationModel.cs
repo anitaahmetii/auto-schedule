@@ -15,6 +15,6 @@ namespace Domain.Model
         public string StreetNo { get; set; }
         public string ZipCode { get; set; }
         public string PhoneNumber { get; set; }
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
     }
 }

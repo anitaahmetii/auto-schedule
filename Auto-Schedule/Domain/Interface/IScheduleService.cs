@@ -8,5 +8,6 @@ namespace Domain.Interface
         Task<List<ScheduleModel>> GetAll(CancellationToken cancellationToken);
         Task<ScheduleModel> GetById(Guid Id, CancellationToken cancellationToken);
         Task DeleteById(Guid Id, CancellationToken cancellationToken);
+        Task<ScheduleModel> UpdateAsync(ScheduleModel model, CancellationToken cancellationToken);
     }
 }

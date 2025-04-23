@@ -34,7 +34,7 @@ namespace Application.Services
             }
             hall.Name = model.Name;
             hall.Capacity = model.Capacity;
-            hall.UserId = model.UserId;
+            //hall.UserId = model.UserId;
             hall.LocationId = model.LocationId;
 
             await appDbContext.SaveChangesAsync(cancellationToken);

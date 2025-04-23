@@ -17,10 +17,10 @@ namespace Infrastructure.Configuration
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => x.PhoneNumber).IsUnique();
 
-            builder.HasOne<User>(x => x.User)
-               .WithMany(x => x.Locations)
-               .HasForeignKey(x => x.UserId)
-               .OnDelete(DeleteBehavior.NoAction);
+            //builder.HasOne<User>(x => x.User)
+            //   .WithMany(x => x.Locations)
+            //   .HasForeignKey(x => x.UserId)
+            //   .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

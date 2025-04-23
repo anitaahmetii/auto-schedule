@@ -15,7 +15,7 @@ export default function EditHall(){
         id: id!,
         name: '',
         capacity: null,
-        userId:'',
+        // userId:'',
         locationId:'',
     } as HallModel);
 
@@ -31,7 +31,7 @@ export default function EditHall(){
                     id: userData.id,
                     name: userData.name,
                     capacity: userData.capacity,
-                    userId: userData.userId,
+                    // userId: userData.userId,
                     locationId: userData.locationId,
                 } as HallModel);
             }
@@ -62,7 +62,7 @@ export default function EditHall(){
                 id: values.id!,
                 name: values.name,
                 capacity: values.capacity,
-                userId:values.userId,
+                // userId:values.userId,
                 locationId:values.locationId,
             } as HallModel;
 
