@@ -16,7 +16,7 @@ namespace Domain.Entities
         public Guid CourseLectureId { get; set; }
         public CourseLectures CourseLectures { get; set; }
 
-        public Guid HallsId { get; set; }
+        public Guid HallId { get; set; }
         public Halls Halls { get; set; }
         public Guid LocationId { get; set; }
         public Location Location { get; set; }

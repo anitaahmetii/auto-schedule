@@ -1,0 +1,27 @@
+import axios from "axios";
+import { DepartmentModel } from "../Interfaces/DepartmentModel";
+
+export class DepartmentService {
+    private static baseUrl = "https://localhost:7085/api/Department";
+    public static async DeleteDepartment(id: string): Promise<void> {
+      var result = await axios.delete(`${DepartmentService.baseUrl}/${id}`);
+    }
+    public static async GetAllDepartments(): Promise<DepartmentModel[]> {
+      const result = await axios.get(DepartmentService.baseUrl);
+      return result.data;
+    }
+    public static async GetDepartmentDetails(id: string): Promise<DepartmentModel> {
+        const result = await axios.get(`${DepartmentService.baseUrl}/${id}`);
+        return result.data;
+    }
+   public static async EditOrAddDepartment(model: DepartmentModel): Promise<void> {
+    const result = await axios.post(`${DepartmentService.baseUrl}`, model);
+  }
+
+  public static async SearchDepartments(searchParams: string): Promise<DepartmentModel[]> {
+    const result = await axios.get(`${DepartmentService.baseUrl}/search`, {
+        params: {searchParams}
+    });
+    return result.data;
+  }
+}

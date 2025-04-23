@@ -28,7 +28,7 @@ namespace Infrastructure.Configuration
 
             builder.HasOne<Halls>(x => x.Halls)
                .WithMany(x => x.Schedules)
-               .HasForeignKey(x => x.HallsId)
+               .HasForeignKey(x => x.HallId)
                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne<Department>(x => x.Department)

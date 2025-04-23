@@ -69,6 +69,9 @@ builder.Services.AddScoped<IScheduleTypeService, ScheduleTypeService>();
 builder.Services.AddScoped<IHallService, HallService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<ICoordinatorService, CoordinatorService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 {

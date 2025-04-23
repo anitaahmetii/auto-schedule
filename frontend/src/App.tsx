@@ -24,6 +24,11 @@ import EditHall from './Components/Hall/EditHall';
 import HallTable from './Components/Hall/HallTable';
 import ReceptionistTable from './Components/Receptionist/ReceptionistTable';
 import EditReceptionist from './Components/Receptionist/EditReceptionist';
+import CoordinatorTable from './Components/Coordinator/CoordinatorTable';
+import DepartmentTable from './Components/Department/DepartmentTable';
+import EditDepartment from './Components/Department/EditDepartment';
+import ScheduleTable from './Components/Schedule/ScheduleTable';
+import EditCoordinator from './Components/Coordinator/EditCoordinator';
 
 function App() {
   return (
@@ -44,27 +49,22 @@ function App() {
           <Route path="/EditLectures/:id" element={<EditLectures />} />
           <Route path="/AddLectures" element={<EditLectures />} />
 
-          {/* SCHEDULE TYPES */}
           <Route path="/scheduleType" element={<ScheduleTypeTable />} />
           <Route path="/EditScheduleType/:id" element={<EditScheduleType />} />
           <Route path="/AddScheduleType" element={<EditScheduleType />} />
 
-          {/* USERS */}
           <Route path="/user" element={<UserTable />} />
           <Route path="/EditUser/:id" element={<EditUser />} />
           <Route path="/AddUser" element={<EditUser />} />
 
-          {/* REPORTS */}
           <Route path="/reports" element={<ReportTable />} />
           <Route path="/EditReport/:id" element={<EditReport />} />
           <Route path="/AddReport" element={<EditReport />} />
 
-          {/* GROUPS */}
           <Route path='/Group' element={<GroupTable />} />
           <Route path="/AddGroup" element={<AddGroup />} />
           <Route path='/EditGroup/:id' element={<EditGroup />} />
 
-          {/* COURSES */}
           <Route path='/Course' element={<CourseTable />} />
           <Route path="/AddCourse" element={<AddCourse />} />
           <Route path='/EditCourse/:id' element={<EditCourse />} />
@@ -76,10 +76,21 @@ function App() {
           <Route path="/location" element={<LocationTable />} />
           <Route path="/EditLocation/:id" element={<EditLocation />} />
           <Route path="/AddLocation" element={<EditLocation />} />
-
+          
           <Route path="/receptionist" element={<ReceptionistTable />} />
           <Route path="/EditReceptionist/:id" element={<EditReceptionist />} />
           <Route path="/AddReceptionist" element={<EditReceptionist />} />
+
+          <Route path="/CoordinatorTable" element={<CoordinatorTable />} />
+          <Route path="/EditCoordinator/:id" element={<EditCoordinator />} />
+          <Route path="/AddCoordinator" element={<EditCoordinator />} />
+
+          <Route path="/DepartmentTable" element={<DepartmentTable />} />
+          <Route path="/EditDepartment/:id" element={<EditDepartment />} />
+          <Route path="/AddDepartment" element={<EditDepartment />} />
+
+          <Route path="/ScheduleTable" element={<ScheduleTable />} />
+
         </Routes>
       </Router>
      </>
