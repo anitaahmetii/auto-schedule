@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { UserService } from "../../Services/UserService";
 import { UserModel } from "../../Interfaces/UserModel";
+import Header from "../Header";
 
 export default function UsersTable() {
   const [users, setUsers] = useState<UserModel[]>([]);
@@ -55,8 +56,9 @@ export default function UsersTable() {
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Username</TableHeaderCell>
+            <TableHeaderCell>LastName</TableHeaderCell>
             <TableHeaderCell>Email</TableHeaderCell>
-            <TableHeaderCell>Phone</TableHeaderCell>
+            <TableHeaderCell>Role</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -64,8 +66,9 @@ export default function UsersTable() {
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.userName}</TableCell>
+              <TableCell>{user.lastName}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phoneNumber}</TableCell>
+              <TableCell>{user.role}</TableCell>
               <TableCell>
                 <Button
                   className="ui green basic button"

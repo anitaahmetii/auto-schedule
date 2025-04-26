@@ -30,6 +30,8 @@ import EditDepartment from './Components/Department/EditDepartment';
 import ScheduleTable from './Components/Schedule/ScheduleTable';
 import EditCoordinator from './Components/Coordinator/EditCoordinator';
 import EditSchedule from './Components/Schedule/EditSchedule';
+import Login from './Components/Login';
+import Header from './Components/Header';
 
 function App() {
   return (
@@ -37,7 +39,8 @@ function App() {
 
     <Router>
      <Routes>
-      
+          <Route path="/Header" element={<Header/>}/>
+          <Route path="/" element={<Login/>}/>
           <Route path="/state" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
@@ -54,7 +57,7 @@ function App() {
           <Route path="/EditScheduleType/:id" element={<EditScheduleType />} />
           <Route path="/AddScheduleType" element={<EditScheduleType />} />
 
-          <Route path="/user" element={<UserTable />} />
+          <Route path="/UserTable" element={<UserTable />} />
           <Route path="/EditUser/:id" element={<EditUser />} />
           <Route path="/AddUser" element={<EditUser />} />
 

@@ -18,14 +18,14 @@ namespace Application.Mappings
                .ForMember(x => x.Id, y => y.MapFrom(x => x.Id))
                .ForMember(x => x.UserName, y => y.MapFrom(x => x.UserName))
                .ForMember(x => x.Email, y => y.MapFrom(x => x.Email))
-               .ForMember(x => x.PhoneNumber, y => y.MapFrom(x => x.PhoneNumber))
+               .ForMember(x => x.LastName, y => y.MapFrom(x => x.LastName))
                .ForMember(x => x.Password, y => y.Ignore());  // Password duhet të menaxhohet në mënyrë të veçantë
 
             CreateMap<UserModel, User>()
                 .ForMember(x => x.Id, y => y.MapFrom(x => x.Id))
                 .ForMember(x => x.UserName, y => y.MapFrom(x => x.UserName))
                 .ForMember(x => x.Email, y => y.MapFrom(x => x.Email))
-                .ForMember(x => x.PhoneNumber, y => y.MapFrom(x => x.PhoneNumber))
+                .ForMember(x => x.LastName, y => y.MapFrom(x => x.LastName))
                 .ForMember(x => x.PasswordHash, y => y.Ignore());
         }
     }

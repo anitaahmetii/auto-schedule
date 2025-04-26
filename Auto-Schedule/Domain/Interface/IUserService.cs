@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,10 @@ namespace Domain.Interface
 {
     public interface IUserService
     {
-        public Task<List<UserModel>> GetAll(CancellationToken cancellationToken);
-        public Task<UserModel> GetById(Guid Id, CancellationToken cancellationToken);
-        public Task<UserModel> CreateOrUpdate(UserModel model, CancellationToken cancellationToken);
-        public Task DeleteById(Guid Id, CancellationToken cancellationToken);
+        Task DeleteUser(Guid userId, CancellationToken cancellationToken);
+        Task<UserModel> GetUserById(Guid userId, CancellationToken cancellationToken);
+        Task<List<UserModel>> GetAllUsersAsync(CancellationToken cancellationToken);
+        Task<AuthenticationModel> LoginAsync(LoginModel loginModel, CancellationToken cancellationToken);
+        Task<UserModel> AddOrEditUserAsync(UserModel model, CancellationToken cancellationToken);
     }
 }

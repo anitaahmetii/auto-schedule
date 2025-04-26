@@ -9,6 +9,7 @@ namespace Domain.Entities
 {
     public class User: IdentityUser<Guid>
     {
+        public string LastName { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public ICollection<Group> Groups { get; set; } = new List<Group>();
         public ICollection<Course> Courses { get; set; } = new List<Course>();
