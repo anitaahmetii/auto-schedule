@@ -32,7 +32,7 @@ namespace Application.Services
             {
                 scheduleType = new ScheduleType
                 {
-                    scheduleTypes = model.scheduleTypes,  // Emri i fushës është i saktë
+                    scheduleTypes = model.ScheduleTypes,  // Emri i fushës është i saktë
                     UserId = model.UserId
                 };
 
@@ -49,7 +49,7 @@ namespace Application.Services
                 if (scheduleType != null)
                 {
                     // Përditëso fushat për ScheduleType ekzistues
-                    scheduleType.scheduleTypes = model.scheduleTypes;
+                    scheduleType.scheduleTypes = model.ScheduleTypes;
                     scheduleType.UserId = model.UserId;
                 }
                 else

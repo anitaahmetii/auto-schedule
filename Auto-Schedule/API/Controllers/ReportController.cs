@@ -20,12 +20,7 @@ namespace API.Controllers
             var model = await service.GetAll(cancellationToken);
             return Ok(model);
         }
-        [HttpGet("users")]
-        public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
-        {
-            var users = await service.GetUsers(cancellationToken);
-            return Ok(users);
-        }
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {

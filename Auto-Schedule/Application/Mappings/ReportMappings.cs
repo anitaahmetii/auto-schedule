@@ -19,8 +19,7 @@ namespace Application.Mappings
                  .ForMember(x => x.Comment, y => y.MapFrom(x => x.Comment))
                  .ForMember(x => x.DateTime, y => y.MapFrom(x => x.DateTime))
                  .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId))
-                 .ForMember(x => x.ScheduleId, y => y.MapFrom(x => x.ScheduleId))
-                 .ForMember(x => x.UserName, y => y.MapFrom(x => x.User != null ? x.User.UserName : null));
+                 .ForMember(x => x.ScheduleId, y => y.MapFrom(x => x.ScheduleId));
 
             CreateMap<ReportModel, Report>()
                 .ForMember(x => x.Id, y => y.MapFrom(x => x.Id))

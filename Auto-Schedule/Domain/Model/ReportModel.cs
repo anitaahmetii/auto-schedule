@@ -14,8 +14,7 @@ namespace Domain.Model
         public string Comment { get; set; }
         public DateTime DateTime { get; set; }
 
-        public Guid? UserId { get; set; }
-        public string? UserName { get; set; }
+        public Guid UserId { get; set; }
 
         public Guid? ScheduleId { get; set; }
     }

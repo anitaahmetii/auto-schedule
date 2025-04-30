@@ -13,6 +13,5 @@ namespace Domain.Interface
         public Task<ReportModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<ReportModel> CreateOrUpdate(ReportModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
-         public Task<List<UserModel>> GetUsers(CancellationToken cancellationToken);
     }
 }

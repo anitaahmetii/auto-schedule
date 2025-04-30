@@ -16,13 +16,13 @@ namespace Application.Mappings
             // Mapping nga ScheduleType në ScheduleTypeModel
             CreateMap<ScheduleType, ScheduleTypeModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.scheduleTypes, opt => opt.MapFrom(src => src.scheduleTypes)) // Përdorim ScheduleTypeEnum nga ScheduleType
+                .ForMember(dest => dest.ScheduleTypes, opt => opt.MapFrom(src => src.scheduleTypes)) // Përdorim ScheduleTypeEnum nga ScheduleType
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
 
             // Mapping nga ScheduleTypeModel në ScheduleType
             CreateMap<ScheduleTypeModel, ScheduleType>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.scheduleTypes, opt => opt.MapFrom(src => src.scheduleTypes)) // Përdorim scheduleTypes nga ScheduleTypeModel
+                .ForMember(dest => dest.scheduleTypes, opt => opt.MapFrom(src => src.ScheduleTypes)) // Përdorim scheduleTypes nga ScheduleTypeModel
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
         }
     }

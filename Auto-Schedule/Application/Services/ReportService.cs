@@ -23,58 +23,40 @@ namespace Application.Services
             this.mapper = mapper;
         }
 
-        // Funksioni për të marrë të gjithë përdoruesit
-        public async Task<List<UserModel>> GetUsers(CancellationToken cancellationToken)
-        {
-            var users = await appDbContext.Users.ToListAsync(cancellationToken);
-            return mapper.Map<List<UserModel>>(users);
-        }
-
         public async Task<ReportModel> CreateOrUpdate(ReportModel model, CancellationToken cancellationToken)
         {
-            Report report;
+            Report report = new Report();
 
-            if (model.Id == null || model.Id == Guid.Empty)
+            if (model.Id == null)
             {
-                report = mapper.Map<Report>(model);
-                report.Id = Guid.NewGuid();
-
-                // Sigurohu që UserId është i vendosur kur krijohet një raport i ri
-                if (model.UserId == Guid.Empty)
-                {
-                    throw new Exception("UserId cannot be empty");
-                }
-
                 await appDbContext.Reports.AddAsync(report, cancellationToken);
             }
             else
             {
                 report = await appDbContext.Reports
-                    .FirstOrDefaultAsync(x => x.Id == model.Id, cancellationToken);
-
-                if (report == null)
-                    throw new Exception("Report not found");
-
-                mapper.Map(model, report); // përditëson automatikisht fushat
+                    .Where(x => x.Id == model.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
             }
+
+            // Trajtimi i 'ScheduleId' që mund të jetë null
+            report.Absence = model.Absence;
+            report.Comment = model.Comment;
+            report.DateTime = DateTime.SpecifyKind(model.DateTime, DateTimeKind.Utc);
+            report.UserId = model.UserId;
+
+            // Përdorim Guid.Empty nëse ScheduleId është null
+            report.ScheduleId = model.ScheduleId ?? Guid.Empty;
 
             await appDbContext.SaveChangesAsync(cancellationToken);
 
-            // Rikthe entity-n bashkë me User që të mbushet UserName
-            var updatedReport = await appDbContext.Reports
-                .Include(x => x.User)
-                .FirstOrDefaultAsync(x => x.Id == report.Id, cancellationToken);
-
-            return mapper.Map<ReportModel>(updatedReport);
+            return await GetById(report.Id, cancellationToken);
         }
 
-        public async Task DeleteById(Guid Id, CancellationToken cancellationToken)
+        public async Task DeleteById(Guid id, CancellationToken cancellationToken)
         {
             var report = await appDbContext.Reports
-                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
-
-            if (report == null)
-                throw new Exception("Report not found");
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
 
             appDbContext.Reports.Remove(report);
             await appDbContext.SaveChangesAsync(cancellationToken);
@@ -83,22 +65,22 @@ namespace Application.Services
         public async Task<List<ReportModel>> GetAll(CancellationToken cancellationToken)
         {
             var reports = await appDbContext.Reports
-                .Include(x => x.User)
                 .ToListAsync(cancellationToken);
 
-            return mapper.Map<List<ReportModel>>(reports);
+            var model = mapper.Map<List<ReportModel>>(reports);
+
+            return model;
         }
 
-        public async Task<ReportModel> GetById(Guid Id, CancellationToken cancellationToken)
+        public async Task<ReportModel> GetById(Guid id, CancellationToken cancellationToken)
         {
             var report = await appDbContext.Reports
-                .Include(x => x.User)
-                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            if (report == null)
-                throw new Exception("Report not found");
+            var model = mapper.Map<ReportModel>(report);
 
-            return mapper.Map<ReportModel>(report);
+            return model;
         }
     }
 }
