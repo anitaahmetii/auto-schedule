@@ -54,4 +54,8 @@ export class UserService {
   public static async EditOrAddUser(model: UserModel): Promise<void> {
     await axios.post(UserService.baseUrl, model);
   }
+  public static async GetSelectList(): Promise<UserModel[]> {
+    const result = await axios.get(`${this.baseUrl}`);
+    return result.data;
+  }
 }

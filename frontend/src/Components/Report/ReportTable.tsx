@@ -1,23 +1,40 @@
 import { Fragment, useEffect, useState } from "react";
 import { ReportModel } from "../../Interfaces/ReportModel";
-import { Button, Modal, Table, Select } from "semantic-ui-react";
+import { UserModel } from "../../Interfaces/UserModel";
+import { Button, Modal, Table, Input } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
 import { ReportService } from "../../Services/ReportService";
+import { UserService } from "../../Services/UserService"; 
 
 export default function ReportTable() {
     const navigate = useNavigate();
 
     const [reports, setReports] = useState<ReportModel[]>([]);
+    const [users, setUsers] = useState<UserModel[]>([]); 
+    const [searchUser, setSearchUser] = useState<string>(""); // ← shtuar për kërkimin e përdoruesve
+    const [filteredReports, setFilteredReports] = useState<ReportModel[]>(reports); // ← shtuar për raportet e filtruar
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
     const [deleteReportId, setDeletedReportId] = useState<string>("");
 
     useEffect(() => {
         const fetchData = async () => {
-            const result = await ReportService.GetAllReports();
-            setReports(result);
+            const reportsData = await ReportService.GetAllReports();
+            const usersData = await UserService.GetSelectList(); 
+            setReports(reportsData);
+            setUsers(usersData);
+            setFilteredReports(reportsData); // fillimisht filtrimi i të gjitha raporteve
         };
         fetchData();
     }, []);
+
+    // Kërkimi i përdoruesit
+    useEffect(() => {
+        const filtered = reports.filter((report) => {
+            const user = users.find((user) => user.id === report.userId);
+            return user?.userName.toLowerCase().includes(searchUser.toLowerCase()) || searchUser === "";
+        });
+        setFilteredReports(filtered);
+    }, [searchUser, reports, users]);
 
     function addReport() {
         navigate("/AddReport");
@@ -35,6 +52,7 @@ export default function ReportTable() {
     async function confirmToDelete(id: string) {
         await ReportService.DeleteReport(id);
         setReports(reports.filter((report) => report.id !== id));
+        setFilteredReports(filteredReports.filter((report) => report.id !== id));
         setOpenConfirm(false);
         setDeletedReportId("");
     }
@@ -43,6 +61,12 @@ export default function ReportTable() {
         <Fragment>
             <div className="d-flex align-items-center mt-4 mb-3 px-4">
                 <h1 style={{ marginLeft: "30px" }}>Reports</h1>
+                <Input
+                    placeholder="Search by user..."
+                    style={{ marginLeft: "20px", width: "250px" }}
+                    value={searchUser}
+                    onChange={(e) => setSearchUser(e.target.value)} // Kërkimi për përdorues
+                />
                 <Button
                     type="button"
                     style={{ color: "white" }}
@@ -58,44 +82,48 @@ export default function ReportTable() {
                 <Table className="ui olive single line table">
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Report</Table.HeaderCell>
+                            <Table.HeaderCell>Comment</Table.HeaderCell>
+                            <Table.HeaderCell>Absence</Table.HeaderCell>
+                            <Table.HeaderCell>User</Table.HeaderCell>
+                            <Table.HeaderCell>Date</Table.HeaderCell>
                             <Table.HeaderCell>Actions</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {reports.map((report) => (
-                            <Table.Row key={report.id}>
-                                <Table.Cell>
-                                    <Select
-                                        options={[
-                                            {
-                                                key: report.id,
-                                                text: report.comment,
-                                                value: report.id,
-                                            },
-                                        ]}
-                                        value={report.id}
-                                        onChange={() => editReport(report.id)}
-                                    />
-                                </Table.Cell>
-                                <Table.Cell>
-                                    <Button
-                                        color="olive"
-                                        className="mr-2"
-                                        onClick={() => editReport(report.id!)}
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        color="red"
-                                        className="mr-2"
-                                        onClick={() => deleteReport(report.id!)}
-                                    >
-                                        Del
-                                    </Button>
-                                </Table.Cell>
-                            </Table.Row>
-                        ))}
+                        {filteredReports.map((report) => {
+                            const user = users.find((u) => u.id === report.userId);
+                            return (
+                                <Table.Row key={report.id}>
+                                    <Table.Cell>{report.comment}</Table.Cell>
+                                    <Table.Cell>
+                                        {report.absence ? (
+                                            <span style={{ color: "red" }}>Absent</span>
+                                        ) : (
+                                            <span style={{ color: "green" }}>Present</span>
+                                        )}
+                                    </Table.Cell>
+                                    <Table.Cell>{user?.userName || "Unknown"}</Table.Cell>
+                                    <Table.Cell>{new Date(report.dateTime).toLocaleString()}</Table.Cell>
+                                    <Table.Cell>
+                                        <Button
+                                            color="olive"
+                                            className="mr-2"
+                                            onClick={() => editReport(report.id!)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            color="red"
+                                            className="mr-2"
+                                            onClick={() => deleteReport(report.id!)}
+                                        >
+                                            Del
+                                        </Button>
+                                    </Table.Cell>
+                                </Table.Row>
+                            );
+                        })}
+
                         <Modal
                             open={openConfirm}
                             size="mini"

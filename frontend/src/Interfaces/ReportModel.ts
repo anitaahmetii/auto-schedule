@@ -4,6 +4,6 @@ export interface ReportModel {
     comment: string;
     dateTime: string; // ose Date, nëse e konverton
     userId: string;
-    scheduleId: string;
-    userName?: string;
+    scheduleId: string| null ;
+    
   }

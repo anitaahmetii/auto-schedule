@@ -24,7 +24,7 @@ export default function CreditCardsTable() {
     const fetchData = async () => {
       const result = await StateService.GetAllStates();
       setStates(result);
-    };
+    }
     fetchData();
   }, []);
 

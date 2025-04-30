@@ -1,202 +1,211 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Segment } from 'semantic-ui-react';
 import { ReportModel } from '../../Interfaces/ReportModel';
-import { ReportService } from '../../Services/ReportService';
+import { SelectListItem } from '../../Interfaces/SelectListItem';
+import { UserService } from '../../Services/UserService';
 
 export default function EditReport() {
   const { id } = useParams<{ id: string }>();
   const [values, setValues] = useState<ReportModel>({
-    id: id!,
+    id: id ?? '',
     absence: 0,
     comment: '',
     dateTime: '',
-    userId: '', // Default to empty string
-    scheduleId: '', // Use ScheduleTypeId instead of scheduleId
+    userId: '',
+    scheduleId: '',
   });
 
-  const [users, setUsers] = useState<any[]>([]); // Users dropdown options
-  const [scheduleTypes, setScheduleTypes] = useState<any[]>([]); // ScheduleTypes dropdown options
-
+  const [userList, setUserList] = useState<SelectListItem[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>(false); // Add this success state
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        // Fetch the report data
-        const reports = await ReportService.GetAllReports();
-        const report = reports.find((r) => r.id === id);
-
-        if (report) {
-          setValues({
-            id: report.id,
-            absence: report.absence,
-            comment: report.comment,
-            dateTime: report.dateTime,
-            userId: report.userId || '',  // Set userId if available
-            scheduleId: report.scheduleId || '', // Set scheduleTypeId if available
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching report:', error);
+      if (!id) {
+        setErrorMessage('Report ID is not available.');
+        return;
       }
 
-      // Fetch users and scheduleTypes for dropdown
       try {
-        const userResponse = await axios.get('https://localhost:7085/api/User');
-        setUsers(userResponse.data);
+        const response = await axios.get(`https://localhost:7085/api/Report/${id}`);
+        const data: ReportModel = response.data;
 
-        const scheduleTypeResponse = await axios.get('https://localhost:7085/api/ScheduleType');
-        setScheduleTypes(scheduleTypeResponse.data);
+        setValues({
+          id: data.id,
+          absence: data.absence,
+          comment: data.comment,
+          dateTime: data.dateTime,
+          userId: data.userId,
+          scheduleId: data.scheduleId,
+        });
       } catch (error) {
-        console.error('Error fetching users or scheduleTypes:', error);
+        setErrorMessage('Error fetching report data.');
       }
     };
 
-    fetchData();
+    if (id) fetchData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchUserList = async () => {
+      try {
+        const response = await UserService.GetSelectList();
+  
+        const filteredList = response
+          .filter((item) => item.role === 2) // vetëm recepsionistët
+          .map((item, i) => ({
+            key: i,
+            value: item.id,
+            text: item.userName,
+          }) as SelectListItem);
+  
+        setUserList(filteredList);
+      } catch (error) {
+        setErrorMessage('Error fetching user list.');
+      }
+    };
+  
+    fetchUserList();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    const model = {
+      id: values.id || null,
+      absence: values.absence,
+      comment: values.comment,
+      dateTime: values.dateTime,
+      userId: values.userId,
+      scheduleId: values.scheduleId || null,
+    };
+  
     try {
-      const model = {
-        id: values.id!,
-        absence: values.absence,
-        comment: values.comment,
-        dateTime: values.dateTime,
-        userId: values.userId,
-        scheduleId: values.scheduleId, // Use scheduleTypeId instead of scheduleId
-      } as ReportModel;
+      await axios.post('https://localhost:7085/api/Report', model);
 
-      await ReportService.EditOrAddReport(model); // Save the report
-      navigate('/'); // Redirect to overview page
+  
+      setIsSuccess(true);
+      sendToReports();
     } catch (error) {
-      console.error('Error submitting report:', error);
+      console.error('Error saving report:', error);
+      setErrorMessage('Error saving report.');
     }
   };
+  
+  function sendToReports() {
+    navigate('/reports');
+  }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setValues({ ...values, [name]: value || '' });
+    setValues({ ...values, [name]: value });
   };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
 
   return (
     <>
       <h1 style={{ marginLeft: '15px', fontFamily: 'Georgia', color: 'black' }}>
-        {values.id != null ? 'Edit' : 'Add'} Report
+        {id ? 'Edit' : 'Add'} Report
       </h1>
       <p style={{ marginLeft: '15px', color: '#555', fontSize: '14px' }}>
-        Please fill out the form below to {values.id != null ? 'edit' : 'create'} a Report.
+        Please fill out the form below to {id ? 'edit' : 'create'} a Report.
       </p>
+      {errorMessage && <div style={{ color: 'red', marginLeft: '15px' }}>{errorMessage}</div>}
+      <Segment clearing style={{ margin: '30px 30px 0 10px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)', border: '1px solid rgb(15 179 126 / 87%)' }}>
+        <form className="ui form" style={{ backgroundColor: '#f9f9f9', padding: '20px' }} onSubmit={handleSubmit} autoComplete="off">
+          <div className="form-group">
+            <label>Absence</label>
+            <input
+              style={{ padding: '5px', margin: '5px' }}
+              type="number"
+              placeholder="Absence count"
+              className="form-control"
+              name="absence"
+              value={values.absence}
+              onChange={handleChange}
+            />
+          </div>
 
-      <form
-        className="ui form"
-        style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '8px' }}
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
-        <div className="form-group">
-          <label>Absence</label>
-          <input
-            type="number"
-            placeholder="Absence"
-            className="form-control"
-            name="absence"
-            value={values.absence}
-            onChange={handleChange}
-            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
-          />
-        </div>
+          <div className="form-group">
+            <label>Comment</label>
+            <textarea
+              style={{ padding: '5px', margin: '5px' }}
+              placeholder="Enter comment"
+              className="form-control"
+              name="comment"
+              value={values.comment}
+              onChange={handleChange}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Comment</label>
-          <input
-            type="text"
-            placeholder="Comment"
-            className="form-control"
-            name="comment"
-            value={values.comment}
-            onChange={handleChange}
-            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
-          />
-        </div>
+          <div className="form-group">
+            <label>Date and Time</label>
+            <input
+  type="datetime-local"
+  className="form-control"
+  name="dateTime"
+  value={values.dateTime ? values.dateTime.slice(0, 16) : ''} // formaton si duhet
+  onChange={handleChange}
+/>
+          </div>
 
-        <div className="form-group">
-          <label>Date/Time</label>
-          <input
-            type="datetime-local"
-            className="form-control"
-            name="dateTime"
-            value={values.dateTime}
-            onChange={handleChange}
-            style={{ padding: '10px', marginBottom: '10px', width: '100%' }}
-          />
-        </div>
+          <div className="col-md-6-w-100%">
+            <label>User</label>
+            <select
+              className="form-control"
+              name="userId"
+              id="userId"
+              value={values.userId || ''}
+              onChange={handleSelectChange}
+              style={{ marginBottom: '15px' }}
+            >
+              <option value="" disabled>Select User</option>
+              {userList.map((x) => (
+                <option key={x.key} value={x.value!}>
+                  {x.text}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label>User</label>
-          <select
-            name="userId"
-            value={values.userId}
-            onChange={handleChange}
-            required
-            style={{
-              padding: '10px',
-              marginBottom: '10px',
-              width: '100%',
-              borderRadius: '4px',
-            }}
-          >
-            <option value="">Select User</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div>
+            <label style={{ display: 'block', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>
+              Schedule ID
+            </label>
+            <input
+              type="text"
+              name="scheduleId"
+              value={values.scheduleId || ''}
+              onChange={handleChange}
+              placeholder="Enter Schedule ID"
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '4px',
+                border: '1px solid #ddd',
+                marginBottom: '15px',
+              }}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Schedule Type</label>
-          <select
-            name="scheduleId"  // Këtu ndryshojmë emrin në "scheduleId"
-            value={values.scheduleId}  // Këtu lidhim vlerën me gjendjen e komponentit (scheduleId)
-            onChange={handleChange}  // Kujdes që të ruhet vlera e re në gjendje
-            required
-            style={{
-              padding: '10px',
-              marginBottom: '10px',
-              width: '100%',
-              borderRadius: '4px',
-            }}
-          >
-            <option value="">Select Schedule Type</option>
-            {scheduleTypes.map((scheduleType) => (
-              <option key={scheduleType.id} value={scheduleType.id}>
-                {scheduleType.name}  // Emri i schedule type që do të shfaqet
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="btn btn-secondary"
-            style={{ width: '120px' }}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-success"
-            style={{ width: '120px' }}
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+            <button type="button" onClick={() => navigate('/reports')} className="ui blue basic button" style={{ backgroundColor: 'rgb(32 76 60)', color: '#fff' }}>
+              Cancel
+            </button>
+            <button type="submit" className="ui green button" style={{ backgroundColor: 'rgb(32 76 60)', color: '#fff' }}>
+              Submit
+            </button>
+          </div>
+        </form>
+      </Segment>
     </>
   );
 }

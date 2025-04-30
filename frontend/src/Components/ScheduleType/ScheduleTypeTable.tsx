@@ -10,11 +10,24 @@ import {
   Confirm,
 } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import { ScheduleTypeModel } from "../../Interfaces/ScheduleTypeModel"; // Importi i duhur për ScheduleTypeModel
-import { ScheduleTypeService } from "../../Services/ScheduleTypeService"; // Shërbimi për ScheduleTypes
+import { ScheduleTypeModel } from "../../Interfaces/ScheduleTypeModel";
+import { ScheduleTypeService } from "../../Services/ScheduleTypeService";
+import { UserService } from "../../Services/UserService"; // Shërbimi i përdoruesve
+
+const ScheduleTypesMap: { [key: number]: string } = {
+  1: "Morning",
+  2: "Afternoon",
+  3: "Hybrid",
+};
+
+const getScheduleTypeName = (scheduleTypeNumber: number | null) => {
+  if (scheduleTypeNumber === null) return "Unknown";
+  return ScheduleTypesMap[scheduleTypeNumber] || "Unknown";
+};
 
 export default function ScheduleTypesTable() {
-  const [scheduleTypes, setScheduleTypes] = useState<ScheduleTypeModel[]>([]); // Ndryshimi nga ScheduleTypes[] në ScheduleTypeModel[]
+  const [scheduleTypes, setScheduleTypes] = useState<ScheduleTypeModel[]>([]);
+  const [users, setUsers] = useState<{ [key: string]: string }>({}); // Hapi: mbajmë një objekt për lidhjen userId -> userName
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [deleteScheduleTypeId, setDeleteScheduleTypeId] = useState<string>("");
 
@@ -22,11 +35,25 @@ export default function ScheduleTypesTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await ScheduleTypeService.GetAllScheduleTypes(); // Sigurohu që shërbimi kthen një listë me ScheduleTypeModel[]
+      const result = await ScheduleTypeService.GetAllScheduleTypes();
+      const usersData = await UserService.GetAllUsers(); // Merr përdoruesit
+
+      // Krijo një hartë të ID-ve të përdoruesve me emrat e tyre
+      const usersMap: { [key: string]: string } = {};
+      usersData.forEach((user: any) => {
+        usersMap[user.id] = user.userName; // Supozojmë që user ka `id` dhe `userName`
+      });
+
       setScheduleTypes(result);
+      setUsers(usersMap); // Ruaj hartën
     };
+
     fetchData();
   }, []);
+
+  const getUserName = (userId: string) => {
+    return users[userId] || "Unknown"; // Kërko emrin e përdoruesit nga harta
+  };
 
   function deleteScheduleType(id: string) {
     setOpenConfirm(true);
@@ -34,7 +61,7 @@ export default function ScheduleTypesTable() {
   }
 
   async function confirmedDeleteScheduleType(id: string) {
-    const result = await ScheduleTypeService.DeleteScheduleType(id); // Sigurohu që kjo funksionon siç duhet
+    const result = await ScheduleTypeService.DeleteScheduleType(id);
     setScheduleTypes(scheduleTypes.filter((type) => type.id !== id));
     setOpenConfirm(false);
     setDeleteScheduleTypeId("");
@@ -65,6 +92,7 @@ export default function ScheduleTypesTable() {
         <TableHeader>
           <TableRow>
             <TableHeaderCell>Schedule Type</TableHeaderCell>
+            <TableHeaderCell>User</TableHeaderCell> {/* Kolona për emrin e përdoruesit */}
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -72,7 +100,8 @@ export default function ScheduleTypesTable() {
         <TableBody>
           {scheduleTypes.map((item) => (
             <TableRow key={item.id}>
-              <TableCell>{item.scheduleTypes}</TableCell> {/* Sigurohu që scheduleTypes është i definuar si duhet */}
+              <TableCell>{getScheduleTypeName(item.scheduleTypes)}</TableCell>
+              <TableCell>{getUserName(item.userId)}</TableCell> {/* Emri i përdoruesit që ka krijuar këtë ScheduleType */}
               <TableCell>
                 <Button
                   type="button"
