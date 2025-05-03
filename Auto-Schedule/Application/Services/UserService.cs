@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,13 +23,15 @@ namespace Application.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> userManager;
+        private readonly RoleManager<Role> roleManager;
         private readonly AppDbContext appDbContext;
         private readonly IMapper mapper;
         private readonly IConfiguration _configuration;
 
-        public UserService(UserManager<User> userManager,AppDbContext appDbContext ,IMapper mapper,IConfiguration configuration)
+        public UserService(UserManager<User> userManager,RoleManager<Role> roleManager,AppDbContext appDbContext ,IMapper mapper,IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.appDbContext = appDbContext;
             this.mapper = mapper;
             _configuration = configuration;
@@ -48,6 +51,7 @@ namespace Application.Services
             }
             var authClaims = new List<Claim>()
             {
+                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                  new Claim(ClaimTypes.Name,user.UserName),
                  new Claim(ClaimTypes.Email,user.Email),
             };
@@ -56,7 +60,7 @@ namespace Application.Services
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var authSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWTSettings:TokenKey"]));
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:TokenKey"]));
 
             var token = new JwtSecurityToken(
                 claims: authClaims,
@@ -66,12 +70,27 @@ namespace Application.Services
             IdentityModelEventSource.ShowPII = true;
 
             var userData = mapper.Map<UserModel>(user);
+            if (userRoles.Contains("Admin"))
+                userData.Role = Domain.Enum.Role.Admin;
+            else if (userRoles.Contains("Coordinator"))
+                userData.Role = Domain.Enum.Role.Coordinator;
+            else if (userRoles.Contains("Receptionist"))
+                userData.Role = Domain.Enum.Role.Receptionist;
+            else if (userRoles.Contains("Lecture"))
+                userData.Role = Domain.Enum.Role.Lecture;
+            else
+                userData.Role = Domain.Enum.Role.Student;
+
+            var refreshToken = GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(16);
+            await appDbContext.SaveChangesAsync(cancellationToken);
 
             var jwtTOken = new JwtSecurityTokenHandler().WriteToken(token);
             var response = new AuthenticationModel()
             {
                 Token = jwtTOken,
-                RefreshToken = null!,
+                RefreshToken = refreshToken,
                 ExpiresAt = token.ValidTo,
                 UserData = userData!,
                 UserRole = userRoles.FirstOrDefault()!
@@ -81,82 +100,158 @@ namespace Application.Services
             return response;
         }
 
+        public async Task<AuthenticationModel> RefreshTokenAsync(RefreshTokenRequest model)
+        {
+            var user = await appDbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == model.RefreshToken);
+
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Invalid or expired refresh token.");
+            }
+
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            var userRoles = await userManager.GetRolesAsync(user);
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:TokenKey"]));
+
+            var token = new JwtSecurityToken(
+                claims: authClaims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
+
+            var newJwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(2);
+
+            await appDbContext.SaveChangesAsync();
+
+            return new AuthenticationModel
+            {
+                Token = newJwtToken,
+                RefreshToken = newRefreshToken,
+                ExpiresAt = token.ValidTo,
+                UserData = mapper.Map<UserModel>(user),
+                UserRole = userRoles.FirstOrDefault()!
+            };
+        }
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
         public async Task<UserModel> AddOrEditUserAsync(UserModel model, CancellationToken cancellationToken)
         {
-            var user = new User();
-            // Guid? userId = authorizationManager.GetUserId();
+            User user;
 
+            // Create or update base user
             if (!model.Id.HasValue)
             {
-                user = new User
+                // Choose the correct derived type
+                user = model.Role switch
                 {
-                    UserName = model.UserName,
-                    LastName = model.LastName,
-                    Email = model.Email,
+                    Domain.Enum.Role.Receptionist => new Receptionist(),
+                    Domain.Enum.Role.Coordinator => new Coordinator(),
+                    Domain.Enum.Role.Lecture => new Lectures(),
+                    Domain.Enum.Role.Student => new Student(),
+                    _ => new User()
                 };
 
-                var result = await userManager.CreateAsync(user, model.Password);
+                user.UserName = model.UserName;
+                user.LastName = model.LastName;
+                user.Email = model.Email;
 
+                // Set derived properties
+                SetRoleSpecificFields(user, model);
+
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                 {
-                    throw new Exception();
+                    var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                    throw new Exception($"User creation failed: {errors}");
                 }
-
             }
             else
             {
-                user = await appDbContext.Users
-               .Include(x => x.UserRoles)
-               .Where(x => x.Id == model.Id.Value)
-               .FirstOrDefaultAsync(cancellationToken);
-
+                user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id, cancellationToken);
                 if (user is null)
-                {
-                    throw new Exception();
-                }
+                    throw new Exception("User not found.");
+
+                user.UserName = model.UserName;
+                user.LastName = model.LastName;
+                user.Email = model.Email;
+
+                SetRoleSpecificFields(user, model);
 
                 var roles = await userManager.GetRolesAsync(user);
                 await userManager.RemoveFromRolesAsync(user, roles);
 
-                if (model.Password != null)
+                if (!string.IsNullOrWhiteSpace(model.Password))
                 {
                     await userManager.RemovePasswordAsync(user);
-
                     await userManager.AddPasswordAsync(user, model.Password);
                 }
 
+                appDbContext.Users.Update(user);
             }
 
-            user.Email = model.Email;
-            user.LastName = model.LastName;
-            user.UserName = model.UserName;
+            var role = model.Role?.ToString();
 
+            if (!await roleManager.RoleExistsAsync(role))
+                await roleManager.CreateAsync(new Role { Name = role });
 
-            if (model.Role == Domain.Enum.Role.Admin)
-            {
-                await userManager.AddToRoleAsync(user, "Admin");
-            }
-            else if (model.Role == Domain.Enum.Role.Coordinator)
-            {
-                await userManager.AddToRoleAsync(user, "Coordinator");
-            }
-            else if (model.Role == Domain.Enum.Role.Receptionist)
-            {
-                await userManager.AddToRoleAsync(user, "Receptionist");
-            }
-            else if (model.Role == Domain.Enum.Role.Lecture)
-            {
-                await userManager.AddToRoleAsync(user, "Lecture");
-            }
-            else
-            {
-                await userManager.AddToRoleAsync(user, "Student");
-            }
+            await userManager.AddToRoleAsync(user, role);
 
             await appDbContext.SaveChangesAsync(cancellationToken);
-
             return model;
         }
+
+        private void SetRoleSpecificFields(User user, UserModel model)
+        {
+            switch (user)
+            {
+                case Coordinator coordinator:
+                    coordinator.Responsibilities = model.CoordinatorResponsibilities;
+                    coordinator.Status = model.StaffStatus;
+                    break;
+
+                case Receptionist receptionist:
+                    receptionist.Responsibilities = model.ReceptionistResponsibilities;
+                    receptionist.Status = model.StaffStatus;
+                    break;
+
+                case Lectures lecture:
+                    lecture.Status = model.StaffStatus;
+                    lecture.AcademicGrade = model.AcademicGrade;
+                    lecture.lectureType = model.LectureType!.Value;
+                    lecture.ScheduleTypeId = model.ScheduleTypeId!.Value;
+                    break;
+
+                case Student student:
+                    student.AcademicProgram = model.AcademicProgram;
+                    student.GroupId = model.GroupId!.Value;
+                    break;
+            }
+        }
+
+
+
+
 
         //public async Task<UserModel> CreateOrUpdate(UserModel model, CancellationToken cancellationToken)
         //{
@@ -236,6 +331,7 @@ namespace Application.Services
         //}
         public async Task<List<UserModel>> GetAllUsersAsync(CancellationToken cancellationToken)
         {
+            // Load all users with derived types using TPH
             var users = await appDbContext.Users.ToListAsync(cancellationToken);
             var userModels = new List<UserModel>();
 
@@ -245,21 +341,42 @@ namespace Application.Services
                 var model = mapper.Map<UserModel>(user);
 
                 if (roles.Contains("Admin"))
+                {
                     model.Role = Domain.Enum.Role.Admin;
-                else if (roles.Contains("Coordinator"))
+                }
+                else if (roles.Contains("Coordinator") && user is Coordinator coordinator)
+                {
                     model.Role = Domain.Enum.Role.Coordinator;
-                else if (roles.Contains("Receptionist"))
+                    model.CoordinatorResponsibilities = coordinator.Responsibilities;
+                    model.StaffStatus = coordinator.Status;
+                }
+                else if (roles.Contains("Receptionist") && user is Receptionist receptionist)
+                {
                     model.Role = Domain.Enum.Role.Receptionist;
-                else if (roles.Contains("Lecture"))
+                    model.ReceptionistResponsibilities = receptionist.Responsibilities;
+                    model.StaffStatus = receptionist.Status;
+                }
+                else if (roles.Contains("Lecture") && user is Lectures lecture)
+                {
                     model.Role = Domain.Enum.Role.Lecture;
-                else
+                    model.StaffStatus = lecture.Status;
+                    model.AcademicGrade = lecture.AcademicGrade;
+                    model.LectureType = lecture.lectureType;
+                    model.ScheduleTypeId = lecture.ScheduleTypeId;
+                }
+                else if (roles.Contains("Student") && user is Student student)
+                {
                     model.Role = Domain.Enum.Role.Student;
+                    model.AcademicProgram = student.AcademicProgram;
+                    model.GroupId = student.GroupId;
+                }
 
                 userModels.Add(model);
             }
 
             return userModels;
         }
+
 
         //public async Task<UserModel> GetById(Guid Id, CancellationToken cancellationToken)
         //{
@@ -276,42 +393,66 @@ namespace Application.Services
         public async Task<UserModel> GetUserById(Guid userId, CancellationToken cancellationToken)
         {
             var user = await appDbContext.Users
-                .Include(x => x.UserRoles)
-                .Where(x => x.Id == userId)
-                .FirstOrDefaultAsync(cancellationToken);
-
-
+                .FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
 
             if (user is null)
-            {
-                throw new Exception();
-            }
+                throw new Exception("User not found");
+
             var roles = await userManager.GetRolesAsync(user);
             var model = mapper.Map<UserModel>(user);
 
-            if (roles.Any(x => x == "Admin"))
+            if (roles.Contains("Admin"))
             {
                 model.Role = Domain.Enum.Role.Admin;
             }
-            else if (roles.Any(x => x == "Coordinator"))
+            else if (roles.Contains("Coordinator") && user is Coordinator coordinator)
             {
                 model.Role = Domain.Enum.Role.Coordinator;
+                model.CoordinatorResponsibilities = coordinator.Responsibilities;
+                model.StaffStatus = coordinator.Status;
             }
-            else if (roles.Any(x => x == "Receptionist"))
+            else if (roles.Contains("Receptionist") && user is Receptionist receptionist)
             {
                 model.Role = Domain.Enum.Role.Receptionist;
+                model.ReceptionistResponsibilities = receptionist.Responsibilities;
+                model.StaffStatus = receptionist.Status;
             }
-            else if (roles.Any(x => x == "Lecture"))
+            else if (roles.Contains("Lecture") && user is Lectures lecture)
             {
                 model.Role = Domain.Enum.Role.Lecture;
+                model.StaffStatus = lecture.Status;
+                model.AcademicGrade = lecture.AcademicGrade;
+                model.LectureType = lecture.lectureType;
+                model.ScheduleTypeId = lecture.ScheduleTypeId;
             }
-            else
+            else if (roles.Contains("Student") && user is Student student)
             {
                 model.Role = Domain.Enum.Role.Student;
+                model.AcademicProgram = student.AcademicProgram;
+                model.GroupId = student.GroupId;
             }
 
             return model;
-
         }
+
+        public async Task<List<UserModel>> GetAllAdminsAsync(CancellationToken cancellationToken)
+        {
+            // Get users in "Admin" role
+            var adminUsers = await userManager.GetUsersInRoleAsync("Admin");
+
+            var models = new List<UserModel>();
+
+            foreach (var user in adminUsers)
+            {
+                // Map base user to UserModel
+                var model = mapper.Map<UserModel>(user);
+                model.Role = Domain.Enum.Role.Admin;
+
+                models.Add(model);
+            }
+
+            return models;
+        }
+
     }
 }

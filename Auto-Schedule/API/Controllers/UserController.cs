@@ -37,6 +37,13 @@ namespace API.Controllers
             var model = await service.GetAllUsersAsync(cancellationToken);
             return Ok(model);
         }
+
+        [HttpGet("admins")]
+        public async Task<IActionResult> GetAllAdmins(CancellationToken cancellationToken)
+        {
+            var model = await service.GetAllAdminsAsync(cancellationToken);
+            return Ok(model);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -50,6 +57,20 @@ namespace API.Controllers
         {
             await service.DeleteUser(id, cancellationToken);
             return Ok();
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
+        {
+            try
+            {
+                var result = await service.RefreshTokenAsync(model);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
         }
     }
 }

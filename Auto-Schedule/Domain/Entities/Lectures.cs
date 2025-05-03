@@ -15,8 +15,6 @@ namespace Domain.Entities
         public Guid ScheduleTypeId { get; set; }
         public ScheduleType ScheduleType { get; set; }
 
-        public Guid UserId { get; set; }
-        public User User { get; set; }
 
         public ICollection<CourseLectures> CourseLectures { get; set; } = new List<CourseLectures>();
     }

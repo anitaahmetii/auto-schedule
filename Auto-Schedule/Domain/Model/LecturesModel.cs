@@ -14,6 +14,5 @@ namespace Domain.Model
         public string AcademicGrade { get; set; }
         public LectureType lectureType { get; set; }
         public Guid ScheduleTypeId { get; set; }
-        public Guid UserId { get; set; }
     }
 }

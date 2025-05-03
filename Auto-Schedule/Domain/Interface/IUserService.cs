@@ -15,5 +15,7 @@ namespace Domain.Interface
         Task<List<UserModel>> GetAllUsersAsync(CancellationToken cancellationToken);
         Task<AuthenticationModel> LoginAsync(LoginModel loginModel, CancellationToken cancellationToken);
         Task<UserModel> AddOrEditUserAsync(UserModel model, CancellationToken cancellationToken);
+        Task<AuthenticationModel> RefreshTokenAsync(RefreshTokenRequest model);
+        Task<List<UserModel>> GetAllAdminsAsync(CancellationToken cancellationToken);
     }
 }

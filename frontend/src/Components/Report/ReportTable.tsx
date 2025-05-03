@@ -31,7 +31,7 @@ export default function ReportTable() {
     useEffect(() => {
         const filtered = reports.filter((report) => {
             const user = users.find((user) => user.id === report.userId);
-            return user?.userName.toLowerCase().includes(searchUser.toLowerCase()) || searchUser === "";
+            return user?.userName?.toLowerCase().includes(searchUser.toLowerCase()) || searchUser === "";
         });
         setFilteredReports(filtered);
     }, [searchUser, reports, users]);

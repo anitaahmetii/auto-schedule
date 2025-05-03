@@ -37,7 +37,6 @@ namespace Application.Services
             lectures.AcademicGrade = model.AcademicGrade;
             lectures.lectureType = model.lectureType;
             lectures.ScheduleTypeId = model.ScheduleTypeId;
-            lectures.UserId = model.UserId;
 
             await appDbContext.SaveChangesAsync();
 

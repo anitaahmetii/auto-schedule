@@ -6,7 +6,7 @@ import { SelectListItem } from '../../Interfaces/SelectListItem';
 import { getUserIdFromToken } from './../../auth';
 import { LecturesModel } from '../../Interfaces/LecturesModel';
 import { LecturesService } from '../../Services/LecturesService';
-import { LectureType } from '../../Enum/LectureType';
+import { LectureType } from '../../Interfaces/LectureType';
 import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
 
 export default function EditLectures() {

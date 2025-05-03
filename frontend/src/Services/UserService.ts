@@ -17,6 +17,7 @@ export class UserService {
     );
     localStorage.setItem("jwt", response.data.token);
     UserService.token = response.data?.token;
+    localStorage.setItem("refreshToken", response.data.refreshToken);
     localStorage.setItem("userModel", JSON.stringify(response.data.userData));
     UserService.LoggedInUser = response.data?.userData;
     localStorage.setItem("role", response.data.userRole);
@@ -33,6 +34,7 @@ export class UserService {
 
     UserService.token = null;
     UserService.role = null;
+    UserService.LoggedInUser = null;
   }
   public static GetUserRole(): string | null {
     return localStorage.get("role")!;
@@ -43,6 +45,10 @@ export class UserService {
 
   public static async GetAllUsers(): Promise<UserModel[]> {
     const result = await axios.get(UserService.baseUrl);
+    return result.data;
+  }
+  public static async GetAllAdmins(): Promise<UserModel[]> {
+    const result = await axios.get(`${UserService.baseUrl}/admins`);
     return result.data;
   }
 

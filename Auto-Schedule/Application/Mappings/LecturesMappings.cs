@@ -16,14 +16,12 @@ namespace Application.Mappings
             CreateMap<Lectures, LecturesModel>()
                .ForMember(x => x.AcademicGrade, y => y.MapFrom(x => x.AcademicGrade))
                .ForMember(x => x.lectureType, y => y.MapFrom(x => x.lectureType))
-               .ForMember(x => x.ScheduleTypeId, y => y.MapFrom(x => x.ScheduleTypeId))
-               .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId));
+               .ForMember(x => x.ScheduleTypeId, y => y.MapFrom(x => x.ScheduleTypeId));
 
             CreateMap<LecturesModel, Lectures>()
               .ForMember(x => x.AcademicGrade, y => y.MapFrom(x => x.AcademicGrade))
               .ForMember(x => x.lectureType, y => y.MapFrom(x => x.lectureType))
-              .ForMember(x => x.ScheduleTypeId, y => y.MapFrom(x => x.ScheduleTypeId))
-              .ForMember(x => x.UserId, y => y.MapFrom(x => x.UserId));
+              .ForMember(x => x.ScheduleTypeId, y => y.MapFrom(x => x.ScheduleTypeId));
         }
     }
 }

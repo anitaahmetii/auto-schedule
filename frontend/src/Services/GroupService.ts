@@ -71,4 +71,9 @@ export class GroupService
             throw error;
         }
     }
+
+    public static async GetSelectList() : Promise<GroupModel[]> {
+        const result = await axios.get(`${GroupService.baseURL}/GetGroupSelectListAsync`);
+        return result.data;
+      }
 }

@@ -152,5 +152,16 @@ namespace Application.Services
             if (groupModel.Capacity == null || groupModel.Capacity < 0)
                 throw new ArgumentOutOfRangeException(nameof(groupModel.Capacity), "The capacity must be a positive number.");
         }
+
+        public async Task<List<ListItemModel>> GetGroupSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await _context.Groups.Select(x => new ListItemModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToListAsync(cancellationToken);
+
+            return model;
+        }
     }
 }

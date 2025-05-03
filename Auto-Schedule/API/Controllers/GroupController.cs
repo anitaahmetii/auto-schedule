@@ -164,5 +164,12 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+
+        [HttpGet("GetGroupSelectListAsync")]
+        public async Task<IActionResult> GetGroupSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await _groupService.GetGroupSelectListAsync(cancellationToken);
+            return Ok(model);
+        }
     }
 }

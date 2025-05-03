@@ -24,7 +24,7 @@ export default function Login() {
        password: formData.password,
      };
      const response = await UserService.Login(user);
-     navigete("/UserTable");
+     navigete("/state");
     }
 
     return (

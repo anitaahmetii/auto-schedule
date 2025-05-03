@@ -48,7 +48,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 };
 function sendToOverview(){
-  navigate('/');
+  navigate('/state');
  }
 const handleChange = (
   e: React.ChangeEvent<HTMLInputElement>

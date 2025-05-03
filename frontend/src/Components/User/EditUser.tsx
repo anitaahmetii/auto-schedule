@@ -5,9 +5,15 @@ import { Segment } from 'semantic-ui-react';
 import { UserModel } from '../../Interfaces/UserModel';
 import { UserService } from '../../Services/UserService'; 
 import { Role } from '../../Interfaces/Role';
+import { LectureType } from '../../Interfaces/LectureType';
+import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
+import { SelectListItem } from '../../Interfaces/SelectListItem';
+import { GroupService } from '../../Services/GroupService';
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>(); 
+  const [scheduleTypeList, setScheduleTypeList] = useState<SelectListItem[]>([]);
+  const [groupList, setGroupList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<UserModel>({
     id: id!,
     userName: '',
@@ -15,7 +21,14 @@ export default function EditUser() {
     lastName: '',
     password: '',
     role: Role.Student, 
-  });
+    responsibilities: '',
+    status: '',
+    academicGrade: '',
+    lectureType: LectureType.Proffessor,
+    scheduleTypeId: '',
+    academicProgram: '',
+    groupId: '',
+  } as UserModel);
 
    useEffect(() => {
      fetchData();
@@ -26,6 +39,11 @@ export default function EditUser() {
      value: i,
      text: Role[+key]
    })).filter(x=> x.text != '' && x.text != null);
+   const lectureTypeSelectList =  Object.keys(LectureType).map((key,i) => ({
+    key: i,
+    value: i,
+    text: LectureType[+key]
+  })).filter(x=> x.text != '' && x.text != null);
    const fetchData = async () => {
      if(!id){
        return;
@@ -39,38 +57,115 @@ export default function EditUser() {
        const response = await UserService.GetUserDetails(id!);
        const userData = response;
        setValues({
-         id: userData.id,
-         userName: userData.userName,
-         lastName: userData.lastName,
-         email: userData.email,
-         password: userData.password,
-         role: userData.role,
-       }as UserModel);
+        id: userData.id,
+        userName: userData.userName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role,
+        responsibilities: userData.responsibilities,
+        status: userData.status,
+        academicGrade: userData.academicGrade,
+        lectureType: userData.lectureType,
+        scheduleTypeId: userData.scheduleTypeId,
+        academicProgram: userData.academicProgram,
+        groupId: userData.groupId,
+      } as UserModel);
    };
    const navigate = useNavigate();
   const [state, setState] = useState(false);
 
+  const fetchScheduleTypeList = async () => {
+    const response = await ScheduleTypeService.GetSelectList();
+  
+    setScheduleTypeList(response.map((item,i)=>({
+      key: i,
+      value: item.id,
+      text: item.scheduleTypes,
+    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
+  
+  
+  }
+  useEffect(() => {
+      fetchScheduleTypeList();
+  }, []);
+
+  const fetchGroupList = async () => {
+    const response = await GroupService.GetSelectList();
+  
+    setGroupList(response.map((item,i)=>({
+      key: i,
+      value: item.id,
+      text: item.name,
+    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
+  
+  
+  }
+  useEffect(() => {
+    fetchGroupList();
+  }, []);
+
+  const cleanPayload = (values: UserModel) => {
+    const payload = { ...values } as any;
+  
+    switch (values.role) {
+      case Role.Admin:
+        delete payload.lectureType;
+        delete payload.scheduleTypeId;
+        delete payload.groupId;
+        delete payload.academicProgram;
+        delete payload.academicGrade;
+        delete payload.status;
+        delete payload.responsibilities;
+        break;
+      case Role.Coordinator:
+        delete payload.lectureType;
+        delete payload.scheduleTypeId;
+        delete payload.groupId;
+        delete payload.academicProgram;
+        delete payload.academicGrade;
+        break;
+      case Role.Receptionist:
+        delete payload.lectureType;
+        delete payload.scheduleTypeId;
+        delete payload.groupId;
+        delete payload.academicProgram;
+        delete payload.academicGrade;
+        break;
+      case Role.Student:
+        delete payload.lectureType;
+        delete payload.scheduleTypeId;
+        delete payload.responsibilities;
+        delete payload.status;
+        delete payload.academicGrade;
+        break;
+      case Role.Lecture:
+        delete payload.groupId;
+        delete payload.academicProgram;
+        delete payload.responsibilities;
+        break;
+    }
+  
+    return payload;
+  };
   // Funksioni për të dërguar formulën (krijuar/edituar përdoruesin)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      let model = {
-        id: values.id!,
-        userName: values.userName,
-        email: values.email,
-        lastName: values.lastName,
-        password: values.password, 
-        role: +(values.role?? Role.Student)// Sigurohuni që password të jetë i vlefshëm kur editohet
-      };
+      const model = cleanPayload(values);
 
       const response = await axios.post(
-        "https://localhost:7085/api/User", // API URL për krijimin ose përditësimin e përdoruesit
+        "https://localhost:7085/api/User", 
         model
       );
       setState(true);
       sendToOverview();
-    } catch (error) {
-      console.error("Error creating/updating user:", error);
+    } catch (error: any) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Server response error:", error.response.data);
+      } else {
+        console.error("Error creating/updating user:", error);
+      }
     }
   };
 
@@ -80,6 +175,16 @@ export default function EditUser() {
 
   // Funksioni për të përditësuar vlerat e fushave kur përdoruesi bën ndryshime
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+  
+    // Only parse lectureType and role as numbers
+    const intFields = ["lectureType", "role"];
+    setValues(prev => ({
+      ...prev,
+      [name]: intFields.includes(name) && value !== "" ? parseInt(value) : value
+    }));
+  };
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setValues({ ...values, [name]: value });
   };
@@ -147,18 +252,172 @@ export default function EditUser() {
               onChange={handleChange}
             />
           </div>
-          <label>Role</label>
-         <select
-                  style={{ padding: "5px", margin: "5px" }}
-                  className="form-control"
-                  id="role"
-                  name="role"
-                  value={values.role!}
-                  onChange={handleChange}
-                >
-           {roleSelectList.map((x)=>
-             (<option key={x.key} value={x.value}>{x.text}</option>))}
-         </select>
+          <div className='form-group'>
+           <label>Role</label>
+           <select
+            style={{ padding: "5px", margin: "5px" }}
+            className="form-control"
+            id="role"
+            name="role"
+            value={values.role!}
+            onChange={handleChange}
+           >
+            {roleSelectList.map((x)=>
+            (<option key={x.key} value={x.value}>{x.text}</option>))}
+           </select>
+          </div>
+         {values.role === Role.Coordinator && (
+          <>
+          <div className="form-group">
+            <label>Responsibilities</label>
+            <input 
+             style={{ padding: "5px", margin: "5px" }}
+             type="text" 
+             className="form-control"
+             placeholder="Responsibilities"
+             name="responsibilities"
+             id="responsibilities" 
+             value={values.responsibilities!} 
+             onChange={handleChange} 
+            />
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <input 
+             style={{ padding: "5px", margin: "5px" }}
+             type="text" 
+             className="form-control"
+             placeholder="Status"
+             name="status" 
+             id="status"
+             value={values.status!} 
+             onChange={handleChange} 
+            />
+          </div>
+          </>
+          )}
+          {values.role === Role.Receptionist && (
+          <>
+            <div className="form-group">
+            <label>Responsibilities</label>
+            <input 
+             style={{ padding: "5px", margin: "5px" }}
+             type="text" 
+             className="form-control"
+             placeholder="Responsibilities"
+             name="responsibilities" 
+             id="responsibilities"
+             value={values.responsibilities!} 
+             onChange={handleChange} 
+            />
+          </div>
+          <div className="form-group">
+            <label>Status</label>
+            <input 
+             style={{ padding: "5px", margin: "5px" }}
+             type="text" 
+             className="form-control"
+             placeholder="Status"
+             name="status" 
+             id="status"
+             value={values.status!} 
+             onChange={handleChange} 
+            />
+          </div>
+          </>
+          )}
+
+          {values.role === Role.Lecture && (
+          <>
+            <div className="form-group">
+             <label>Academic Grade</label>
+             <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Academic Grade"
+              className="form-control"
+              id="academicGrade"
+              name="academicGrade"
+              value={values.academicGrade!}
+              onChange={handleChange}
+             />
+            </div>
+
+            <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="lectureType" 
+                id="lectureType"
+                style={{ marginBottom: "15px"}}
+                value={values.lectureType!}
+                onChange={handleChange}
+              >
+              {lectureTypeSelectList.map((x)=>
+               (<option key={x.key} value={x.value}>{x.text}</option>))}
+                  
+              </select>
+            </div>
+
+            <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="scheduleTypeId" 
+                id="scheduleTypeId"
+                value= {values.scheduleTypeId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select ScheduleTypeId</option>
+                {scheduleTypeList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+             <label>Status</label>
+             <input 
+              style={{ padding: "5px", margin: "5px" }}
+              type="text" 
+              className="form-control"
+              placeholder="Status"
+              name="status" 
+              id="status"
+              value={values.status!} 
+              onChange={handleChange} 
+             />
+            </div>
+          </>
+          )}
+
+          {values.role === Role.Student && (
+          <>
+            <div className="form-group">
+             <label>Academic Program</label>
+             <input 
+              style={{ padding: "5px", margin: "5px" }}
+              type="text" 
+              className="form-control"
+              placeholder="Academic Program"
+              name="academicProgram" 
+              id="academicProgram"
+              value={values.academicProgram!} 
+              onChange={handleChange} />
+            </div>
+            <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="groupId" 
+                id="groupId"
+                value= {values.groupId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select GroupId</option>
+                {groupList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
+          </>
+          )}
 
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "20px" }}>
             <button
