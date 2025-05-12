@@ -112,6 +112,7 @@ builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<ICoordinatorService, CoordinatorService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
+builder.Services.AddScoped<ICourseLecturesService, CourseLecturesService>();
 builder.Services.AddScoped<IAuthorizationManager, AuthorizationManager>();
 builder.Services.AddScoped<DbInitialization>();
 

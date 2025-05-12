@@ -14,5 +14,6 @@ namespace Domain.Interface
         Task<CourseModel> UpdateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken);
         Task<List<CourseModel>> GetAllCoursesAsync(CancellationToken cancellationToken);
         Task<CourseModel> DeleteCourseAsync(Guid Id, CancellationToken cancellationToken);
+        Task<List<ListItemModel>> GetCourseSelectListAsync(CancellationToken cancellationToken);
     }
 }
