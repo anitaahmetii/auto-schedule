@@ -34,6 +34,9 @@ import EditSchedule from './Components/Schedule/EditSchedule';
 import Login from './Components/Login';
 import Header from './Components/Header';
 
+import DashboardLecturer from './Components/Lectures/DashboardLecturer';
+
+
 function App() {
   return (
     <>
@@ -96,6 +99,11 @@ function App() {
 
           <Route path="/ScheduleTable" element={<ScheduleTable />} />
           <Route path="/EditSchedule/:id" element={<EditSchedule />} />
+
+
+          <Route path="/DashboardLecturer" element={<DashboardLecturer />} />
+
+
 
         </Routes>
       </Router>
