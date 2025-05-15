@@ -43,5 +43,11 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+        [HttpGet("GetCourseLectures")]
+        public async Task<IActionResult> GetCourseLectures()
+        {
+            var model = await service.GetCourseLectures();
+            return Ok(model);
+        }
     }
 }

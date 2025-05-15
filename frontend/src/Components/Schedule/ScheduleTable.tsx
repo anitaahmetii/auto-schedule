@@ -64,11 +64,11 @@ export default function ScheduleTable(){
           <TableHeaderCell>Day</TableHeaderCell>
           <TableHeaderCell>Start</TableHeaderCell>
           <TableHeaderCell>End</TableHeaderCell>
-          {/* <TableHeaderCell>Course</TableHeaderCell> */}
           <TableHeaderCell>Department</TableHeaderCell>
-          {/* <TableHeaderCell>Hall</TableHeaderCell>  */}
+          <TableHeaderCell>Halls</TableHeaderCell> 
           <TableHeaderCell>Location</TableHeaderCell> 
-          {/* <TableHeaderCell>Group</TableHeaderCell>  */}
+          <TableHeaderCell>Group</TableHeaderCell>
+          <TableHeaderCell>Course Lecture</TableHeaderCell>  
           <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -78,11 +78,11 @@ export default function ScheduleTable(){
               <TableCell>{item.day}</TableCell>
               <TableCell>{new Date(item.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',  hour12: false })}</TableCell>
               <TableCell>{new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',  hour12: false })}</TableCell>
-              {/* <TableCell>{item.userName}</TableCell> */}
               <TableCell>{item.department}</TableCell>
-              {/* <TableCell>{item.hall}</TableCell> */}
+              <TableCell>{item.halls}</TableCell>
               <TableCell>{item.location}</TableCell>
-              {/* <TableCell>{item.group}</TableCell> */}
+              <TableCell>{item.group}</TableCell>
+              <TableCell>{item.courseLecture}</TableCell>
               <TableCell>
                 <Button
                   type="button"

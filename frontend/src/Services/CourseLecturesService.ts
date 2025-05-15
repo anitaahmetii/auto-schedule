@@ -1,5 +1,6 @@
 import axios from "axios";
 import { CourseLecturesModel } from "../Interfaces/CourseLecturesModel";
+import { SelectListItem } from "../Interfaces/SelectListItem";
 
 export class CourseLecturesService{
     private static baseUrl = "https://localhost:7085/api/CourseLectures";
@@ -16,5 +17,9 @@ export class CourseLecturesService{
     }
    public static async EditOrAddCourseLectures(model: CourseLecturesModel): Promise<void> {
     const result = await axios.post(`${CourseLecturesService.baseUrl}`, model);
+  }
+  public static async GetSelectList() : Promise<SelectListItem[]> {
+    const result = await axios.get(`${CourseLecturesService.baseUrl}/GetCourseLectures`);
+    return result.data;
   }
 }

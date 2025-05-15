@@ -9,13 +9,8 @@ namespace Domain.Entities
     public class CourseLectures
     {
         public Guid Id { get; set; }
-        //public Guid LecturesId { get; set; }
-        //public Lectures Lectures { get; set; }
-
         public Guid UserId { get; set; }
         public User User { get; set; }
-
-
         public Guid CourseId { get; set; }
         public Course Course { get; set; }
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();

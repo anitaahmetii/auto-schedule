@@ -6,18 +6,22 @@ import { DepartmentModel } from '../../Interfaces/DepartmentModel';
 import { DepartmentService } from '../../Services/DepartmentService';
 import { ScheduleModel } from '../../Interfaces/ScheduleModel';
 import { ScheduleService } from '../../Services/ScheduleService';
+import { SelectListItem } from '../../Interfaces/SelectListItem';
+import { CourseLecturesService } from '../../Services/CourseLecturesService';
 
 export default function EditSchedule() {
   const { id } = useParams<{ id: string}>();
+  const [courseList, setCourseList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<ScheduleModel>({
     id:id!,
     day:'',
     startTime:'',
     endTime:'',
-    // hall:'',
+    halls:'',
     location:'',
     department:'',
     group:'',
+    courseLecture:'',
   } as ScheduleModel);
 
   const navigate = useNavigate();
@@ -32,26 +36,21 @@ export default function EditSchedule() {
        day: data.day,
        startTime:data.startTime,
        endTime:data.endTime,
-    //    hall: data.hall,
+       halls: data.halls,
        location: data.location,
        department:data.department,
-    //    group:data.group
+       group:data.group,
+       courseLecture:data.courseLecture
      }as ScheduleModel);
     }
   };
   
   fetchData();
-
 }, [id!]);
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement | HTMLSelectElement>) => {
   e.preventDefault();
   try {
-//     let model = {
-//       id: values.id!,
-//       name: values.name,
-//       code: values.code,
-//     } as DepartmentModel;
-
     await ScheduleService.UpdateSchedule(values);
     
     setSchedule(true);
@@ -118,19 +117,19 @@ const handleChange = (
             onChange={handleChange}
           />
         </div>
-        {/* <div className="form-group">
+        <div className="form-group">
         <label>Hall</label>
           <input
             style={{ padding: "5px", margin: "5px" }}
             type="text"
             placeholder="Hall"
             className="form-control"
-            id="hall"
-            name="hall"
-            value={values.hall!}
+            id="halls"
+            name="halls"
+            value={values.halls!}
             onChange={handleChange}
           />
-        </div> */}
+        </div>
         <div className="form-group">
         <label>Location</label>
           <input
@@ -158,7 +157,7 @@ const handleChange = (
           />
         </div>
         <div className="form-group">
-        {/* <label>Group</label>
+        <label>Group</label>
           <input
             style={{ padding: "5px", margin: "5px" }}
             type="text"
@@ -168,8 +167,9 @@ const handleChange = (
             name="group"
             value={values.group!}
             onChange={handleChange}
-          /> */}
+          />
         </div>
+       
           <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "20px" }}>
           <button
           type="submit"

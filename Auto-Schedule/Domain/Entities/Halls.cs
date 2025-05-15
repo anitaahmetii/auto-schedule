@@ -17,6 +17,6 @@ namespace Domain.Entities
 
         public Guid LocationId { get; set; }
         public Location Location { get; set; }
-        //public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+        public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
     }
 }

@@ -3,6 +3,7 @@ using Domain.Entities;
 using Domain.Interface;
 using Domain.Model;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -68,9 +69,19 @@ namespace Application.Services
             await appDbContext.SaveChangesAsync();
         }
 
-        Task<CourseLecturesModel> ICourseLecturesService.DeleteById(Guid Id, CancellationToken cancellationToken)
+       
+        public async Task<List<ListItemModel>> GetCourseLectures()
         {
-            throw new NotImplementedException();
+            var lectures = await appDbContext.CourseLectures
+                .Include(cl => cl.Course)
+                .Include(cl => cl.User)
+                .Select(cl => new ListItemModel()
+                {
+                    Id = cl.Id,
+                    Name = cl.Course.Name + " " + cl.User.UserName + " " + cl.User.LastName
+                })
+                .ToListAsync();
+            return lectures;
         }
     }
 }
