@@ -77,7 +77,7 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Gabim në GetHallsSelectListAsync: " + ex.Message);
+                Console.WriteLine("Error on GetHallsSelectListAsync: " + ex.Message);
                 throw; 
             }
         }
