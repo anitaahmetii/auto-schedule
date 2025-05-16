@@ -118,6 +118,32 @@ namespace Application.Services
                 throw new Exception("An error occurred while updating the schedule.", ex);
             }
         }
+        public async Task<ManualScheduleModel> DeleteManualScheduleAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var scheduleId = await _context.Schedules.FirstOrDefaultAsync(x => x.Id == Id);
+                if (scheduleId == null)
+                {
+                    throw new Exception("No schedule found to be deleted!");
+                }
+                _context.Schedules.Remove(scheduleId);
+                await _context.SaveChangesAsync(cancellationToken);
+                return _mapper.Map<ManualScheduleModel>(scheduleId);
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while deleting the schedule.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while deleting the schedule.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleting the schedule.", ex);
+            }
+        }
         private void ValidateManualScheduleModel(ManualScheduleModel manualSchedule)
         {
             if (manualSchedule == null)

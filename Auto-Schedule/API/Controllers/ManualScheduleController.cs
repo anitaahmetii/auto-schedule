@@ -125,5 +125,29 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteManualScheduleAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _service.DeleteManualScheduleAsync(Id, cancellationToken));
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"A database error occurred while deleting the schedue. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }
