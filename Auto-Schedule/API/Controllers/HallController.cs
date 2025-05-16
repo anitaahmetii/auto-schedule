@@ -39,6 +39,26 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+        [HttpGet("GetHallsSelectListAsync")]
+        public async Task<IActionResult> GetHallsSelectListAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await service.GetHallsSelectListAsync(cancellationToken));
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(StatusCodes.Status499ClientClosedRequest, "The request was cancelled.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid argument: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving halls.");
+            }
+        }
 
     }
 }

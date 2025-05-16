@@ -64,9 +64,23 @@ namespace Application.Services
             var model = mapper.Map<HallModel>(hall);
             return model;
         }
-
-       
-
+        public async Task<List<ListItemModel>> GetHallsSelectListAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var halls = await appDbContext.Halls.Select(x => new ListItemModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToListAsync(cancellationToken);
+                return halls;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Gabim në GetHallsSelectListAsync: " + ex.Message);
+                throw; 
+            }
+        }
     }
 }
 
