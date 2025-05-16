@@ -12,5 +12,6 @@ namespace Domain.Interface
         Task<ManualScheduleModel> CreateManualScheduleAsync(ManualScheduleModel manualSchedule, CancellationToken cancellationToken);
         Task<List<ManualScheduleModel>> GetAllManualSchedulesAsync(CancellationToken cancellationToken);
         Task<ManualScheduleModel> GetByIdManualScheduleAsync(Guid Id, CancellationToken cancellationToken);
+        Task<ManualScheduleModel> UpdateManualScheduleAsync(ManualScheduleModel model, CancellationToken cancellationToken);
     }
 }

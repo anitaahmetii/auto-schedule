@@ -91,5 +91,39 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpadteManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (Id != manualSchedule.Id)
+                {
+                    return BadRequest("Schedule ID is Read-Only!");
+                }
+                var existingSchedule = await _service.GetByIdManualScheduleAsync(Id, cancellationToken);
+                if (existingSchedule == null)
+                {
+                    throw new ArgumentNullException(nameof(manualSchedule.Id), "No schedule found with the provided ID.");
+
+                }
+                return Ok(await _service.UpdateManualScheduleAsync(manualSchedule, cancellationToken));
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest($"A database error occurred while updating the schedule. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }

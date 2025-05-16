@@ -91,6 +91,33 @@ namespace Application.Services
                 throw new Exception("An error occurred while retrieving the schedule.", ex);
             }
         }
+        public async Task<ManualScheduleModel> UpdateManualScheduleAsync(ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
+        {
+            try
+            {
+                ValidateManualScheduleModel(manualSchedule);
+                var schedule = await _context.Schedules.FindAsync(manualSchedule.Id);
+                if (schedule == null)
+                {
+                    throw new Exception("Schedule not found!");
+                }
+                _mapper.Map(manualSchedule, schedule);
+                await _context.SaveChangesAsync(cancellationToken);
+                return manualSchedule;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new DbUpdateConcurrencyException("A concurrency error occurred while updating the schedule.", ex);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new DbUpdateException("A database error occurred while updating the schedule.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating the schedule.", ex);
+            }
+        }
         private void ValidateManualScheduleModel(ManualScheduleModel manualSchedule)
         {
             if (manualSchedule == null)
