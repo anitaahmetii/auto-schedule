@@ -100,11 +100,7 @@ namespace Application.Services
             try
             {
                 var groups = await _context.Groups.ToListAsync(cancellationToken);
-                if (groups == null || !groups.Any())
-                {
-                    throw new Exception("No group found!");
-                }
-                return _mapper.Map<List<GroupModel>>(groups);
+                return groups == null ? throw new Exception("No group found!") : _mapper.Map<List<GroupModel>>(groups);
             }
             catch (OperationCanceledException ex)
             {

@@ -43,7 +43,7 @@ namespace Infrastructure.Configuration
 
             builder.HasOne<CourseLectures>(x => x.CourseLectures)
                .WithMany(x => x.Schedules)
-               .HasForeignKey(x => x.CourseLectureId)
+               .HasForeignKey(x => x.CourseLecturesId)
                .OnDelete(DeleteBehavior.NoAction);
         }
     }
