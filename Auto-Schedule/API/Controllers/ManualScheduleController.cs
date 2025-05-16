@@ -39,5 +39,57 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllManualSchedulesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _service.GetAllManualSchedulesAsync(cancellationToken));
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(499, "Request was cancelled by the client.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return StatusCode(403, "You are not authorized to access this resource.");
+            }
+            catch (TimeoutException)
+            {
+                return StatusCode(504, "The operation timed out. Please try again later.");
+            }
+            catch (NullReferenceException)
+            {
+                return StatusCode(500, "A required object was not properly initialized.");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest($"Invalid operation: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdManualScheduleAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _service.GetByIdManualScheduleAsync(Id, cancellationToken));
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
     }
 }

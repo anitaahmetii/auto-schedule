@@ -51,6 +51,46 @@ namespace Application.Services
                 throw new Exception($"A database error occurred while creating the schedule. {detailedError}");
             }
         }
+        public async Task<List<ManualScheduleModel>> GetAllManualSchedulesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var schedules = await _context.Schedules.ToListAsync(cancellationToken);
+                if (schedules == null)
+                {
+                    throw new Exception("No schedule found!");
+                }
+                return _mapper.Map<List<ManualScheduleModel>>(schedules);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the schedule.", ex);
+            }
+        }
+        public async Task<ManualScheduleModel> GetByIdManualScheduleAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var scheduleId = await _context.Schedules.FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+                if (scheduleId == null)
+                {
+                    throw new Exception("Schedule not found!");
+                }
+                return _mapper.Map<ManualScheduleModel>(scheduleId);
+            }
+            catch (OperationCanceledException ex)
+            {
+                throw new OperationCanceledException("The operation was cancelled.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the schedule.", ex);
+            }
+        }
         private void ValidateManualScheduleModel(ManualScheduleModel manualSchedule)
         {
             if (manualSchedule == null)
@@ -93,7 +133,6 @@ namespace Application.Services
                 s.GroupId == manualSchedule.GroupId))
             {
                 throw new InvalidOperationException("This schedule already exists!");
-
             }
         }
     }

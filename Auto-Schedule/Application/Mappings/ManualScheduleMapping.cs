@@ -23,7 +23,9 @@ namespace Application.Mappings
                 .ForMember(x => x.HallsId, y => y.MapFrom(x => x.HallsId))
                 .ForMember(x => x.LocationId, y => y.MapFrom(x => x.LocationId))
                 .ForMember(x => x.DepartmentId, y => y.MapFrom(x => x.DepartmentId))
-                .ForMember(x => x.GroupId, y => y.MapFrom(x => x.GroupId));
+                .ForMember(x => x.GroupId, y => y.MapFrom(x => x.GroupId))
+                .ReverseMap()
+                .ForMember(x => x.Day, y => y.MapFrom(x => x.Day.ToString()));
         }
     }
 }
