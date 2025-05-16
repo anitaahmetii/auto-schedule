@@ -27,25 +27,15 @@ namespace Application.Services
         {
             try
             {
-                //ValidateManualScheduleModel(manualSchedule);
+                ValidateManualScheduleModel(manualSchedule);
                 var schedule = _mapper.Map<Schedule>(manualSchedule);
                 await _context.Schedules.AddAsync(schedule, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
                 return manualSchedule;
             }
-            //catch (DbUpdateException dbEx)
-            //{
-            //    throw new Exception("An error occurred while saving the schedule to the database.", dbEx);
-            //}
             catch (DbUpdateException dbEx)
             {
-                var errorDetails = dbEx.InnerException?.Message ?? dbEx.Message;
-
-                var detailedMessage = "Ndodhi një gabim gjatë ruajtjes së orarit në databazë. "
-                                    + "Ju lutem kontrolloni të dhënat dhe provoni përsëri.\n"
-                                    + $"Detajet teknike: {errorDetails}";
-
-                throw new Exception(detailedMessage, dbEx);
+                throw new Exception("An error occurred while saving the schedule to the database.", dbEx);
             }
             catch (ArgumentException argEx)
             {
@@ -66,8 +56,10 @@ namespace Application.Services
             if (manualSchedule == null)
                 throw new ArgumentNullException(nameof(manualSchedule), "The schedule model cannot be null.");
 
-            if (!Enum.IsDefined(typeof(Days), manualSchedule.Day))
-                throw new ArgumentException("The day is invalid or not defined.", nameof(manualSchedule.Day));
+            if (!Enum.TryParse<Days>(manualSchedule.Day, out Days dayEnum))
+            {
+                throw new ArgumentException("Invalid day value.", nameof(manualSchedule.Day));
+            }
 
             if (string.IsNullOrWhiteSpace(manualSchedule.StartTime))
                 throw new ArgumentException("The start time is required.", nameof(manualSchedule.StartTime));
@@ -90,20 +82,19 @@ namespace Application.Services
             if (manualSchedule.GroupId == Guid.Empty)
                 throw new ArgumentException("GroupID is required.");
 
-            //bool exists = _context.Schedules.Any(s =>
-            //    s.Day.Equals(manualSchedule.Day) &&
-            //    s.StartTime.Equals(manualSchedule.StartTime) &&
-            //    s.EndTime.Equals(manualSchedule.EndTime) &&
-            //    s.CourseLectureId == manualSchedule.CourseLectureId &&
-            //    s.Halls.Id == manualSchedule.HallsId &&
-            //    s.Location.Id == manualSchedule.LocationId &&
-            //    s.Department.Id == manualSchedule.DepartmentId &&
-            //    s.Group.Id == manualSchedule.GroupId);
+            if( _context.Schedules.Any(s =>
+                s.Day == dayEnum &&
+                s.StartTime.Equals(manualSchedule.StartTime) &&
+                s.EndTime.Equals(manualSchedule.EndTime) &&
+                s.CourseLecturesId == manualSchedule.CourseLecturesId &&
+                s.HallsId == manualSchedule.HallsId &&
+                s.LocationId == manualSchedule.LocationId &&
+                s.DepartmentId == manualSchedule.DepartmentId &&
+                s.GroupId == manualSchedule.GroupId))
+            {
+                throw new InvalidOperationException("This schedule already exists!");
 
-            //if (exists)
-            //{
-            //    throw new InvalidOperationException("This schedule already exists!");
-            //}
+            }
         }
     }
 }
