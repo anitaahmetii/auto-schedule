@@ -18,4 +18,17 @@ export class ManualScheduleService
             throw error;
         }
     }
+    public static async getAllManualSchedulesAsync(): Promise<ManualScheduleModel[]>
+    {
+        try
+        {
+            var respone = await axios.get(`${ManualScheduleService.baseUrl}`);
+            return respone.data;
+        }
+        catch (error) 
+        {
+          console.error("Error retrieving the schedules:", error);
+          throw error;
+        }
+    }
 }
