@@ -35,6 +35,7 @@ import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
+import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
           <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />
           <Route path="/AddCourseLecture" element={<EditCourseLectures />} />
 
+          <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
 
         </Routes>
       </Router>
