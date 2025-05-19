@@ -25,6 +25,7 @@ export default function CreateManualSchedule()
         departmentId: "",
         groupId: ""
     });
+    const mapToSelect = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name }));
     const [courseLecturesList, setCourseLecturesList] = useState<SelectListItem[]>([]);
     const [hallsList, setHallsList] = useState<SelectListItem[]>([]);
     const [locationsList, setLocationsList] = useState<SelectListItem[]>([]);
@@ -39,60 +40,37 @@ export default function CreateManualSchedule()
         "Saturday",
     ];
     useEffect(() => {
-        const fetchData = async () => {
-            const result = await CourseLecturesService.GetSelectList();
-            setCourseLecturesList(result.map((item, i) => ({
-                key: i,
-                value: item.id,
-                text: item.name
-            } as SelectListItem)))
+        let cancelled = false;
+
+        const fetchAll = async () => {
+            try 
+            {
+                const [courseLecturesRes, hallRes, locationRes, departmentRes, groupRes] = await Promise.all([
+                    CourseLecturesService.GetSelectList(),
+                    HallService.GetSelectList(),
+                    LocationService.GetSelectList(),
+                    DepartmentService.GetSelectList(),
+                    GroupService.GetSelectList(),
+                ]);
+                if (!cancelled) 
+                {
+                    setCourseLecturesList(mapToSelect(courseLecturesRes));
+                    setHallsList(mapToSelect(hallRes));
+                    setLocationsList(mapToSelect(locationRes));
+                    setDepartmentsList(mapToSelect(departmentRes));
+                    setGroupsList(mapToSelect(groupRes));
+                }
+            } 
+            catch (err) 
+            {
+                console.error("Lists could not be loaded!", err);
+            }
         };
-        fetchData();
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await HallService.GetSelectList();
-            setHallsList(result.map((item, i) => ({
-                key: i,
-                value: item.id,
-                text: item.name
-            } as SelectListItem)))
+        fetchAll();
+        return () => {
+            cancelled = true;                   
         };
-        fetchData();
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await LocationService.GetSelectList();
-            setLocationsList(result.map((item, i) => ({
-                key: i,
-                value: item.id,
-                text: item.name
-            } as SelectListItem)))
-        };
-        fetchData();
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await DepartmentService.GetSelectList();
-            setDepartmentsList(result.map((item, i) => ({
-                key: i,
-                value: item.id,
-                text: item.name
-            } as SelectListItem)))
-        };
-        fetchData();
-    }, []);
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await GroupService.GetSelectList();
-            setGroupsList(result.map((item, i) => ({
-                key: i,
-                value: item.id,
-                text: item.name
-            } as SelectListItem)))
-        };
-        fetchData();
-    }, []);
+    }, [])
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => 
     {
         const { name, value } = e.target;
@@ -102,19 +80,18 @@ export default function CreateManualSchedule()
      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => 
       {
         e.preventDefault();
-        if (
-            !manualSchedule.day ||
+        if (!manualSchedule.day ||
             !manualSchedule.startTime ||
             !manualSchedule.endTime ||
             !manualSchedule.courseLecturesId ||
             !manualSchedule.hallsId ||
             !manualSchedule.locationId ||
             !manualSchedule.departmentId ||
-            !manualSchedule.groupId
-          ) {
+            !manualSchedule.groupId) 
+        {
             alert("Please fill all the fields.");
             return;
-          }
+        }
         try {
           await ManualScheduleService.createManualScheduleAsync(manualSchedule);
           navigate(`/ManualSchedule`);
@@ -213,7 +190,7 @@ export default function CreateManualSchedule()
                     </Form>
                     <Divider style={{marginTop: '5%'}} />
                     <div className="d-flex align-items-center gap-3" style={{ marginTop: "2rem", marginLeft: '5%'}} >
-                        <Button onClick={() => navigate("../ScheduleTable")} style={{fontSize: '10px', marginLeft: '32.5%'}}>
+                        <Button onClick={() => navigate("../ScheduleTable")} style={{fontSize: '10px', marginLeft: '34.5%'}}>
                             Want to Import the Schedule?
                         </Button>
                     </div>
