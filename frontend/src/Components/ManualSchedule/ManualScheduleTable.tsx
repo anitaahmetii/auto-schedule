@@ -14,7 +14,6 @@ import { LocationModel } from "../../Interfaces/LocationModel";
 import { LocationService } from "../../Services/LocationService";
 import { DepartmentModel } from "../../Interfaces/DepartmentModel";
 import { DepartmentService } from "../../Services/DepartmentService";
-import { wrap } from "module";
 
 export default function ManualScheduleTable()
 {
@@ -101,7 +100,7 @@ export default function ManualScheduleTable()
                                 <Table.Cell style={styleWidth}>{locationsList.find(l => l.id === schedule.locationId)?.name}</Table.Cell>
                                 <Table.Cell style={styleWidth}>{departmentsList.find(d => d.id === schedule.departmentId)?.name}</Table.Cell>
                                 <Table.Cell>
-                                    <Button color="olive" className="mr-2" >Edit</Button>
+                                    <Button color="olive" className="mr-2" onClick={() => navigate(`/EditManualSchedule/${schedule.id}`)}>Edit</Button>
                                     <Button color="red" className="mr-2">Del</Button>
                                 </Table.Cell>
                             </Table.Row>

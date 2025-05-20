@@ -22,12 +22,38 @@ export class ManualScheduleService
     {
         try
         {
-            var respone = await axios.get(`${ManualScheduleService.baseUrl}`);
-            return respone.data;
+            var response = await axios.get(`${ManualScheduleService.baseUrl}`);
+            return response.data;
         }
         catch (error) 
         {
-          console.error("Error retrieving the schedules:", error);
+          console.error("Error retrieving schedules:", error);
+          throw error;
+        }
+    }
+    public static async getByIdManualScheduleAsync(id: string): Promise<ManualScheduleModel>
+    {
+        try
+        {
+            var response = await axios.get(`${ManualScheduleService.baseUrl}/${id}`);
+            return response.data;
+        }
+        catch (error) 
+        {
+          console.error("Error retrieving the schedule:", error);
+          throw error;
+        }
+    }
+    public static async updateManualScheduleAsync(model: ManualScheduleModel): Promise<ManualScheduleModel>
+    {
+        try
+        {
+            var response = await axios.put(`${ManualScheduleService.baseUrl}/${model.id}`, model);
+            return response.data;
+        }
+        catch (error) 
+        {
+          console.error("Error updating the schedule:", error);
           throw error;
         }
     }
