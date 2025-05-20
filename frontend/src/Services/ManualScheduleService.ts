@@ -57,4 +57,17 @@ export class ManualScheduleService
           throw error;
         }
     }
+    public static async deleteManualScheduleAsync(id: string): Promise<ManualScheduleModel>
+    {
+        try
+        {
+            var response = await axios.delete(`${ManualScheduleService.baseUrl}/${id}`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error deleting the schedule:", error);
+            throw error;
+        }
+    }
 }

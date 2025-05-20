@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Modal, Table } from "semantic-ui-react";
 import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
 import { ManualScheduleService } from "../../Services/ManualScheduleService";
 import { CourseLecturesService } from "../../Services/CourseLecturesService";
@@ -24,6 +24,9 @@ export default function ManualScheduleTable()
     const [hallsList, setHallsList] = useState<HallModel[]>([]);
     const [locationsList, setLocationsList] = useState<LocationModel[]>([]);
     const [departmentsList, setDepartmentsList] = useState<DepartmentModel[]>([]);
+    const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+    const [deletedScheduleId, setDeletedScheduleId] = useState<string>("");
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,6 +66,18 @@ export default function ManualScheduleTable()
             fetched = true;
         };
     }, []);
+    function deleteSchedule(id: string)
+    {
+        setOpenConfirm(true);
+        setDeletedScheduleId(id);
+    }
+    async function confirmToDelete(id: string)
+        {
+            await ManualScheduleService.deleteManualScheduleAsync(id);
+            setSchedules(schedules.filter((s) => s.id !== id));
+            setOpenConfirm(false);
+            setDeletedScheduleId("");
+        }
     const styleWidth = {maxWidth: "120px", whiteSpace: "normal", wordWrap: "break-word" };
     return (
         <Fragment>
@@ -101,10 +116,30 @@ export default function ManualScheduleTable()
                                 <Table.Cell style={styleWidth}>{departmentsList.find(d => d.id === schedule.departmentId)?.name}</Table.Cell>
                                 <Table.Cell>
                                     <Button color="olive" className="mr-2" onClick={() => navigate(`/EditManualSchedule/${schedule.id}`)}>Edit</Button>
-                                    <Button color="red" className="mr-2">Del</Button>
+                                    <Button color="red" className="mr-2" onClick={() => deleteSchedule(schedule.id!)}>Del</Button>
                                 </Table.Cell>
                             </Table.Row>
                         ))}
+                        <Modal open={openConfirm}
+                            size="mini"
+                            onClose={() => setOpenConfirm(false)}
+                            closeOnEscape={false}
+                            closeOnDimmerClick={false}
+                            style={{minHeight: 'unset',
+                                    height: 'auto',
+                                    padding: '1rem',
+                                    textAlign: 'center',
+                                    position: 'fixed',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    zIndex: 1000}}>
+                        <Modal.Content>Are you sure you want to delete this schedule?</Modal.Content>
+                        <Modal.Actions style={{ justifyContent: 'center', display: 'flex', gap: '1rem' }}>
+                            <Button onClick={() => setOpenConfirm(false)}>Cancel</Button>
+                            <Button color="red" onClick={() => confirmToDelete(deletedScheduleId)}>Delete</Button>
+                        </Modal.Actions>
+                    </Modal>
                     </Table.Body>
                 </Table>
             </div>
