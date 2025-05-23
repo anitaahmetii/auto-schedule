@@ -9,16 +9,25 @@ import { LectureType } from '../../Interfaces/LectureType';
 import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
 import { SelectListItem } from '../../Interfaces/SelectListItem';
 import { GroupService } from '../../Services/GroupService';
+import { CityService } from '../../Services/CityService';
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>(); 
   const [scheduleTypeList, setScheduleTypeList] = useState<SelectListItem[]>([]);
   const [groupList, setGroupList] = useState<SelectListItem[]>([]);
+  const [cityList, setCityList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<UserModel>({
     id: id!,
     userName: '',
     email: '',
     lastName: '',
+    personalID: '',
+    personalEmail: '',
+    birthdate: '',
+    phoneNumber: '',
+    cityId: '',
+    address: '',
+    gender: '',
     password: '',
     role: Role.Student, 
     responsibilities: '',
@@ -27,6 +36,8 @@ export default function EditUser() {
     lectureType: LectureType.Proffessor,
     scheduleTypeId: '',
     academicProgram: '',
+    academicYear: '',
+    registred: '',
     groupId: '',
   } as UserModel);
 
@@ -61,6 +72,13 @@ export default function EditUser() {
         userName: userData.userName,
         lastName: userData.lastName,
         email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        personalID: userData.personalID,
+        personalEmail: userData.personalEmail,
+        birthdate: userData.birthdate ? new Date(userData.birthdate).toISOString().split('T')[0] : '',
+        cityId: userData.cityId,
+        address: userData.address,
+        gender: userData.gender,
         password: userData.password,
         role: userData.role,
         responsibilities: userData.responsibilities,
@@ -69,6 +87,8 @@ export default function EditUser() {
         lectureType: userData.lectureType,
         scheduleTypeId: userData.scheduleTypeId,
         academicProgram: userData.academicProgram,
+        academicYear: userData.academicYear,
+        registred: userData.registred ? new Date(userData.registred).toISOString().split('T')[0] : '',
         groupId: userData.groupId,
       } as UserModel);
    };
@@ -105,6 +125,21 @@ export default function EditUser() {
     fetchGroupList();
   }, []);
 
+   const fetchCitiesList = async () => {
+    const response = await CityService.GetSelectList();
+  
+    setCityList(response.map((item,i)=>({
+      key: i,
+      value: item.id,
+      text: item.name,
+    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
+  
+  
+  }
+  useEffect(() => {
+    fetchCitiesList();
+  }, []);
+
   const cleanPayload = (values: UserModel) => {
     const payload = { ...values } as any;
   
@@ -114,6 +149,8 @@ export default function EditUser() {
         delete payload.scheduleTypeId;
         delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         delete payload.status;
         delete payload.responsibilities;
@@ -123,6 +160,8 @@ export default function EditUser() {
         delete payload.scheduleTypeId;
         delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         break;
       case Role.Receptionist:
@@ -130,6 +169,8 @@ export default function EditUser() {
         delete payload.scheduleTypeId;
         delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         break;
       case Role.Student:
@@ -142,6 +183,8 @@ export default function EditUser() {
       case Role.Lecture:
         delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.responsibilities;
         break;
     }
@@ -152,6 +195,7 @@ export default function EditUser() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+
       const model = cleanPayload(values);
 
       const response = await axios.post(
@@ -225,7 +269,74 @@ export default function EditUser() {
               onChange={handleChange}
             />
           </div>
-
+          <div className="form-group">
+            <label>Birthdate</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="date"
+              placeholder="Birthdate"
+              className="form-control"
+              id="birthdate"
+              name="birthdate"
+              value={values.birthdate ?? ''}
+              onChange={handleChange}
+            />
+          </div>
+           <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="cityId" 
+                id="cityId"
+                value= {values.cityId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select City</option>
+                {cityList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
+          <div className="form-group">
+            <label>Address</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Address"
+              className="form-control"
+              id="address"
+              name="address"
+              value={values.address!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Gender</label>
+            <select
+              style={{ padding: "5px", margin: "5px" }}
+              className="form-control"
+              id="gender"
+              name="gender"
+              value={values.gender!}
+              onChange={handleChange}
+              >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Phone Number"
+              className="form-control"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={values.phoneNumber!}
+              onChange={handleChange}
+            />
+          </div>
           <div className="form-group">
             <label>Email</label>
             <input
@@ -236,6 +347,32 @@ export default function EditUser() {
               id="email"
               name="email"
               value={values.email!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Personal ID</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Personal ID"
+              className="form-control"
+              id="personalID"
+              name="personalID"
+              value={values.personalID!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Personal Email</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="email"
+              placeholder="Personal Email"
+              className="form-control"
+              id="personalEmail"
+              name="personalEmail"
+              value={values.personalEmail!}
               onChange={handleChange}
             />
           </div>
@@ -401,6 +538,31 @@ export default function EditUser() {
               id="academicProgram"
               value={values.academicProgram!} 
               onChange={handleChange} />
+            </div>
+            <div className="form-group">
+             <label>Academic Year</label>
+             <input 
+              style={{ padding: "5px", margin: "5px" }}
+              type="text" 
+              className="form-control"
+              placeholder="Academic Year"
+              name="academicYear" 
+              id="academicYear"
+              value={values.academicYear!} 
+              onChange={handleChange} />
+            </div>
+              <div className="form-group">
+            <label>Registred</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="date"
+              placeholder="Registred"
+              className="form-control"
+              id="registred"
+              name="registred"
+              value={values.registred ?? ''}
+              onChange={handleChange}
+            />
             </div>
             <div className="col-md-6-w-100%">
               <select className="form-control"

@@ -35,6 +35,7 @@ import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
+import StudentProfileTable from './Components/StudentProfile/StudentProfileTable';
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
           <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />
           <Route path="/AddCourseLecture" element={<EditCourseLectures />} />
 
+          <Route path='/StudentProfile' element={<StudentProfileTable />} />
 
         </Routes>
       </Router>

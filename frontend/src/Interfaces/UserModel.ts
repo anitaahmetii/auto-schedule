@@ -6,6 +6,13 @@ export interface UserModel {
   userName: string | null;
   email: string | null;
   lastName: string | null;
+  personalID: string | null;
+  personalEmail: string | null;
+  birthdate: string | null;
+  phoneNumber: string | null;
+  cityId: string | null;
+  address: string | null;
+  gender: string | null;
   password: string | null;
   role: Role;
 
@@ -16,5 +23,7 @@ export interface UserModel {
   lectureType: LectureType;
   scheduleTypeId: string | null;
   academicProgram: string | null;  // Student
+  academicYear: string | null;
+  registred: string | null;
   groupId: string | null;
 }
