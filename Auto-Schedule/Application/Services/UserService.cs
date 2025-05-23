@@ -175,6 +175,13 @@ namespace Application.Services
                 user.UserName = model.UserName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
+                user.PersonalID = model.PersonalID;
+                user.PersonalEmail = model.PersonalEmail;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Birthdate = model.Birthdate;
+                user.CityId = model.CityId;
+                user.Address = model.Address;
+                user.Gender = model.Gender;
 
                 // Set derived properties
                 SetRoleSpecificFields(user, model);
@@ -195,6 +202,13 @@ namespace Application.Services
                 user.UserName = model.UserName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
+                user.PersonalID = model.PersonalID;
+                user.PersonalEmail = model.PersonalEmail;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Birthdate = model.Birthdate;
+                user.CityId = model.CityId;
+                user.Address = model.Address;
+                user.Gender = model.Gender;
 
                 SetRoleSpecificFields(user, model);
 
@@ -244,6 +258,8 @@ namespace Application.Services
 
                 case Student student:
                     student.AcademicProgram = model.AcademicProgram;
+                    student.AcademicYear = model.AcademicYear;
+                    student.Registred = model.Registred;
                     student.GroupId = model.GroupId!.Value;
                     break;
             }

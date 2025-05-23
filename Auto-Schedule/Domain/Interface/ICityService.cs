@@ -13,5 +13,6 @@ namespace Domain.Interface
         public Task<CityModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<CityModel> CreateOrUpdate(CityModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
+        public Task<List<ListItemModel>> GetCitySelectListAsync(CancellationToken cancellationToken);
     }
 }

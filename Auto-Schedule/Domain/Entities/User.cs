@@ -4,12 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualBasic;
 
 namespace Domain.Entities
 {
     public class User: IdentityUser<Guid>
     {
         public string LastName { get; set; }
+        public string PersonalID { get; set; }
+        public string PersonalEmail { get; set; }
+        public DateOnly Birthdate { get; set; }
+        public Guid CityId { get; set; }
+        public City City { get; set; }
+        public string Address { get; set; }
+        public string Gender { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
