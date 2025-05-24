@@ -14,6 +14,10 @@ namespace Infrastructure.Configuration
                 .WithMany(x => x.Students)
                 .HasForeignKey(x => x.GroupId)
                 .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<Department>(x => x.Department)
+                .WithMany(x => x.Students)
+                .HasForeignKey(x => x.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

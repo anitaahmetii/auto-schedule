@@ -24,4 +24,8 @@ export class DepartmentService {
     });
     return result.data;
   }
+  public static async GetSelectList() : Promise<DepartmentModel[]> {
+    const result = await axios.get(`${DepartmentService.baseUrl}/DepartmentsList`);
+    return result.data;
+  }
 }

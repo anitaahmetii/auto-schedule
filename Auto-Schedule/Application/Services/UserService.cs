@@ -257,6 +257,7 @@ namespace Application.Services
                     break;
 
                 case Student student:
+                    student.DepartmentId = model.DepartmentId!.Value;
                     student.AcademicProgram = model.AcademicProgram;
                     student.AcademicYear = model.AcademicYear;
                     student.Registred = model.Registred;

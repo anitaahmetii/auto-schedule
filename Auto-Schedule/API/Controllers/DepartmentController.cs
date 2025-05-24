@@ -42,7 +42,7 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("DepartmentsList")]
         public async Task<IActionResult> GetDepartmentSelectListAsync(CancellationToken cancellationToken)
         {
             var model = await service.GetDepartmentsSelectListAsync(cancellationToken);

@@ -15,7 +15,7 @@ export class StudentProfileService
     {
         try 
         {
-            const response = await axios.get(this.baseURL + "/profile", { 
+            const response = await axios.get(this.baseURL, { 
                 headers: this.getAuthHeaders(), });
             // console.log(response);
             return response.data;

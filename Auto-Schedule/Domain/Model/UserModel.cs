@@ -33,6 +33,7 @@ namespace Domain.Model
         public Guid? ScheduleTypeId { get; set; }
 
         // Student-specific
+        public Guid? DepartmentId { get; set; }
         public string? AcademicProgram { get; set; }
         public string? AcademicYear { get; set; }
         public DateOnly Registred { get; set; }

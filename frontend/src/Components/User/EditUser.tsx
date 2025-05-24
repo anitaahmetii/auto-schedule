@@ -10,12 +10,14 @@ import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
 import { SelectListItem } from '../../Interfaces/SelectListItem';
 import { GroupService } from '../../Services/GroupService';
 import { CityService } from '../../Services/CityService';
+import { DepartmentService } from '../../Services/DepartmentService';
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>(); 
   const [scheduleTypeList, setScheduleTypeList] = useState<SelectListItem[]>([]);
   const [groupList, setGroupList] = useState<SelectListItem[]>([]);
   const [cityList, setCityList] = useState<SelectListItem[]>([]);
+  const [departmentList, setDepartmentList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<UserModel>({
     id: id!,
     userName: '',
@@ -35,6 +37,7 @@ export default function EditUser() {
     academicGrade: '',
     lectureType: LectureType.Proffessor,
     scheduleTypeId: '',
+    departmentId: '',
     academicProgram: '',
     academicYear: '',
     registred: '',
@@ -86,6 +89,7 @@ export default function EditUser() {
         academicGrade: userData.academicGrade,
         lectureType: userData.lectureType,
         scheduleTypeId: userData.scheduleTypeId,
+        departmentId: userData.departmentId,
         academicProgram: userData.academicProgram,
         academicYear: userData.academicYear,
         registred: userData.registred ? new Date(userData.registred).toISOString().split('T')[0] : '',
@@ -133,11 +137,20 @@ export default function EditUser() {
       value: item.id,
       text: item.name,
     } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
-  
-  
   }
   useEffect(() => {
     fetchCitiesList();
+  }, []);
+  const fetchDepartmentList = async () => {
+    const response = await DepartmentService.GetSelectList();
+    setDepartmentList(response.map((item,i)=>({
+      key: i,
+      value: item.id,
+      text: item.name,
+    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
+  }
+  useEffect(() => {
+    fetchDepartmentList();
   }, []);
 
   const cleanPayload = (values: UserModel) => {
@@ -148,6 +161,7 @@ export default function EditUser() {
         delete payload.lectureType;
         delete payload.scheduleTypeId;
         delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
         delete payload.registred;
@@ -159,6 +173,7 @@ export default function EditUser() {
         delete payload.lectureType;
         delete payload.scheduleTypeId;
         delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
         delete payload.registred;
@@ -168,6 +183,7 @@ export default function EditUser() {
         delete payload.lectureType;
         delete payload.scheduleTypeId;
         delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
         delete payload.registred;
@@ -183,6 +199,7 @@ export default function EditUser() {
       case Role.Lecture:
         delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.departmentId;
         delete payload.academicYear;
         delete payload.registred;
         delete payload.responsibilities;
@@ -527,6 +544,20 @@ export default function EditUser() {
 
           {values.role === Role.Student && (
           <>
+           <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="departmentId" 
+                id="departmentId"
+                value= {values.departmentId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select Department</option>
+                {departmentList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
             <div className="form-group">
              <label>Academic Program</label>
              <input 

@@ -18,8 +18,8 @@ export class CityService {
    public static async EditOrAddCity(model: CityModel): Promise<void> {
     const result = await axios.post(`${CityService.baseUrl}`, model);
   }
-   public static async GetSelectList() : Promise<CityModel[]> {
-      const result = await axios.get(`${CityService.baseUrl}/GetCities`);
-      return result.data;
-    }
+  public static async GetSelectList() : Promise<CityModel[]> {
+    const result = await axios.get(`${CityService.baseUrl}/GetCities`);
+    return result.data;
+  }
 }

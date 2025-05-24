@@ -1,78 +1,101 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, List, ListHeader, ListItem } from "semantic-ui-react";
+import { StudentProfileModel } from "../../Interfaces/StudentProfileModel";
+import { StudentProfileService } from "../../Services/StudentProfileService";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { CityService } from "../../Services/CityService";
+import { DepartmentService } from "../../Services/DepartmentService";
 
 export default function StudentProfileTable() {
-  const student = {
-    id: "11111111111111111",
-    personId: "22222222222222",
-    firstName: "Filan",
-    lastName: "Fisteku",
-    birthDate: "14.10.2001",
-    gender: "F",
-    phoneNumber: "044-444-444",
-    department: "Computer Science",
-    academicProgram: "Bachelor",
-    email: "student@ok.com",
-    personalEmail: "personal@email.com",
-    birthplace: "Kosove, Prishtine",
-    academicYear: "2022/2023",
-    registred: "22.05.2025",
-    address: "Dardania",
-  };
+    const [student, setStudent] = useState<StudentProfileModel>();
+    const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({key: i, value: item.id, text: item.name}))
+    const [city, setCity] = useState<SelectListItem[]>([]); 
+    const [department, setDepartment] = useState<SelectListItem[]>([]); 
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await StudentProfileService.getStudentProfileAsync();
+            setStudent(result);
+        };
+        fetchData();
+    }, []);
+    useEffect(() => {
+        let cancelled = false; 
+        const fetchData = async () => {
+            try 
+            {
+                const [cityR, departmentR] = await Promise.all([CityService.GetSelectList(), DepartmentService.GetSelectList()]);
+                if (!cancelled)
+                {
+                    setCity(mapTo(cityR));
+                    setDepartment(mapTo(departmentR));
+                }
+            }
+            catch (err) 
+            {
+                console.error("Error loading the lists!", err);
+            }
+        };
+        fetchData();
+        return () => 
+        {
+            cancelled = true;                  
+        };
+    }, []);
 
   return (
     <div style={{ display: "flex", justifyContent: "center", padding: "20px", height: "100vh", }}>
         <Card raised style={{ width: "90vw", maxWidth: "700px", maxHeight: "90vh", display: "flex", flexDirection: "column",}}>
+            {/* {student.map(s => ())} */}
             <Card.Content style={{ backgroundColor: "#1b2a4e", color: "white", padding: "1.5em", borderTopLeftRadius: "1px",
                                 borderTopRightRadius: "0.28571429rem", flexShrink: 0, }}>
                 <Card.Header style={{ fontSize: "1.8rem", marginBottom: "0.3em", color: "white" }}>
-                    {student.firstName} {student.lastName}
+                    {student?.userName} {student?.lastName}
                 </Card.Header>
                 <Card.Meta style={{ color: "white"}}>
-                    {student.department} - {student.academicProgram} [{student.academicYear}]
+                    {department.find(d => d.value === student?.departmentId)?.text} - {student?.academicProgram} [{student?.academicYear}]
                 </Card.Meta>
             </Card.Content>
             <Card.Content style={{ overflowY: "auto", paddingTop: "1em", }}>
             <List divided relaxed>
                 <ListItem>
                     <ListHeader>Student ID</ListHeader>
-                        {student.id}
+                        {student?.id}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Personal ID</ListHeader>
-                        {student.personId}
+                        {student?.personalID}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Email</ListHeader>
-                        {student.email}
+                        {student?.email}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Personal Email</ListHeader>
-                        {student.personalEmail}
+                        {student?.personalEmail}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Birthdate</ListHeader>
-                    {student.birthDate}
+                    {student?.birthdate}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Birthplace</ListHeader>
-                    {student.birthplace}
+                    {city.find(c => c.value === student?.cityId)?.text}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Address</ListHeader>
-                    {student.address}
+                    {student?.address}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Gender</ListHeader>
-                    {student.gender}
+                    {student?.gender}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Phone Number</ListHeader>
-                    {student.phoneNumber}
+                    {student?.phoneNumber}
                 </ListItem>
                 <ListItem>
                     <ListHeader>Registred</ListHeader>
-                    {student.registred}
+                    {student?.registred}
                 </ListItem>
             </List>
         </Card.Content>

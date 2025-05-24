@@ -22,7 +22,8 @@ export interface UserModel {
   academicGrade: string | null;    // Lecture
   lectureType: LectureType;
   scheduleTypeId: string | null;
-  academicProgram: string | null;  // Student
+  departmentId: string | null;  // Student
+  academicProgram: string | null;  
   academicYear: string | null;
   registred: string | null;
   groupId: string | null;
