@@ -11,6 +11,8 @@ namespace Domain.Entities
         public string AcademicProgram { get; set; }
         public string AcademicYear {  get; set; }
         public DateOnly Registred { get; set; }
+        public Guid DepartmentId { get; set; }
+        public Department Department { get; set; }
         public Guid GroupId { get; set; }
         public Group Group { get; set; }
 
