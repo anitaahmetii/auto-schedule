@@ -92,7 +92,7 @@ namespace API.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpadteManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
         {
             try
             {
@@ -143,6 +143,26 @@ namespace API.Controllers
             catch (DbUpdateException ex)
             {
                 return BadRequest($"A database error occurred while deleting the schedue. {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("group/{groupId}")]
+        public async Task<IActionResult> GetGroupScheduleAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _service.GetGroupScheduleAsync(groupId, cancellationToken));
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enum;
 using Domain.Interface;
@@ -143,6 +144,14 @@ namespace Application.Services
             {
                 throw new Exception("An error occurred while deleting the schedule.", ex);
             }
+        }
+        public async Task<IReadOnlyList<ManualScheduleModel>> GetGroupScheduleAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            var schedules = await _context.Schedules
+                .Where(x => x.GroupId == groupId)
+                .ProjectTo<ManualScheduleModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+            return (!schedules.Any()) ? throw new KeyNotFoundException($"Group {groupId} has no schedules.") : schedules;
         }
         private void ValidateManualScheduleModel(ManualScheduleModel manualSchedule)
         {
