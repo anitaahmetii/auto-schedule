@@ -116,7 +116,7 @@ builder.Services.AddScoped<ICourseLecturesService, CourseLecturesService>();
 builder.Services.AddScoped<IAuthorizationManager, AuthorizationManager>();
 builder.Services.AddScoped<DbInitialization>();
 builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
-
+builder.Services.AddScoped<IManualScheduleService, ManualScheduleService>();
 
 
 

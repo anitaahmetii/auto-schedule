@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DepartmentModel } from "../Interfaces/DepartmentModel";
+import { StateService } from "./StateService";
 
 export class DepartmentService {
     private static baseUrl = "https://localhost:7085/api/Department";
@@ -24,8 +25,9 @@ export class DepartmentService {
     });
     return result.data;
   }
-  public static async GetSelectList() : Promise<DepartmentModel[]> {
-    const result = await axios.get(`${DepartmentService.baseUrl}/DepartmentsList`);
+  public static async GetSelectList(): Promise<DepartmentModel[]> 
+  {
+    const result = await axios.get(`${DepartmentService.baseUrl}/GetDepartmentsSelectListAsync`);
     return result.data;
   }
 }

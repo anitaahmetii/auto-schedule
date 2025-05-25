@@ -18,7 +18,7 @@ export class CourseLecturesService{
    public static async EditOrAddCourseLectures(model: CourseLecturesModel): Promise<void> {
     const result = await axios.post(`${CourseLecturesService.baseUrl}`, model);
   }
-  public static async GetSelectList() : Promise<SelectListItem[]> {
+  public static async GetSelectList() : Promise<CourseLecturesModel[]> {
     const result = await axios.get(`${CourseLecturesService.baseUrl}/GetCourseLectures`);
     return result.data;
   }

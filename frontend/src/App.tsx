@@ -36,6 +36,10 @@ import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable
 import Login from './Components/Login';
 import Header from './Components/Header';
 import StudentProfileTable from './Components/StudentProfile/StudentProfileTable';
+import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
+import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
+import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
+
 
 function App() {
   return (
@@ -104,6 +108,10 @@ function App() {
           <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />
           <Route path="/AddCourseLecture" element={<EditCourseLectures />} />
 
+          <Route path="/ManualSchedule" element={<ManualScheduleTable />} />
+          <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
+          <Route path="/EditManualSchedule/:id" element={<EditManualSchedule />} />
+          
           <Route path='/StudentProfile' element={<StudentProfileTable />} />
 
         </Routes>
