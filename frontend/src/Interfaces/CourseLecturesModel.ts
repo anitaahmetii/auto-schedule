@@ -3,5 +3,6 @@ export interface CourseLecturesModel{
     id:string|null;
     //lecturesId:string|null;
     courseId:string|null;
+    name: string;
 
 }

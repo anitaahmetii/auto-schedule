@@ -128,7 +128,7 @@ namespace Application.Services
                     Location = await _context.Location.FindAsync(locationId),
                     GroupId = groupId,
                     Group = await _context.Groups.FindAsync(groupId),
-                    CourseLectureId = courseLectureId,
+                    CourseLecturesId = courseLectureId,
                     CourseLectures =courseLecture
                 };
 
@@ -223,7 +223,7 @@ namespace Application.Services
                 .Include(cl => cl.Course)
                 .Include(cl => cl.User)
                 .FirstOrDefaultAsync(cl => cl.CourseId == courseId && cl.UserId == userId);
-            existingSchedule.CourseLectureId = courseLecture.Id;
+            existingSchedule.CourseLecturesId = courseLecture.Id;
 
 
             _context.Schedules.Update(existingSchedule);

@@ -1,6 +1,7 @@
 ﻿using Domain.Enum;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Domain.Entities
         public Days Day { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public Guid CourseLectureId { get; set; }
+        public Guid CourseLecturesId { get; set; }
         public CourseLectures CourseLectures { get; set; }
 
         public Guid HallsId { get; set; }

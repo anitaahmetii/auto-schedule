@@ -13,6 +13,6 @@ namespace Domain.Interface
         public Task<HallModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<HallModel> CreateOrUpdate(HallModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
-
+        public Task<List<ListItemModel>> GetHallsSelectListAsync(CancellationToken cancellationToken);
     }
 }
