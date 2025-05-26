@@ -70,4 +70,17 @@ export class ManualScheduleService
             throw error;
         }
     }
+    public static async getGroupScheduleAsync(groupId: string): Promise<ManualScheduleModel[]>
+    {
+        try 
+        {
+            var response = await axios.get(`${ManualScheduleService.baseUrl}/group/${groupId}`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error retrieving the schedule:", error);
+            throw error;
+        }
+    }
 }
