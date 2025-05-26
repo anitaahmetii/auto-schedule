@@ -166,9 +166,9 @@ namespace API.Controllers
         }
 
         [HttpGet("GetGroupSelectListAsync")]
-        public async Task<IActionResult> GetGroupSelectListAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupSelectListAsync()
         {
-            var model = await _groupService.GetGroupSelectListAsync(cancellationToken);
+            var model = await _groupService.GetGroupSelectListAsync();
             return Ok(model);
         }
     }

@@ -41,9 +41,9 @@ namespace API.Controllers
             return Ok();
         }
         [HttpGet("GetLocationSelectListAsync")]
-        public async Task<IActionResult> GetLocationSelectListAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetLocationSelectListAsync()
         {
-            var model = await service.GetLocationSelectListAsync(cancellationToken);
+            var model = await service.GetLocationSelectListAsync();
             return Ok(model);
         }
     }

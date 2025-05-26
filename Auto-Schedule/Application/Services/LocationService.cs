@@ -65,13 +65,13 @@ namespace Application.Services
             return model;
         }
 
-        public async Task<List<ListItemModel>> GetLocationSelectListAsync(CancellationToken cancellationToken)
+        public async Task<List<ListItemModel>> GetLocationSelectListAsync()
         {
             var model = await appDbContext.Location.Select(x => new ListItemModel()
             {
                 Id = x.Id,
                 Name = x.Name
-            }).ToListAsync(cancellationToken);
+            }).ToListAsync();
 
             return model;
         }

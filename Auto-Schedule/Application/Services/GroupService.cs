@@ -149,13 +149,13 @@ namespace Application.Services
                 throw new ArgumentOutOfRangeException(nameof(groupModel.Capacity), "The capacity must be a positive number.");
         }
 
-        public async Task<List<ListItemModel>> GetGroupSelectListAsync(CancellationToken cancellationToken)
+        public async Task<List<ListItemModel>> GetGroupSelectListAsync()
         {
             var model = await _context.Groups.Select(x => new ListItemModel()
             {
                 Id = x.Id,
                 Name = x.Name
-            }).ToListAsync(cancellationToken);
+            }).ToListAsync();
 
             return model;
         }
