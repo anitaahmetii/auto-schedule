@@ -53,11 +53,19 @@ export default function GroupScheduleTable()
         const fetchData = async () => {
             if (!schedule.groupId) return;
             const data = await ManualScheduleService.getGroupScheduleAsync(`${schedule.groupId}`);
-            setSchedules(data);
+            const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const sortedData = data.sort((a, b) => {
+                const dayComparison = daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+                if (dayComparison !== 0) return dayComparison;
+
+                if (a.startTime < b.startTime) return -1;
+                if (a.startTime > b.startTime) return 1;
+                return 0;
+            });
+            setSchedules(sortedData);
         }
         fetchData();
     }, [schedule.groupId]);
-    
     return (
         <Fragment>
             <div className=" d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%'}}>
