@@ -18,5 +18,6 @@ namespace Domain.Entities
 
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
         public ICollection<Student> Students { get; set; } = new List<Student>();
+        public ICollection<GroupSelectionPeriod> GroupSelectionPeriods { get; set;} = new List<GroupSelectionPeriod>();
     }
 }
