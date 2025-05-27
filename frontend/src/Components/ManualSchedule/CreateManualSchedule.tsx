@@ -10,6 +10,7 @@ import { DepartmentService } from "../../Services/DepartmentService";
 import { GroupService } from "../../Services/GroupService";
 import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
 import { ManualScheduleService } from "../../Services/ManualScheduleService";
+import React, { useRef } from 'react';
 
 export default function CreateManualSchedule()
 {
@@ -31,6 +32,8 @@ export default function CreateManualSchedule()
     const [locationsList, setLocationsList] = useState<SelectListItem[]>([]);
     const [departmentsList, setDepartmentsList] = useState<SelectListItem[]>([]);
     const [groupsList, setGroupsList] = useState<SelectListItem[]>([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    
     const dayOptions = [
         "Monday",
         "Tuesday",
@@ -77,17 +80,29 @@ export default function CreateManualSchedule()
         setManualSchedule({ ...manualSchedule, [name]: value });
         console.log(manualSchedule);
     }
-     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => 
-      {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => 
+    {
         e.preventDefault();
         try {
-          await ManualScheduleService.createManualScheduleAsync(manualSchedule);
-          navigate(`/ManualSchedule`);
-          console.log("Manual Schedule created successfully!");
+        await ManualScheduleService.createManualScheduleAsync(manualSchedule);
+        navigate(`/ManualSchedule`);
+        console.log("Manual Schedule created successfully!");
         } catch (error) {
-          console.error("Error creating the schedule:", error);
+        console.error("Error creating the schedule:", error);
         }
-      } 
+    } 
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => 
+    {
+        const selected = e.target.files?.[0];
+        if (!selected) return;
+        try {
+            await ManualScheduleService.ImportSchedule(selected);
+            navigate(`/ManualSchedule`);
+            // console.log("Orari u importua me sukses!");
+        } catch (err) {
+            console.error("The schedule could not be imported!", err);
+        }
+    }
     return (
         <Fragment>
             <div className="d-flex justify-content-center align-items-center mt-4 mb-3 px-4">
@@ -172,16 +187,25 @@ export default function CreateManualSchedule()
                                 </select>
                             </div>
                         </div>
-                        <div className="d-flex justify-content-center" style={{ marginTop: "5%" }} >
+                        <div className="d-flex justify-content-center" style={{ marginTop: "5%", marginLeft: "1%" }} >
                             <Button color="grey" type="submit" onClick={() => navigate(`/ManualSchedule`)}>Cancel</Button>
                             <Button color="olive" type="submit">Create</Button>
                         </div>
                     </Form>
                     <Divider style={{marginTop: '5%'}} />
-                    <div className="d-flex align-items-center gap-3" style={{ marginTop: "2rem", marginLeft: '5%'}} >
-                        <Button onClick={() => navigate("../ScheduleTable")} style={{fontSize: '10px', marginLeft: '35%'}}>
-                            Want to Import the Schedule?
+                    <div className="d-flex align-items-center gap-3" style={{ marginTop: "2rem", marginLeft: '0%'}} >
+                        {/* <Header as="h2">Import Schedule</Header>
+                        <input type="file" accept=".xlsx,.xls" onChange={handleFileChange}/> */}
+                        <Button color="grey" onClick={() => fileInputRef.current?.click()} style={{fontSize: '15px', marginLeft: '35%'}}> 
+                            Upload Schedule 
                         </Button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                accept=".csv, .xlsx"
+                                onChange={handleFileChange}
+                            />
                     </div>
                 </div>
             </div>

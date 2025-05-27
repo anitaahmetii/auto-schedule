@@ -5,12 +5,12 @@ using Domain.Model;
 
 namespace Application.Mappings
 {
-    public class ScheduleMappings : Profile
+    public class ImportScheduleMappings : Profile
     {
 
-        public ScheduleMappings()
+        public ImportScheduleMappings()
         {
-            CreateMap<Schedule, ScheduleModel>()
+            CreateMap<Schedule, ImportScheduleModel>()
             .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department.Code))
             .ForMember(dest => dest.Halls, opt => opt.MapFrom(src => src.Halls.Name))
             .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Location.Name))
@@ -18,7 +18,7 @@ namespace Application.Mappings
             .ForMember(dest => dest.CourseLecture, opt => opt.MapFrom(
             src => src.CourseLectures.Course.Name + " " + src.CourseLectures.User.UserName +
             " " + src.CourseLectures.User.LastName));
-            CreateMap<ScheduleModel, Schedule>();
+            CreateMap<ImportScheduleModel, Schedule>();
         }
     }
 }

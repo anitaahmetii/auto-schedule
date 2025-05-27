@@ -1,6 +1,6 @@
 ﻿namespace Domain.Model
 {
-    public class ScheduleModel
+    public class ImportScheduleModel
     {
         public Guid? Id { get; set; }
         public string Day { get; set; }

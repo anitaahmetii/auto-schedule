@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ManualScheduleModel } from "../Interfaces/ManualScheduleModel";
+import { ScheduleModel } from "../Interfaces/ScheduleModel";
 
 export class ManualScheduleService
 {
@@ -69,5 +70,16 @@ export class ManualScheduleService
             console.error("Error deleting the schedule:", error);
             throw error;
         }
+    }
+    public static async ImportSchedule(file: File) : Promise<ScheduleModel[]>
+    {
+        const formData = new FormData();
+        formData.append("file", file);
+        const result = await axios.post(`${ManualScheduleService.baseUrl}/upload`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return result.data;
     }
 }
