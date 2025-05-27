@@ -28,9 +28,7 @@ import EditReceptionist from './Components/Receptionist/EditReceptionist';
 import CoordinatorTable from './Components/Coordinator/CoordinatorTable';
 import DepartmentTable from './Components/Department/DepartmentTable';
 import EditDepartment from './Components/Department/EditDepartment';
-import ScheduleTable from './Components/Schedule/ScheduleTable';
 import EditCoordinator from './Components/Coordinator/EditCoordinator';
-import EditSchedule from './Components/Schedule/EditSchedule';
 import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
@@ -102,9 +100,6 @@ function App() {
           <Route path="/DepartmentTable" element={<DepartmentTable />} />
           <Route path="/EditDepartment/:id" element={<EditDepartment />} />
           <Route path="/AddDepartment" element={<EditDepartment />} />
-
-          <Route path="/ScheduleTable" element={<ScheduleTable />} />
-          <Route path="/EditSchedule/:id" element={<EditSchedule />} />
 
           <Route path="/" element={<CourseLecturesTable />} />
           <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />

@@ -169,5 +169,14 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpPost("upload")]
+        public async Task<IActionResult> ImportScheduleFromExcelAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var schedule = await _service.ImportScheduleFromExcelAsync(file);
+            return Ok(schedule);
+        }
     }
 }
