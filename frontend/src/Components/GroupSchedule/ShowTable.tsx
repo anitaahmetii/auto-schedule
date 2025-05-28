@@ -51,7 +51,7 @@ export default function ShowTable({ schedule }: ScheduleModel)
     });
     return (
         <Fragment>
-                 <div className={`ui segment px-4 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
+                <div className={`ui segment px-4 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
                  style={{ marginTop: '30px', width: '100%', maxHeight: '60vh', overflowY: 'auto' }}>
                         <Table className={`ui striped single line table ${(schedule && schedule.length > 0) ? "olive" : ""}`} >
                             <Table.Header>
