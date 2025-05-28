@@ -10,5 +10,8 @@ namespace Domain.Interface
     public interface IGroupSelectionPeriodService
     {
         Task<GroupSelectionPeriodModel> CreateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken);
+        Task<List<GroupSelectionPeriodModel>> GetAllGroupSelectionPeriodsAsync(CancellationToken cancellationToken);
+        Task<GroupSelectionPeriodModel> UpdateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken);
+        Task<GroupSelectionPeriodModel> DeleteGroupSelectionPeriodAsync(Guid Id, CancellationToken cancellationToken);
     }
 }

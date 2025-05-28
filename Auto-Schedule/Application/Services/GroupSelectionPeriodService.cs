@@ -45,5 +45,25 @@ namespace Application.Services
                 throw new Exception("An unexpected error occurred while creating the group selection period.", ex);
             }
         }
+        public async Task<GroupSelectionPeriodModel> DeleteGroupSelectionPeriodAsync(Guid Id, CancellationToken cancellationToken)
+        {
+            var periodId = await _context.GroupSelectionPeriods.FirstOrDefaultAsync(p => p.Id == Id, cancellationToken) ?? throw new Exception("No group selection period found to be deleted!");
+            _context.GroupSelectionPeriods.Remove(periodId);
+            await _context.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<GroupSelectionPeriodModel>(periodId);
+        }
+        public async Task<List<GroupSelectionPeriodModel>> GetAllGroupSelectionPeriodsAsync(CancellationToken cancellationToken)
+        {
+            var groupSelectionsPeriods = await _context.GroupSelectionPeriods.ToListAsync(cancellationToken);
+            return (groupSelectionsPeriods.Count == 0) ? throw new KeyNotFoundException(nameof(groupSelectionsPeriods)) : _mapper.Map<List<GroupSelectionPeriodModel>>(groupSelectionsPeriods);
+        }
+
+        public async Task<GroupSelectionPeriodModel> UpdateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken)
+        {
+            var period = await _context.GroupSelectionPeriods.FindAsync(groupSelectionPeriodModel.Id, cancellationToken);
+            _mapper.Map(groupSelectionPeriodModel, period);
+            await _context.SaveChangesAsync(cancellationToken);
+            return (groupSelectionPeriodModel == null) ? throw new KeyNotFoundException(nameof(groupSelectionPeriodModel)) : groupSelectionPeriodModel;
+        }
     }
 }
