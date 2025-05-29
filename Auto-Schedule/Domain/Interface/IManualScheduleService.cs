@@ -17,6 +17,6 @@ namespace Domain.Interface
         Task<ManualScheduleModel> DeleteManualScheduleAsync(Guid Id, CancellationToken cancellationToken);
         Task<IReadOnlyList<ManualScheduleModel>> GetGroupScheduleAsync(Guid groupId, CancellationToken cancellationToken);
         Task<List<ImportScheduleModel>> ImportScheduleFromExcelAsync(IFormFile file);
-
+        Task<List<ManualScheduleModel>> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken);
     }
 }

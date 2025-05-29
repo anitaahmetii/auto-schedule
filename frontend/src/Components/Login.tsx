@@ -24,6 +24,16 @@ export default function Login() {
        password: formData.password,
      };
      const response = await UserService.Login(user);
+      localStorage.setItem("userRole", response.userRole);  
+      localStorage.setItem("id", response.userData.id!);
+      localStorage.setItem("token", response.token);
+
+      const role = localStorage.getItem("userRole");
+      const id = localStorage.getItem("id"); 
+      if (role === "Student") 
+      {
+        localStorage.setItem("studentId", id || "");
+      }
      navigete("/state");
     }
 

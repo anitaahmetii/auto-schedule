@@ -5,6 +5,13 @@ import { ScheduleModel } from "../Interfaces/ScheduleModel";
 export class ManualScheduleService
 {
     private static readonly baseUrl = "https://localhost:7085/api/ManualSchedule";
+    private static getAuthHeaders() 
+    {
+        const token = localStorage.getItem("token");
+        return {
+            Authorization: token ? `Bearer ${token}` : "",
+        };
+    }
 
     public static async createManualScheduleAsync(model: ManualScheduleModel): Promise<ManualScheduleModel>
     {
@@ -94,5 +101,20 @@ export class ManualScheduleService
             },
         });
         return result.data;
+    }
+    public static async selectGroupByStudent(studentId: string, groupId: string): Promise<ManualScheduleModel[]>
+    {
+        try
+        {
+            const response = await axios.post(`${this.baseUrl}/selectGroup?studentId=${studentId}&groupId=${groupId}`, null, {
+                headers: this.getAuthHeaders(),
+            });
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error selecting the group:", error);
+            throw error;
+        }
     }
 }

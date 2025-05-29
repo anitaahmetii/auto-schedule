@@ -5,9 +5,11 @@ import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
 import { SelectListItem } from "../../Interfaces/SelectListItem";
 import { GroupService } from "../../Services/GroupService";
 import { ManualScheduleService } from "../../Services/ManualScheduleService";
+import { Button } from "semantic-ui-react";
 
 export default function GroupScheduleTable()
 {
+    const [studentId, setStudentId] = useState<string | null>(null);
     const [schedule, setSchedule] = useState<ManualScheduleModel>({
         id: null,
         day: "",
@@ -19,10 +21,18 @@ export default function GroupScheduleTable()
         departmentId: "",
         groupId: ""
     });
-    const[schedules, setSchedules] = useState<ManualScheduleModel[]>([]);
+    const [schedules, setSchedules] = useState<ManualScheduleModel[]>([]);
     const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name}))
-    const[groups, setGroups] = useState<SelectListItem[]>([]);
-
+    const [groups, setGroups] = useState<SelectListItem[]>([]);
+    const [isSelected, setIsSelected] = useState(false);
+    const [canChange, setCanChange] = useState(false);
+    useEffect(() => {
+        const storedStudentId = localStorage.getItem("studentId");
+        if (storedStudentId) 
+        {
+            setStudentId(storedStudentId);
+        }
+    }, []);
     useEffect(() => {
         let isFetched = false;
         const fetchData = async () => {
@@ -48,6 +58,7 @@ export default function GroupScheduleTable()
     {
         const { name, value } = e.target;
         setSchedule({...schedule, [name]: value});
+        setIsSelected(true);
     };
     useEffect(() => {
         const fetchData = async () => {
@@ -66,17 +77,49 @@ export default function GroupScheduleTable()
         }
         fetchData();
     }, [schedule.groupId]);
+    const handleSubmit = async () => 
+    {
+        await ManualScheduleService.selectGroupByStudent(studentId!, schedule.groupId);
+        setIsSelected(false);
+        setCanChange(true);
+    }
     return (
         <Fragment>
             <div className=" d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%'}}>
                 <h1 style={{ marginBottom: '20px', fontWeight: 'bold', wordSpacing: '2px' }}>Group Selection</h1>
                 <select className="olive" style={{ width: '200px', padding: '10px', fontSize: '16px', border: '2px solid olive', fontWeight: 'bold' }}
-                    name="groupId" value={schedule.groupId} onChange={(e) => handleChange(e)}>
+                name="groupId" value={schedule.groupId} onChange={(e) => handleChange(e)}
+                disabled={canChange === true}
+                >
                     <option value="" disabled>Select Your Group</option>
                     {groups.map(g => (
                         <option key={g.key} value={g.value!}>{g.text}</option>
-                    ))};
+                    ))}
                 </select>
+                {isSelected &&
+                    <div style={{marginTop: '2%'}}>
+                        <Button color="grey" type="submit" 
+                        onClick={() => {setSchedule({id: null,
+                                                    day: "",
+                                                    startTime: "",
+                                                    endTime: "",
+                                                    courseLecturesId: "",
+                                                    hallsId: "",
+                                                    locationId: "",
+                                                    departmentId: "",
+                                                    groupId: ""}); 
+                                        setIsSelected(false); 
+                                        setSchedules([]);}}>Cancel</Button>
+                        <Button color="olive" type="submit" onClick={handleSubmit}>
+                            Select
+                        </Button>
+                    </div>
+                }
+                {canChange && 
+                    <Button color="olive" style={{marginTop: '2%'}} onClick={() => {setCanChange(false); setIsSelected(true);}}>
+                        Change
+                    </Button>
+                }
                 <ShowTable schedule={schedules}/>
             </div>
         </Fragment>

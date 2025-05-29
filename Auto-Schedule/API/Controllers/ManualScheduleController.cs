@@ -1,6 +1,7 @@
 ﻿using Application.Services;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -177,6 +178,20 @@ namespace API.Controllers
 
             var schedule = await _service.ImportScheduleFromExcelAsync(file);
             return Ok(schedule);
+        }
+        [Authorize(Roles = "Student")]
+        [HttpPost("selectGroup")]
+        public async Task<IActionResult> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var schedules = await _service.SelectGroupByStudent(studentId, groupId, cancellationToken);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

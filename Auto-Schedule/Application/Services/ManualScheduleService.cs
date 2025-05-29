@@ -315,5 +315,26 @@ namespace Application.Services
                 throw new InvalidOperationException("This schedule already exists!");
             }
         }
+        public async Task<List<ManualScheduleModel>> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken)
+        {
+            var student = await _context.Users
+                .OfType<Student>()
+                .FirstOrDefaultAsync(s => s.Id == studentId, cancellationToken)
+                  ?? throw new Exception("Student does not exist!");
+
+            var group = await _context.Groups
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.CourseLectures)
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.Halls)
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.Location)
+                .FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken)
+                ?? throw new Exception("Group does not exist!");
+            student.GroupId = group.Id;
+            await _context.SaveChangesAsync(cancellationToken);
+            var groupSchedule = _mapper.Map<List<ManualScheduleModel>>(group.Schedules);
+            return groupSchedule;
+        }
     }
 }
