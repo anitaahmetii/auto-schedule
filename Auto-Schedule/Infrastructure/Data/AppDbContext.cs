@@ -8,7 +8,11 @@ namespace Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Student>().HasBaseType<User>();
         }
 
         public DbSet<User> Users { get; set; }
