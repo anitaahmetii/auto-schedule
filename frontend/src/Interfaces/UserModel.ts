@@ -26,5 +26,4 @@ export interface UserModel {
   academicProgram: string | null;  
   academicYear: string | null;
   registred: string | null;
-  groupId: string | null;
 }

@@ -13,8 +13,8 @@ namespace Domain.Entities
         public DateOnly Registred { get; set; }
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
-        public Guid GroupId { get; set; }
-        public Group Group { get; set; }
+        public Guid? GroupId { get; set; }
+        public Group? Group { get; set; }
 
     }
 }

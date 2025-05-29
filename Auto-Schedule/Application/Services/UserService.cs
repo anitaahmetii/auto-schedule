@@ -261,7 +261,6 @@ namespace Application.Services
                     student.AcademicProgram = model.AcademicProgram;
                     student.AcademicYear = model.AcademicYear;
                     student.Registred = model.Registred;
-                    student.GroupId = model.GroupId!.Value;
                     break;
             }
         }
@@ -385,7 +384,6 @@ namespace Application.Services
                 {
                     model.Role = Domain.Enum.Role.Student;
                     model.AcademicProgram = student.AcademicProgram;
-                    model.GroupId = student.GroupId;
                 }
 
                 userModels.Add(model);
@@ -446,7 +444,6 @@ namespace Application.Services
             {
                 model.Role = Domain.Enum.Role.Student;
                 model.AcademicProgram = student.AcademicProgram;
-                model.GroupId = student.GroupId;
             }
 
             return model;

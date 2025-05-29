@@ -8,14 +8,12 @@ import { Role } from '../../Interfaces/Role';
 import { LectureType } from '../../Interfaces/LectureType';
 import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
 import { SelectListItem } from '../../Interfaces/SelectListItem';
-import { GroupService } from '../../Services/GroupService';
 import { CityService } from '../../Services/CityService';
 import { DepartmentService } from '../../Services/DepartmentService';
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>(); 
   const [scheduleTypeList, setScheduleTypeList] = useState<SelectListItem[]>([]);
-  const [groupList, setGroupList] = useState<SelectListItem[]>([]);
   const [cityList, setCityList] = useState<SelectListItem[]>([]);
   const [departmentList, setDepartmentList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<UserModel>({
@@ -41,7 +39,6 @@ export default function EditUser() {
     academicProgram: '',
     academicYear: '',
     registred: '',
-    groupId: '',
   } as UserModel);
 
    useEffect(() => {
@@ -93,7 +90,6 @@ export default function EditUser() {
         academicProgram: userData.academicProgram,
         academicYear: userData.academicYear,
         registred: userData.registred ? new Date(userData.registred).toISOString().split('T')[0] : '',
-        groupId: userData.groupId,
       } as UserModel);
    };
    const navigate = useNavigate();
@@ -112,21 +108,6 @@ export default function EditUser() {
   }
   useEffect(() => {
       fetchScheduleTypeList();
-  }, []);
-
-  const fetchGroupList = async () => {
-    const response = await GroupService.GetSelectList();
-  
-    setGroupList(response.map((item,i)=>({
-      key: i,
-      value: item.id,
-      text: item.name,
-    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
-  
-  
-  }
-  useEffect(() => {
-    fetchGroupList();
   }, []);
 
    const fetchCitiesList = async () => {
@@ -160,7 +141,6 @@ export default function EditUser() {
       case Role.Admin:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
         delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
@@ -172,7 +152,6 @@ export default function EditUser() {
       case Role.Coordinator:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
         delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
@@ -182,7 +161,6 @@ export default function EditUser() {
       case Role.Receptionist:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
         delete payload.departmentId;
         delete payload.academicProgram;
         delete payload.academicYear;
@@ -197,7 +175,6 @@ export default function EditUser() {
         delete payload.academicGrade;
         break;
       case Role.Lecture:
-        delete payload.groupId;
         delete payload.academicProgram;
         delete payload.departmentId;
         delete payload.academicYear;
@@ -594,20 +571,6 @@ export default function EditUser() {
               value={values.registred ?? ''}
               onChange={handleChange}
             />
-            </div>
-            <div className="col-md-6-w-100%">
-              <select className="form-control"
-                name="groupId" 
-                id="groupId"
-                value= {values.groupId!}
-                onChange={handleChange}
-                style={{ marginBottom: "15px"}}
-              >
-                <option value="" disabled>Select GroupId</option>
-                {groupList.map((x) => (
-                  <option key={x.key} value={x.value!}>{x.text}</option>
-                ))}
-              </select>
             </div>
           </>
           )}
