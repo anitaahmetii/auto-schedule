@@ -27,13 +27,12 @@ export default function Login() {
       localStorage.setItem("userRole", response.userRole);  
       localStorage.setItem("id", response.userData.id!);
       localStorage.setItem("token", response.token);
+      localStorage.setItem("departmentId", response.userData.departmentId!);
 
-      const role = localStorage.getItem("userRole");
-      const id = localStorage.getItem("id"); 
-      if (role === "Student") 
-      {
-        localStorage.setItem("studentId", id || "");
-      }
+      if (response.userRole === "Student") {
+      localStorage.setItem("studentId", response.userData.id!);
+      localStorage.setItem("departmentId", response.userData.departmentId!);
+    }
      navigete("/state");
     }
 

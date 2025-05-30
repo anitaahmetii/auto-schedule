@@ -9,7 +9,6 @@ export class GroupSelectionPeriodService
         const token = localStorage.getItem("token");
         return {
         Authorization: token ? `Bearer ${token}` : "",
-        "Content-Type": "application/json",
         };
     }
 
@@ -70,6 +69,21 @@ export class GroupSelectionPeriodService
         catch (error) 
         {
             console.error("Error deleting group selection period:", error);
+            throw error;
+        }
+    }
+    public static async isGroupSelectionPeriodActiveAsync(departmentId: string): Promise<GroupSelectionPeriodModel>
+    {
+        try
+        {
+            const response = await axios.get(`${this.baseUrl}/active?departmentId=${departmentId}`, {
+                headers: this.getAuthHeaders(),
+            });
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("No active group selection period found for the specified department.", error);
             throw error;
         }
     }

@@ -15,6 +15,6 @@ namespace Domain.Interface
         Task<List<GroupModel>> GetAllGroupsAsync(CancellationToken cancellationToken);
         Task<GroupModel> DeleteGroupAsync(Guid Id, CancellationToken cancellationToken);
         public Task<List<ListItemModel>> GetGroupSelectListAsync();
-
+        Task<GroupModel> GetGroupByStudentAsync(Guid studentId, CancellationToken cancellationToken);
     }
 }

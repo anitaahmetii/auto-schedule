@@ -56,6 +56,14 @@ namespace Application.Services
                  new Claim(ClaimTypes.Email,user.Email),
             };
             var userRoles = await userManager.GetRolesAsync(user);
+            Student? student = null;
+            if (userRoles.Contains("Student"))
+            {
+                student = await appDbContext.Students.FirstOrDefaultAsync(s => s.Id == user.Id, cancellationToken);
+            }
+
+
+
             foreach (var role in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
@@ -80,6 +88,14 @@ namespace Application.Services
                 userData.Role = Domain.Enum.Role.Lecture;
             else
                 userData.Role = Domain.Enum.Role.Student;
+
+            if (student != null)
+            {   
+                userData.DepartmentId = student.DepartmentId;
+                userData.AcademicProgram = student.AcademicProgram;
+                userData.AcademicYear = student.AcademicYear;
+                userData.Registred = student.Registred;
+            }
 
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
@@ -384,6 +400,9 @@ namespace Application.Services
                 {
                     model.Role = Domain.Enum.Role.Student;
                     model.AcademicProgram = student.AcademicProgram;
+                    model.AcademicYear = model.AcademicYear;
+                    model.DepartmentId = model.DepartmentId;
+                    model.Registred = model.Registred;
                 }
 
                 userModels.Add(model);
@@ -444,6 +463,9 @@ namespace Application.Services
             {
                 model.Role = Domain.Enum.Role.Student;
                 model.AcademicProgram = student.AcademicProgram;
+                model.AcademicYear = model.AcademicYear;
+                model.DepartmentId = model.DepartmentId;
+                model.Registred = model.Registred;
             }
 
             return model;

@@ -1,5 +1,7 @@
-﻿using Domain.Interface;
+﻿using Domain.Entities;
+using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -170,6 +172,13 @@ namespace API.Controllers
         {
             var model = await _groupService.GetGroupSelectListAsync();
             return Ok(model);
+        }
+        [Authorize(Roles = "Student")]
+        [HttpGet("studentGroup")]
+        public async Task<IActionResult> GetGroupByStudentAsync(Guid studentId, CancellationToken cancellationToken)
+        {
+            return (studentId == Guid.Empty) ? BadRequest("Student does not exist!") : 
+                Ok(await _groupService.GetGroupByStudentAsync(studentId, cancellationToken));
         }
     }
 }

@@ -137,14 +137,6 @@ namespace Application.Services
                 throw new Exception("An error occurred while deleting the group.", ex);
             }
         }
-        public async Task<bool> SelectGroupByStudentAsync(Guid studentId, Guid groupId, CancellationToken cancellationToken)
-        {
-            var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == studentId, cancellationToken) ?? throw new Exception("Student does not exist!");
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken) ?? throw new Exception("Group does not exist!");
-            student.GroupId = group.Id;
-            await _context.SaveChangesAsync(cancellationToken);
-            return true;
-        }
         private void ValidateGroupModel(GroupModel groupModel)
         {
             if (groupModel == null)
@@ -166,6 +158,16 @@ namespace Application.Services
             }).ToListAsync();
 
             return model;
+        }
+        public async Task<GroupModel> GetGroupByStudentAsync(Guid studentId, CancellationToken cancellationToken)
+        {
+            var student = await _context.Users
+                .OfType<Student>()
+                .FirstOrDefaultAsync(s => s.Id == studentId, cancellationToken) ?? throw new Exception("Student does not exist!");
+
+            if (student.GroupId == null) throw new Exception("Student has not chosen a group yet!");
+            var groups = await _context.Groups.FirstOrDefaultAsync(g => g.Id == student.GroupId, cancellationToken) ?? throw new Exception("Group not found!"); 
+            return _mapper.Map<GroupModel>(groups);
         }
     }
 }

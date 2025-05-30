@@ -7,6 +7,7 @@ import { GroupSelectionPeriodService } from "../../Services/GroupSelectionPeriod
 import { SelectListItem } from "../../Interfaces/SelectListItem";
 import { DepartmentService } from "../../Services/DepartmentService";
 
+
 export default function GroupSelectionPeriodTable()
 {
     const [isEditing, setIsEditing] = useState(false);
@@ -23,6 +24,7 @@ export default function GroupSelectionPeriodTable()
     });
     const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name}));
     const [departments, setDepartments] = useState<SelectListItem[]>([]);
+    
     useEffect(() => {
         const fetchData = async () => {
             const result = await GroupSelectionPeriodService.getAllGroupSelectionPeriodsAsync();

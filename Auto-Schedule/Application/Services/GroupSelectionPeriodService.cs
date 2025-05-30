@@ -26,11 +26,18 @@ namespace Application.Services
         {
             try
             {
-                if (groupSelectionPeriodModel.StartDate > groupSelectionPeriodModel.EndDate) throw new ArgumentException("StartDate duhet të jetë para EndDate.");
+                if (groupSelectionPeriodModel.StartDate > groupSelectionPeriodModel.EndDate) throw new ArgumentException("Start date must be earlier than the end date.");
+                //if (groupSelectionPeriodModel.StartTime > groupSelectionPeriodModel.EndTime) throw new ArgumentException("Start time must be earlier than the end time.");
+                var exists = await _context.GroupSelectionPeriods
+                    .AnyAsync(p => p.DepartmentId == groupSelectionPeriodModel.DepartmentId, cancellationToken);
+
+                if (exists)
+                    throw new Exception("A group selection period has already been set for this department.");
+
                 var period = _mapper.Map<GroupSelectionPeriod>(groupSelectionPeriodModel);
                 await _context.GroupSelectionPeriods.AddAsync(period, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
-                return (period == null) ? throw new ArgumentNullException(nameof(groupSelectionPeriodModel)) : groupSelectionPeriodModel;
+                return  groupSelectionPeriodModel;
             }
             catch (DbUpdateException dbEx)
             {
@@ -56,6 +63,29 @@ namespace Application.Services
         {
             var groupSelectionsPeriods = await _context.GroupSelectionPeriods.ToListAsync(cancellationToken);
             return (groupSelectionsPeriods.Count == 0) ? throw new KeyNotFoundException(nameof(groupSelectionsPeriods)) : _mapper.Map<List<GroupSelectionPeriodModel>>(groupSelectionsPeriods);
+        }
+
+        public async Task<GroupSelectionPeriodModel> IsGroupSelectionPeriodActiveAsync(Guid departmentId, CancellationToken cancellationToken)
+        {
+            var period = await _context.GroupSelectionPeriods
+                .FirstOrDefaultAsync(p => p.DepartmentId == departmentId, cancellationToken);
+
+            if (period == null)
+            {
+                throw new InvalidOperationException("No group selection period found for the specified department.");
+            }
+
+            var now = DateTime.Now;
+
+            var start = period.StartDate.ToDateTime(period.StartTime);
+            var end = period.EndDate.ToDateTime(period.EndTime);
+
+            if (now >= start && now <= end)
+            {
+                return _mapper.Map<GroupSelectionPeriodModel>(period);
+            }
+
+            throw new InvalidOperationException("No active group selection period at this time.");
         }
 
         public async Task<GroupSelectionPeriodModel> UpdateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken)

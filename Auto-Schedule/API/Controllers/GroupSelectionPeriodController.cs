@@ -2,6 +2,7 @@
 using Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -38,7 +39,13 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroupSelectionPeriodAsync(Guid Id, CancellationToken cancellationToken)
         {
-            return (Id == Guid.Empty) ? BadRequest("Period ID does not exist!!") : Ok(await _service.DeleteGroupSelectionPeriodAsync(Id, cancellationToken));
+            return (Id == Guid.Empty) ? BadRequest("Period ID does not exist!") : Ok(await _service.DeleteGroupSelectionPeriodAsync(Id, cancellationToken));
+        }
+        [Authorize(Roles = "Student")]
+        [HttpGet("active")]
+        public async Task<IActionResult> IsGroupSelectionPeriodActiveAsync(Guid departmentId, CancellationToken cancellationToken)
+        {
+            return (departmentId == Guid.Empty) ? BadRequest("Department ID is invalid.") : Ok(await _service.IsGroupSelectionPeriodActiveAsync(departmentId, cancellationToken));
         }
     }
 }
