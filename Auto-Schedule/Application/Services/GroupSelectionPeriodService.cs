@@ -65,7 +65,7 @@ namespace Application.Services
             return (groupSelectionsPeriods.Count == 0) ? throw new KeyNotFoundException(nameof(groupSelectionsPeriods)) : _mapper.Map<List<GroupSelectionPeriodModel>>(groupSelectionsPeriods);
         }
 
-        public async Task<GroupSelectionPeriodModel> IsGroupSelectionPeriodActiveAsync(Guid departmentId, CancellationToken cancellationToken)
+        public async Task<GroupSelectionPeriodModel?> IsGroupSelectionPeriodActiveAsync(Guid departmentId, CancellationToken cancellationToken)
         {
             var period = await _context.GroupSelectionPeriods
                 .FirstOrDefaultAsync(p => p.DepartmentId == departmentId, cancellationToken);
@@ -84,8 +84,8 @@ namespace Application.Services
             {
                 return _mapper.Map<GroupSelectionPeriodModel>(period);
             }
-
-            throw new InvalidOperationException("No active group selection period at this time.");
+            return null;
+            //throw new InvalidOperationException("No active group selection period at this time.");
         }
 
         public async Task<GroupSelectionPeriodModel> UpdateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken)

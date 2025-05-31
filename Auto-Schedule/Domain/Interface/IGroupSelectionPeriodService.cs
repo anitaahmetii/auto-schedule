@@ -13,6 +13,6 @@ namespace Domain.Interface
         Task<List<GroupSelectionPeriodModel>> GetAllGroupSelectionPeriodsAsync(CancellationToken cancellationToken);
         Task<GroupSelectionPeriodModel> UpdateGroupSelectionPeriodAsync(GroupSelectionPeriodModel groupSelectionPeriodModel, CancellationToken cancellationToken);
         Task<GroupSelectionPeriodModel> DeleteGroupSelectionPeriodAsync(Guid Id, CancellationToken cancellationToken);
-        Task<GroupSelectionPeriodModel> IsGroupSelectionPeriodActiveAsync(Guid DepartmentId, CancellationToken cancellationToken);
+        Task<GroupSelectionPeriodModel?> IsGroupSelectionPeriodActiveAsync(Guid DepartmentId, CancellationToken cancellationToken);
     }
 }
