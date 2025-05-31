@@ -57,12 +57,37 @@ namespace Application.Services
         {
             try
             {
-                var schedules = await _context.Schedules.ToListAsync(cancellationToken);
-                if (schedules == null)
+                var today = DateTime.UtcNow.Date;
+                var schedule = await _context.Schedules
+                    .Include(s => s.Department)
+                    .Include(x => x.Halls)
+                    .Include(x => x.Location)
+                    .Include(x => x.Group)
+                    .Include(s => s.Reports)
+                    .Include(x => x.CourseLectures)
+                    .ThenInclude(x => x.Course)
+                    .Include(x => x.CourseLectures)
+                     .ThenInclude(x => x.User)
+                    .Where(s => !s.IsCanceled)
+                    .OrderBy(s => s.Day)
+                    .ThenBy(s => s.StartTime)
+                    .ToListAsync(cancellationToken);
+
+                var model = _mapper.Map<List<ManualScheduleModel>>(schedule);
+                foreach (var m in model)
+                {
+                    var reportsForToday = schedule
+                        .First(s => s.Id == m.Id)
+                        .Reports
+                        ?.Any(r => r.DateTime.Date == today) ?? false;
+
+                    m.HasReport = reportsForToday;
+                }
+                if (model == null)
                 {
                     throw new Exception("No schedule found!");
                 }
-                return _mapper.Map<List<ManualScheduleModel>>(schedules);
+                return _mapper.Map<List<ManualScheduleModel>>(model);
             }
             catch (OperationCanceledException ex)
             {
@@ -77,7 +102,14 @@ namespace Application.Services
         {
             try
             {
-                var scheduleId = await _context.Schedules.FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+                var scheduleId = await _context.Schedules.Include(x => x.Department)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .Include(x => x.Group)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.Course)
+                .ThenInclude(x => x.User)
+                .Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
                 if (scheduleId == null)
                 {
                     throw new Exception("Schedule not found!");
@@ -305,6 +337,108 @@ namespace Application.Services
             {
                 throw new InvalidOperationException("This schedule already exists!");
             }
+        }
+
+        public async Task<List<ManualScheduleModel>> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
+        {
+            var today = DateTime.UtcNow.Date;
+
+            var schedules = await _context.Schedules
+                .Include(s => s.Department)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .Include(x => x.Group)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.Course)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.User)
+                .Include(s => s.Reports)
+                .Where(s => s.Day == day && !s.IsCanceled)
+                .OrderBy(s => s.StartTime)
+                .ToListAsync(cancellationToken);
+
+            var model = _mapper.Map<List<ManualScheduleModel>>(schedules);
+
+            foreach (var m in model)
+            {
+                var reportsForToday = schedules
+                    .First(s => s.Id == m.Id)
+                    .Reports
+                    ?.Any(r => r.DateTime.Date == today) ?? false;
+
+                m.HasReport = reportsForToday;
+            }
+
+            return model;
+        }
+
+
+        public async Task<ManualScheduleModel> CancelSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var schedule = await _context.Schedules
+                .Include(s => s.Department)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .Include(x => x.Group)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.Course)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.User)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+            if (schedule == null)
+                return null;
+
+            schedule.IsCanceled = true;
+            schedule.HasReport = true;
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return _mapper.Map<ManualScheduleModel>(schedule);
+        }
+
+        public async Task<ManualScheduleModel> RestoreSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var schedule = await _context.Schedules
+                .Include(s => s.Department)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .Include(x => x.Group)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.Course)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.User)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+            if (schedule == null)
+                return null;
+
+            schedule.IsCanceled = false;
+            schedule.HasReport = false;
+
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return _mapper.Map<ManualScheduleModel>(schedule);
+        }
+
+        public async Task<List<ManualScheduleModel>> GetCanceledSchedules(CancellationToken cancellationToken)
+        {
+            var schedules = await _context.Schedules
+                .Where(s => s.IsCanceled)
+                .Include(s => s.Department)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .Include(x => x.Group)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.Course)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(x => x.User)
+                .OrderBy(s => s.Day)
+                .ThenBy(s => s.StartTime)
+                .ToListAsync(cancellationToken);
+
+            return _mapper.Map<List<ManualScheduleModel>>(schedules);
         }
     }
 }

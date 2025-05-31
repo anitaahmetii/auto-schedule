@@ -9,4 +9,6 @@ export interface ManualScheduleModel
     locationId: string,
     departmentId: string,
     groupId: string;
+    hasReport: string;
+    isCanceled: string;
 }

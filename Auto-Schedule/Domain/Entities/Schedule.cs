@@ -29,7 +29,10 @@ namespace Domain.Entities
 
         //public Guid UserId { get; set; }
         //public User User { get; set; }
-        public Report Report { get; set; }
+        public bool HasReport { get; set; }
+        public bool IsCanceled { get; set; } = false;
+
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
 
     }
 }

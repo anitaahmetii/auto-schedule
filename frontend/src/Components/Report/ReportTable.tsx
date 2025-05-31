@@ -96,12 +96,7 @@ export default function ReportTable() {
                                 <Table.Row key={report.id}>
                                     <Table.Cell>{report.comment}</Table.Cell>
                                     <Table.Cell>
-                                        {report.absence ? (
-                                            <span style={{ color: "red" }}>Absent</span>
-                                        ) : (
-                                            <span style={{ color: "green" }}>Present</span>
-                                        )}
-                                    </Table.Cell>
+                                        {report.absence }</Table.Cell>
                                     <Table.Cell>{user?.userName || "Unknown"}</Table.Cell>
                                     <Table.Cell>{new Date(report.dateTime).toLocaleString()}</Table.Cell>
                                     <Table.Cell>

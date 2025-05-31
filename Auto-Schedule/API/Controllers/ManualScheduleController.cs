@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -156,6 +157,39 @@ namespace API.Controllers
                 return BadRequest("No file uploaded.");
 
             var schedule = await _service.ImportScheduleFromExcelAsync(file);
+            return Ok(schedule);
+        }
+
+        [HttpGet("by-day/{day}")]
+        public async Task<IActionResult> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
+        {
+            var schedules = await _service.GetSchedulesByDay(day, cancellationToken);
+            return Ok(schedules);
+        }
+
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _service.CancelSchedule(id, cancellationToken);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        [HttpPut("restore/{id}")]
+        public async Task<IActionResult> RestoreSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _service.RestoreSchedule(id, cancellationToken);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        [HttpGet("canceled")]
+        public async Task<IActionResult> GetCanceledSchedules(CancellationToken cancellationToken)
+        {
+            var schedule = await _service.GetCanceledSchedules(cancellationToken);
+
             return Ok(schedule);
         }
     }

@@ -82,4 +82,21 @@ export class ManualScheduleService
         });
         return result.data;
     }
+
+    static async GetSchedulesByDay(day: string): Promise<ManualScheduleModel[]> {
+      const response = await axios.get(`${ManualScheduleService.baseUrl}/by-day/${day}`);
+      return response.data;
+    }
+
+    public static async RestoreSchedule(id: string): Promise<void>{
+      var result = await axios.put(`${ManualScheduleService.baseUrl}/restore/${id}`);
+    }
+
+    public static async CancelSchedule(id: string): Promise<void>{
+      var result = await axios.put(`${ManualScheduleService.baseUrl}/cancel/${id}`);
+    }
+    public static async GetCanceledSchedules(): Promise<ManualScheduleModel[]> {
+     const result = await axios.get(`${ManualScheduleService.baseUrl}/canceled`);
+     return result.data;
+    }
 }

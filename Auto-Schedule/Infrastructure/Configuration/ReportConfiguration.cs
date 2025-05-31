@@ -17,10 +17,9 @@ namespace Infrastructure.Configuration
                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne<Schedule>(x => x.Schedule)
-              .WithOne(x => x.Report)
-              .HasForeignKey<Report>(x => x.ScheduleId)
+              .WithMany(x => x.Reports)
+              .HasForeignKey(x => x.ScheduleId)
               .OnDelete(DeleteBehavior.NoAction);
-
         }
     }
 }

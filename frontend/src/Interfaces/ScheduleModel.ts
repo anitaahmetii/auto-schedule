@@ -8,4 +8,6 @@ export interface ScheduleModel {
     department: string;
     group: string;
     courseLecture: string;
+    hasReport: string;
+    isCanceled: string;
   }

@@ -23,7 +23,9 @@ export default function EditManualSchedule()
         hallsId: "",
         locationId: "",
         departmentId: "",
-        groupId: ""
+        groupId: "",
+        hasReport: "",
+        isCanceled: ""
     });
     // const [courseLecture, setCourseLecture] = useState<SelectListItem[]>([]);
     const mapToSelect = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name }));
