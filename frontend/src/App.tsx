@@ -34,8 +34,11 @@ import EditSchedule from './Components/Schedule/EditSchedule';
 import Login from './Components/Login';
 import Header from './Components/Header';
 
-import DashboardLecturer from './Components/Lectures/DashboardLecturer';
-
+//import SelectScheduleType from './Components/Lectures/SelectScheduleType';
+import DashboardLayout from "./Components/LecturerDashboard/DashboardLayout";
+import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
+import MySchedule from "./Components/LecturerDashboard/MySchedule";
+import DailySchedule from "./Components/LecturerDashboard/DailySchedule";
 
 function App() {
   return (
@@ -101,9 +104,13 @@ function App() {
           <Route path="/EditSchedule/:id" element={<EditSchedule />} />
 
 
-          <Route path="/DashboardLecturer" element={<DashboardLecturer />} />
+          <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
+  <Route path="/lecturer" element={<DashboardLayout />}>
+          <Route path="myschedule" element={<MySchedule />} />          {/* Faqja kryesore */}
+          <Route path="select-schedule" element={<SelectScheduleType />} /> {/* Faqe tjetër */}
+          <Route path="dailyschedule-lecturer" element={<DailySchedule />} /> {/* Faqe tjetër */}
 
-
+        </Route>
 
         </Routes>
       </Router>
