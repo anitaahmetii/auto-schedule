@@ -159,14 +159,27 @@ namespace Application.Services
 
             return model;
         }
+        public async Task<List<ListItemModel>> GetGroupSelectListByDepartmentAsync(Guid departmentId)
+        {
+            var model = await _context.Groups
+                .Where(g => g.Schedules.Any(s => s.DepartmentId == departmentId))
+                .Select(x => new ListItemModel()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToListAsync();
+
+            return model;
+        }
+
         public async Task<GroupModel> GetGroupByStudentAsync(Guid studentId, CancellationToken cancellationToken)
         {
             var student = await _context.Users
                 .OfType<Student>()
                 .FirstOrDefaultAsync(s => s.Id == studentId, cancellationToken) ?? throw new Exception("Student does not exist!");
 
-            if (student.GroupId == null) throw new Exception("Student has not chosen a group yet!");
-            var groups = await _context.Groups.FirstOrDefaultAsync(g => g.Id == student.GroupId, cancellationToken) ?? throw new Exception("Group not found!"); 
+            //if (student.GroupId == null) throw new Exception("Student has not chosen a group yet!");
+            var groups = await _context.Groups.FirstOrDefaultAsync(g => g.Id == student.GroupId, cancellationToken); 
             return _mapper.Map<GroupModel>(groups);
         }
     }

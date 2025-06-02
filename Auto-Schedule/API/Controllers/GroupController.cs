@@ -173,6 +173,11 @@ namespace API.Controllers
             var model = await _groupService.GetGroupSelectListAsync();
             return Ok(model);
         }
+        [HttpGet("GetGroupDepartment")]
+        public async Task<IActionResult> GetGroupSelectListByDepartmentAsync(Guid departmentId)
+        {
+            return Ok(await _groupService.GetGroupSelectListByDepartmentAsync(departmentId));
+        }
         [Authorize(Roles = "Student")]
         [HttpGet("studentGroup")]
         public async Task<IActionResult> GetGroupByStudentAsync(Guid studentId, CancellationToken cancellationToken)

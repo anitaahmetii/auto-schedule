@@ -1,104 +1,78 @@
-import { useEffect, useState } from "react";
-import { Fragment } from "react/jsx-runtime";
-import ShowTable from "./ShowTable";
+import { Fragment, useEffect, useState } from "react";
 import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
 import { SelectListItem } from "../../Interfaces/SelectListItem";
 import { GroupService } from "../../Services/GroupService";
+import ShowTable from "./ShowTable";
 import { ManualScheduleService } from "../../Services/ManualScheduleService";
 import { Button } from "semantic-ui-react";
 import { GroupSelectionPeriodService } from "../../Services/GroupSelectionPeriodService";
 import { GroupSelectionPeriodModel } from "../../Interfaces/GroupSelectionPeriodModel";
 
-export default function GroupScheduleTable()
+export default function GroupSchedule()
 {
     const [studentId, setStudentId] = useState<string | null>(null);
     const [departmentId, setDepartmentId] = useState<string | null>(null);
     const [groupId, setGroupId] = useState<string | null>(null);
-    const [schedule, setSchedule] = useState<ManualScheduleModel>({
-        id: null,
-        day: "",
-        startTime: "",
-        endTime: "",
-        courseLecturesId: "",
-        hallsId: "",
-        locationId: "",
-        departmentId: "",
-        groupId: groupId ?? "",
-    });
-    const [schedules, setSchedules] = useState<ManualScheduleModel[]>([]);
-    const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name}))
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [groups, setGroups] = useState<SelectListItem[]>([]);
-    const [isSelected, setIsSelected] = useState(false);
+    const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name}))
+    const [schedules, setSchedules] = useState<ManualScheduleModel[]>([]);
     const [canChange, setCanChange] = useState(false);
-    const [activePeriod, setActivePeriod] = useState<GroupSelectionPeriodModel | null>(null);
+    const [toSelect, setToSelect] = useState(false);
     const [originalGroupId, setOriginalGroupId] = useState<string | null>(null);
+    const [activePeriod, setActivePeriod] = useState<GroupSelectionPeriodModel | null>(null);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const storedStudentId = localStorage.getItem("studentId");
         const storedDepartmentId = localStorage.getItem("departmentId");
+        const storedRole = localStorage.getItem("userRole");
+
         if (storedStudentId && storedDepartmentId) 
         {
             setStudentId(storedStudentId);
             setDepartmentId(storedDepartmentId);
-        } 
+        };
+        if (storedRole)
+        {
+            setUserRole(storedRole);
+        }
     }, []);
-   useEffect(() => {
-    const fetchStudentGroup = async () => {
-        if (!studentId) return;
-        try {
-        const group = await GroupService.getGroupByStudentAsync(studentId);
-        if (group && group.id) 
-        {
-            localStorage.setItem("groupId", group.id);
-            setGroupId(group.id);
-            setOriginalGroupId(group.id);
-            setCanChange(true);
-        }
-        } catch (error) 
-        {
-            console.error("Could not fetch student's group", error);
-            localStorage.removeItem("groupId");
-            setOriginalGroupId(null);
-            setGroupId(null);
-        }
-    };
-    fetchStudentGroup();
-    }, [studentId]);
     useEffect(() => {
-        let isFetched = false;
-        const fetchData = async () => {
-            try
-            {
-                const [groupR] = await Promise.all([GroupService.GetSelectList()]);
-                if (!isFetched)
-                {
-                    setGroups(mapTo(groupR));
-                }
-            }
-            catch (err) 
-            {
-                console.error("Lists could not be uploaded!", err);
+        const fetchGroupsDepartment = async () => {
+            if (!studentId || !departmentId || userRole !== "Student") return;
+            const [groupR] = await Promise.all([GroupService.GetSelectListByDepartment(departmentId!)]);
+            setGroups(mapTo(groupR));
+        };
+        fetchGroupsDepartment();
+    }, [studentId, departmentId, userRole]);
+    useEffect(() => {
+        const fetchStudentGroup = async () => {
+            if (!studentId || userRole !== "Student") return;
+            const group = await GroupService.getGroupByStudentAsync(studentId!);
+            if (group?.id && group.id.trim() !== "") 
+            {     
+                setGroupId(group.id);
+                setOriginalGroupId(group.id);
+                setCanChange(true);
             }
         };
-        fetchData();
-        return () => {
-            isFetched = true;
-        } ;
-    }, []);
+        fetchStudentGroup();
+    }, [studentId, userRole]);
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => 
     {
         const { name, value } = e.target;
-        setSchedule({...schedule, [name]: value});
-        if (name === "groupId") {
-            setGroupId(value); 
+        if (name === "groupId") 
+        {
+            setGroupId(value);
+            setToSelect(true);
         }
-        setIsSelected(true);
     };
     useEffect(() => {
-        const fetchData = async () => {
-            if (!groupId) return;
-            
-            const data = await ManualScheduleService.getGroupScheduleAsync(groupId);
+        const fetchGroupSchedule = async () => {
+            if (!groupId || userRole !== "Student")  return;
+
+            const data = await ManualScheduleService.getGroupScheduleAsync(groupId!);
             const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
             const sortedData = data.sort((a, b) => {
                 const dayComparison = daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
@@ -109,31 +83,49 @@ export default function GroupScheduleTable()
                 return 0;
             });
             setSchedules(sortedData);
+        };
+        if (groupId && userRole === "Student")
+        {
+            fetchGroupSchedule();
         }
-        fetchData();
-    }, [groupId]);
+    }, [groupId, userRole]);
     const handleSubmit = async () => 
     {
-        await ManualScheduleService.selectGroupByStudent(studentId!, schedule.groupId);
-        setIsSelected(false);
-        setCanChange(true);
-    }
+        try 
+        {
+            await ManualScheduleService.selectGroupByStudent(studentId!, groupId!);
+            setToSelect(false);
+            setCanChange(true);
+            setError(false);
+        } 
+        catch (error: any) 
+        {
+            setError(true);
+            console.log(error.message || "An error occurred while selecting group.");
+        }
+    };
+    const handleCancel = () => 
+    {
+        if (originalGroupId) 
+        {
+            setGroupId(originalGroupId);
+            setCanChange(true);
+        } 
+        else 
+        {
+            setGroupId("");
+            setSchedules([]); 
+        }
+        setToSelect(false);
+    };
     useEffect(() => {
-        if (!departmentId) return;
-        const fetchData = async () => {
-            try 
-            {
-                const data = await GroupSelectionPeriodService.isGroupSelectionPeriodActiveAsync(departmentId!);
-                setActivePeriod(data);
-            } 
-            catch (err) 
-            {
-                console.error("No active period found or error occurred:", err);
-                setActivePeriod(null); 
-            }
+        if (!departmentId || userRole !== "Student") return;
+        const fetchActivePeriod = async () => {
+            const data = await GroupSelectionPeriodService.isGroupSelectionPeriodActiveAsync(departmentId!);
+            setActivePeriod(data);
         };
-        fetchData();
-    }, [isSelected, departmentId]);
+        fetchActivePeriod();
+    }, [departmentId, userRole])
     return (
         <Fragment>
             <div className=" d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%'}}>
@@ -144,10 +136,14 @@ export default function GroupScheduleTable()
                         to <strong>{activePeriod.endDate}</strong> at <strong style={{color: 'red'}}>{activePeriod.endTime}</strong>.
                     </p>
                 }
-                <select className="olive" style={{ width: '200px', padding: '10px', fontSize: '16px', border: '2px solid olive', fontWeight: 'bold' }}
-                name="groupId" value={schedule.groupId || groupId!} onChange={(e) => handleChange(e)}
-                disabled={canChange}
-                >
+                {error && 
+                    <p style={{width: '80%', textAlign: 'center', fontFamily: 'sans-serif', color: 'red', fontStyle: 'italic'}}>
+                        No available spots in the selected group. Please try another group or contact administration.
+                    </p>
+                }
+                <select className="olive" style={{ width: '200px', padding: '10px', fontSize: '16px', border: '2px solid olive', fontWeight: 'bold',  cursor: activePeriod ? 'pointer' : 'not-allowed',
+                                                    pointerEvents: activePeriod ? 'auto' : 'none' }}
+                name="groupId" value={groupId || ""} onChange={(e) => handleChange(e)} disabled={canChange === true && activePeriod !== null}>
                     <option value="" disabled>Select Your Group</option>
                     {groups.map(g => (
                         <option key={g.key} value={g.value!}>{g.text}</option>
@@ -155,41 +151,24 @@ export default function GroupScheduleTable()
                 </select>
                 {activePeriod && (
                     <>
-                        {isSelected && (
+                        {toSelect && (
                             <div style={{marginTop: '2%'}}>
-                                <Button color="grey" type="submit" 
-                                onClick={() => {if (!originalGroupId) { setGroupId(null);
-                                                setSchedule({ id: null,
-                                                day: "",
-                                                startTime: "",
-                                                endTime: "",
-                                                courseLecturesId: "",
-                                                hallsId: "",
-                                                locationId: "",
-                                                departmentId: "",
-                                                groupId: "",
-                                                }); setSchedules([]); setCanChange(true);
-                                            } else {
-                                                setGroupId(originalGroupId);
-                                                setSchedule((prev) => ({
-                                                    ...prev,
-                                                    groupId: originalGroupId!,
-                                                }));
-                                            }
-                                            setCanChange(true); setIsSelected(false); }}>Cancel</Button>
+                                <Button color="grey" type="submit" onClick={handleCancel}>
+                                    Cancel
+                                </Button>
                                 <Button color="olive" type="submit" onClick={handleSubmit}>
                                     Select
                                 </Button>
                             </div>
                         )}
-                        {canChange && groupId &&(
-                            <Button color="olive" style={{marginTop: '2%'}} onClick={() => {setCanChange(false); setIsSelected(true);}}>
+                        {canChange && (
+                            <Button color="olive" style={{marginTop: '2%'}} onClick={() => {setCanChange(false); setToSelect(true)}}>
                                 Change
                             </Button>
                         )}
                     </>
                 )}
-                <ShowTable schedule={ schedules } />
+                <ShowTable schedule={ schedules }/>
             </div>
         </Fragment>
     );

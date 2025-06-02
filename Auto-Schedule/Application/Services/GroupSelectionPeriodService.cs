@@ -62,7 +62,7 @@ namespace Application.Services
         public async Task<List<GroupSelectionPeriodModel>> GetAllGroupSelectionPeriodsAsync(CancellationToken cancellationToken)
         {
             var groupSelectionsPeriods = await _context.GroupSelectionPeriods.ToListAsync(cancellationToken);
-            return (groupSelectionsPeriods.Count == 0) ? throw new KeyNotFoundException(nameof(groupSelectionsPeriods)) : _mapper.Map<List<GroupSelectionPeriodModel>>(groupSelectionsPeriods);
+            return _mapper.Map<List<GroupSelectionPeriodModel>>(groupSelectionsPeriods);
         }
 
         public async Task<GroupSelectionPeriodModel?> IsGroupSelectionPeriodActiveAsync(Guid departmentId, CancellationToken cancellationToken)
@@ -72,7 +72,7 @@ namespace Application.Services
 
             if (period == null)
             {
-                throw new InvalidOperationException("No group selection period found for the specified department.");
+                return null;
             }
 
             var now = DateTime.Now;

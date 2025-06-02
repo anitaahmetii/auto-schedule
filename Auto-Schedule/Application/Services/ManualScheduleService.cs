@@ -302,7 +302,7 @@ namespace Application.Services
             if (manualSchedule.GroupId == Guid.Empty)
                 throw new ArgumentException("GroupID is required.");
 
-            if( _context.Schedules.Any(s =>
+            if (_context.Schedules.Any(s =>
                 s.Day == dayEnum &&
                 s.StartTime.Equals(manualSchedule.StartTime) &&
                 s.EndTime.Equals(manualSchedule.EndTime) &&
@@ -331,10 +331,28 @@ namespace Application.Services
                     .ThenInclude(s => s.Location)
                 .FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken)
                 ?? throw new Exception("Group does not exist!");
+
+            if (await IsGroupFullAsync(student.DepartmentId, groupId))
+            {
+                throw new Exception("Group is full. Cannot add more students.");
+            }
+
             student.GroupId = group.Id;
             await _context.SaveChangesAsync(cancellationToken);
+
             var groupSchedule = _mapper.Map<List<ManualScheduleModel>>(group.Schedules);
             return groupSchedule;
+        }
+        public async Task<bool> IsGroupFullAsync(Guid departmentId, Guid groupId)
+        {
+            var capacity = await _context.Groups
+                                    .Where(g => g.Id == groupId)
+                                    .Select(g => g.Capacity)
+                                    .FirstOrDefaultAsync();
+            var numb =  await _context.Users
+                                .OfType<Student>()
+                                .CountAsync(g => g.GroupId == groupId && g.DepartmentId == departmentId);
+            return capacity <= numb;
         }
     }
 }

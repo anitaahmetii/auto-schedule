@@ -78,11 +78,16 @@ export class GroupService
             throw error;
         }
     }
-
-    public static async GetSelectList() : Promise<GroupModel[]> {
+    public static async GetSelectList() : Promise<GroupModel[]> 
+    {
         const result = await axios.get(`${GroupService.baseURL}/GetGroupSelectListAsync`);
         return result.data;
-      }
+    }
+    public static async GetSelectListByDepartment(departmentId: string) : Promise<GroupModel[]> 
+    {
+        const result = await axios.get(`${GroupService.baseURL}/GetGroupDepartment?departmentId=${departmentId}`);
+        return result.data;
+    }
     public static async getGroupByStudentAsync(studentId: string): Promise<GroupModel> 
     {
         try 

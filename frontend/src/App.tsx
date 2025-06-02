@@ -37,8 +37,8 @@ import StudentProfileTable from './Components/StudentProfile/StudentProfileTable
 import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
 import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
 import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
-import GroupScheduleTable from './Components/GroupSchedule/GroupScheduleTable';
 import GroupSelectionPeriodTable from './Components/GroupSelectionPeriod/GroupSelectionPeriodTable';
+import GroupSchedule from './Components/GroupSchedule/GroupScheduleTable';
 
 function App() {
   return (
@@ -109,9 +109,10 @@ function App() {
           <Route path="/EditManualSchedule/:id" element={<EditManualSchedule />} />
           
           <Route path='/StudentProfile' element={<StudentProfileTable />} />
-          <Route path='/GroupSchedule' element={<GroupScheduleTable />} />
 
           <Route path='/GroupSelection' element={<GroupSelectionPeriodTable />} />
+
+          <Route path='/GroupTable' element={<GroupSchedule />} />
 
         </Routes>
       </Router>
