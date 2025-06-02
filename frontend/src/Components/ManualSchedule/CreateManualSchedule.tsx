@@ -25,8 +25,8 @@ export default function CreateManualSchedule()
         locationId: "",
         departmentId: "",
         groupId: "",
-        hasReport: "",
-        isCanceled: ""
+        hasReport: false,
+        isCanceled: false
     });
     const mapToSelect = (data: any[]): SelectListItem[] => data.map((item, i) => ({ key: i, value: item.id, text: item.name }));
     const [courseLecturesList, setCourseLecturesList] = useState<SelectListItem[]>([]);
