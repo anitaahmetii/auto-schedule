@@ -9,7 +9,7 @@ const SelectScheduleType = () => {
   const [now, setNow] = useState(new Date());
 
   const selectionStartDate = new Date("2025-05-28T14:00:00");
-  const selectionEndDate = new Date("2025-06-10T13:40:00");
+  const selectionEndDate = new Date("2025-06-18T22:40:00");
 
   useEffect(() => {
     const timer = setInterval(() => {

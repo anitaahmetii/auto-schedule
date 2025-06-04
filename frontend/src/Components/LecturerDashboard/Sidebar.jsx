@@ -107,7 +107,7 @@ function Sidebar() {
 
           <li>
             <NavLink
-              to="/lecturer/dailyschedule-lecturer"
+              to="/OrariDitor"
               style={({ isActive }) => (isActive ? activeStyle : defaultStyle)}
             >
               <FaCalendar />
@@ -128,7 +128,7 @@ function Sidebar() {
           {/* Ikona për Logout */}
           <li>
             <NavLink
-              to="/" // ose kthe në login, ose implemento logout logic
+              to="/login" // ose kthe në login, ose implemento logout logic
               style={defaultStyle}
             >
               <FaSignOutAlt />
