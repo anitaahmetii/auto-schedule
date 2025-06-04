@@ -454,5 +454,22 @@ namespace Application.Services
             return models;
         }
 
+        public async Task<List<ListItemModel>> GetLecturesAsync(CancellationToken cancellationToken)
+        {
+            Guid lectureRoleId = new Guid("XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX");
+
+            var lectures = await appDbContext.Users
+                .Include(u => u.UserRoles)
+                .Where(u => u.UserRoles.Any(ur => ur.RoleId == lectureRoleId))
+                .Select(u => new ListItemModel
+                {
+                    Id = u.Id,
+                    Name = u.UserName
+                })
+                .ToListAsync(cancellationToken);
+
+            return lectures;
+        }
+
     }
 }

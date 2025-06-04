@@ -3,6 +3,9 @@ import { CourseModel } from "../Interfaces/CourseModel";
 
 export class CourseService
 {
+    // static GetSelectList() {
+    //     throw new Error('Method not implemented.');
+    // }
     private static readonly baseURL = "https://localhost:7085/api/Course";
 
     public static async createCourseAsync(model: CourseModel): Promise<CourseModel>
@@ -71,4 +74,9 @@ export class CourseService
             throw error;
         }
     }
+
+     public static async GetSelectList() : Promise<CourseModel[]> {
+        const result = await axios.get(`${CourseService.baseURL}/GetCourseSelectListAsync`);
+        return result.data;
+      }
 }

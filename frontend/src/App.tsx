@@ -28,16 +28,24 @@ import EditReceptionist from './Components/Receptionist/EditReceptionist';
 import CoordinatorTable from './Components/Coordinator/CoordinatorTable';
 import DepartmentTable from './Components/Department/DepartmentTable';
 import EditDepartment from './Components/Department/EditDepartment';
-import ScheduleTable from './Components/Schedule/ScheduleTable';
 import EditCoordinator from './Components/Coordinator/EditCoordinator';
-import EditSchedule from './Components/Schedule/EditSchedule';
+import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
+import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
-
-
+import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
+import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
+import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
+import OrariDitor from './Components/OrariDitor';
+import OrariJavor from './Components/OrariJavor';
+import RaportetAnuluara from './Components/CancelledSchedules/CancelledSchedules';
+import AddRaportetAnuluara from './Components/CancelledSchedules/AddRaportetAnuluara';
+import AddTemporarySchedule from './Components/ManualSchedule/AddTemporarySchedule';
 import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
 import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
-import MySchedule from "./Components/LecturerDashboard/MySchedule";
+import MySchedule from "./Components/LecturerDashboard/MySchedule";       
+        
+        
 
 function App() {
   return (
@@ -46,8 +54,8 @@ function App() {
     <Router>
      <Routes>
           <Route path="/Header" element={<Header/>}/>
-          <Route path="/" element={<Login/>}/>
-          <Route path="/state" element={<StateTable />} />
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/State" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
 
@@ -68,8 +76,8 @@ function App() {
           <Route path="/AddUser" element={<EditUser />} />
 
           <Route path="/reports" element={<ReportTable />} />
-          <Route path="/EditReport/:id" element={<EditReport />} />
-          <Route path="/AddReport" element={<EditReport />} />
+          <Route path="/EditReport/:reportId" element={<EditReport />} />
+          <Route path="/AddReport/:scheduleId" element={<EditReport />} />
 
           <Route path='/Group' element={<GroupTable />} />
           <Route path="/AddGroup" element={<AddGroup />} />
@@ -99,8 +107,22 @@ function App() {
           <Route path="/EditDepartment/:id" element={<EditDepartment />} />
           <Route path="/AddDepartment" element={<EditDepartment />} />
 
-          <Route path="/ScheduleTable" element={<ScheduleTable />} />
-          <Route path="/EditSchedule/:id" element={<EditSchedule />} />
+          <Route path="/" element={<CourseLecturesTable />} />
+          <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />
+          <Route path="/AddCourseLecture" element={<EditCourseLectures />} />
+
+          <Route path="/ManualSchedule" element={<ManualScheduleTable />} />
+          <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
+          <Route path="/EditManualSchedule/:id" element={<EditManualSchedule />} />
+
+          <Route path="/OrariDitor" element={<OrariDitor />} />
+
+          <Route path="/OrariJavor" element={<OrariJavor />} />
+          <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
+          <Route path="/AddRaportetAnuluara/:scheduleId" element={<AddRaportetAnuluara />} />
+          <Route path="/EditRaportetAnuluara/:reportId" element={<AddRaportetAnuluara />} />
+
+          <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
 
 
          

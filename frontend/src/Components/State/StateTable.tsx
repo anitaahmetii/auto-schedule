@@ -15,7 +15,7 @@ import { StateModel } from "../../Interfaces/StateModel";
 import { StateService } from "../../Services/StateService";
 import { UserService } from "../../Services/UserService";
 
-export default function CreditCardsTable() {
+export default function StateTable() {
   const [states, setStates] = useState<StateModel[]>([]);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [deleteStateId, setDeleteStateId] = useState<string>("");

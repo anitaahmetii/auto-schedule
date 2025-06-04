@@ -169,5 +169,12 @@ namespace API.Controllers
             }
 
         }
+
+        [HttpGet("GetCourseSelectListAsync")]
+        public async Task<IActionResult> GetCourseSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await _courseService.GetCourseSelectListAsync(cancellationToken);
+            return Ok(model);
+        }
     }
 }

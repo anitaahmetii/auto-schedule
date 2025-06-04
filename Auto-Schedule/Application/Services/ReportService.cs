@@ -82,5 +82,24 @@ namespace Application.Services
 
             return model;
         }
+
+        public async Task<ReportModel> GetByScheduleIdAsync(Guid scheduleId, CancellationToken cancellationToken)
+        {
+            var report = await appDbContext.Reports
+                .Where(x => x.ScheduleId == scheduleId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (report == null) return null;
+
+            return new ReportModel
+            {
+                Id = report.Id,
+                Absence = report.Absence,
+                Comment = report.Comment,
+                DateTime = report.DateTime,
+                UserId = report.UserId,
+                ScheduleId = report.ScheduleId
+            };
+        }
     }
 }

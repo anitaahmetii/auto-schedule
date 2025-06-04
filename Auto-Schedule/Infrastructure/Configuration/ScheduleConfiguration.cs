@@ -26,20 +26,25 @@ namespace Infrastructure.Configuration
                .HasForeignKey(x => x.LocationId)
                .OnDelete(DeleteBehavior.NoAction);
 
-            //builder.HasOne<Halls>(x => x.Halls)
-            //   .WithMany(x => x.Schedules)
-            //   .HasForeignKey(x => x.HallsId)
-            //   .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<Halls>(x => x.Halls)
+               .WithMany(x => x.Schedules)
+               .HasForeignKey(x => x.HallsId)
+               .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne<Department>(x => x.Department)
                .WithMany(x => x.Schedules)
                .HasForeignKey(x => x.DepartmentId)
                .OnDelete(DeleteBehavior.NoAction);
 
-            //builder.HasOne<Group>(x => x.Group)
-            //   .WithMany(x => x.Schedules)
-            //   .HasForeignKey(x => x.GroupId)
-            //   .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<Group>(x => x.Group)
+               .WithMany(x => x.Schedules)
+               .HasForeignKey(x => x.GroupId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne<CourseLectures>(x => x.CourseLectures)
+               .WithMany(x => x.Schedules)
+               .HasForeignKey(x => x.CourseLecturesId)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

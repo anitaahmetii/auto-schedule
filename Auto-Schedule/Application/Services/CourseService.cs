@@ -160,5 +160,15 @@ namespace Application.Services
                 throw new ArgumentException("At least one option must be selected: lecture or exercise.");
             }
         }
+        public async Task<List<ListItemModel>> GetCourseSelectListAsync(CancellationToken cancellationToken)
+        {
+            var model = await _context.Courses.Select(x => new ListItemModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToListAsync(cancellationToken);
+
+            return model;
+        }
     }
 }

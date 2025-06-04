@@ -16,9 +16,9 @@ namespace Infrastructure.Configuration
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasOne(x => x.Lectures)
+            builder.HasOne(x => x.User)
                    .WithMany(x => x.CourseLectures)
-                   .HasForeignKey(x => x.LecturesId)
+                   .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(ur => ur.Course)

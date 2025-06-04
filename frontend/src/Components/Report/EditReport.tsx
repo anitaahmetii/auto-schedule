@@ -7,30 +7,32 @@ import { SelectListItem } from '../../Interfaces/SelectListItem';
 import { UserService } from '../../Services/UserService';
 
 export default function EditReport() {
-  const { id } = useParams<{ id: string }>();
+  const { reportId, scheduleId } = useParams<{ reportId?: string; scheduleId?: string }>();
   const [values, setValues] = useState<ReportModel>({
-    id: id ?? '',
+    id: '',
     absence: 0,
     comment: '',
     dateTime: '',
     userId: '',
-    scheduleId: '',
+    scheduleId: scheduleId ?? '',
   });
 
+  console.log(reportId)
+  console.log(scheduleId)
   const [userList, setUserList] = useState<SelectListItem[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false); // Add this success state
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!id) {
+    const fetchReport = async () => {
+      if (!reportId) {
         setErrorMessage('Report ID is not available.');
         return;
       }
 
       try {
-        const response = await axios.get(`https://localhost:7085/api/Report/${id}`);
+        const response = await axios.get(`https://localhost:7085/api/Report/${reportId}`);
         const data: ReportModel = response.data;
 
         setValues({
@@ -46,8 +48,8 @@ export default function EditReport() {
       }
     };
 
-    if (id) fetchData();
-  }, [id]);
+    fetchReport();
+  }, [reportId, scheduleId]);
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -113,10 +115,10 @@ export default function EditReport() {
   return (
     <>
       <h1 style={{ marginLeft: '15px', fontFamily: 'Georgia', color: 'black' }}>
-        {id ? 'Edit' : 'Add'} Report
+        {reportId ? 'Edit' : 'Add'} Report
       </h1>
       <p style={{ marginLeft: '15px', color: '#555', fontSize: '14px' }}>
-        Please fill out the form below to {id ? 'edit' : 'create'} a Report.
+        Please fill out the form below to {reportId ? 'edit' : 'create'} a Report.
       </p>
       {errorMessage && <div style={{ color: 'red', marginLeft: '15px' }}>{errorMessage}</div>}
       <Segment clearing style={{ margin: '30px 30px 0 10px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)', border: '1px solid rgb(15 179 126 / 87%)' }}>

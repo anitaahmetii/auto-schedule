@@ -42,7 +42,7 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("GetDepartmentSelectListAsync")]
         public async Task<IActionResult> GetDepartmentSelectListAsync(CancellationToken cancellationToken)
         {
             var model = await service.GetDepartmentsSelectListAsync(cancellationToken);
@@ -53,6 +53,26 @@ namespace API.Controllers
         {
             var result = await service.SearchDepartments(searchParams);
             return Ok(result);
+        }
+        [HttpGet("GetDepartmentsSelectListAsync")]
+        public async Task<IActionResult> GetDepartmentsSelectListAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await service.GetDepartmentsSelectListAsync(cancellationToken));
+            }
+            catch (OperationCanceledException)
+            {
+                return StatusCode(StatusCodes.Status499ClientClosedRequest, "The request was cancelled.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid argument: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving departments.");
+            }
         }
     }
 }
