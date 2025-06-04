@@ -41,6 +41,12 @@ import OrariJavor from './Components/OrariJavor';
 import RaportetAnuluara from './Components/CancelledSchedules/CancelledSchedules';
 import AddRaportetAnuluara from './Components/CancelledSchedules/AddRaportetAnuluara';
 import AddTemporarySchedule from './Components/ManualSchedule/AddTemporarySchedule';
+import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
+import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
+import MySchedule from "./Components/LecturerDashboard/MySchedule";       
+        
+        
+
 function App() {
   return (
     <>
@@ -117,6 +123,14 @@ function App() {
           <Route path="/EditRaportetAnuluara/:reportId" element={<AddRaportetAnuluara />} />
 
           <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
+
+
+         
+          <Route path="/lecturer" element={<DashboardLecturer />}>
+          <Route path="myschedule" element={<MySchedule />} />         
+          <Route path="select-schedule" element={<SelectScheduleType />} /> 
+
+        </Route>
 
         </Routes>
       </Router>
