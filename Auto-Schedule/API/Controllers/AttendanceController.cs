@@ -25,7 +25,7 @@ namespace API.Controllers
         {
             return Ok(await _service.GetAttendancesAsync(studentId, cancellationToken));
         }
-        //[Authorize(Roles = "Lecture")]
+        [Authorize(Roles = "Lecture")]
         [HttpGet("studentattendances/{lectureId}")]
         public async Task<IActionResult> GetStudentAttendancesAsync(Guid lectureId, CancellationToken cancellationToken)
         {
