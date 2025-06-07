@@ -35,7 +35,7 @@ import StudentAttendance from './Components/Dashboards/LectureDashboard/StudentA
 
 import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
 import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
-// import MySchedule from "./Components/LecturerDashboard/MySchedule";
+import NotificationPage from "./Components/Notifications/NotificationPage";
 //import DailySchedule from "./Components/LecturerDashboard/DailySchedule";
 import LecturesTable from "./Components/Lectures/LecturesTable";
 import EditLectures from "./Components/Lectures/EditLectures";
@@ -47,10 +47,7 @@ import EditScheduleType from "./Components/ScheduleType/EditScheduleType";
 import UserTable from "./Components/User/UserTable";
 import EditUser from "./Components/User/EditUser";
 import ReportTable from "./Components/Report/ReportTable";
-// import ManualScheduleTable from "./Components/ManualSchedule/ManualScheduleTable";
-// import CreateManualSchedule from "./Components/ManualSchedule/CreateManualSchedule";
 import OrariDitor from "./Components/OrariDitor";
-// import EditManualSchedule from "./Components/ManualSchedule/EditManualSchedule";
 import RaportetAnuluara from "./Components/CancelledSchedules/CancelledSchedules";
 import AddRaportetAnuluara from "./Components/CancelledSchedules/AddRaportetAnuluara";
 import AddTemporarySchedule from "./Components/ManualSchedule/AddTemporarySchedule";
@@ -58,6 +55,15 @@ import OrariJavor from "./Components/OrariJavor";
 import CoordinatorDashboard from "./Components/CoordinatorDashboard";
 import LayoutWithSideBar from './Components/LayoutWithSideBar';
 import CityTable from "./Components/City/CityTable";
+import { startNotificationConnection } from './Services/NotificationService';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { addNotification } from './Services/notificationsSlice';
+import { v4 as uuidv4 } from 'uuid';
+import { NotificationModel } from './Interfaces/NotificationModel';
+import { store } from './store';
+import { useEffect } from "react";
 import StudentProfileTable from "./Components/Student/StudentProfileTable";
 import GroupSchedule from "./Components/Student/GroupScheduleTable";
 import MySchedule from "./Components/LecturerDashboard/MySchedule";
@@ -66,6 +72,50 @@ import DailySchedule from "./Components/Student/DailySchedule";
 import MyAttendances from "./Components/Student/MyAttendances";
 
 function App() {
+  window.addEventListener("beforeunload", () => {
+    const state = store.getState();
+    localStorage.setItem("notifications", JSON.stringify(state.notifications));
+  });
+  const user = JSON.parse(localStorage.getItem("userModel") || "{}");
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const notificationsJson = localStorage.getItem("notifications");
+
+    if (notificationsJson) {
+      try {
+        const missed = JSON.parse(notificationsJson);
+
+        missed.forEach((n: NotificationModel) => {
+          toast.info("🔔 Missed: " + n.message);
+
+          dispatch(addNotification(n));
+        });
+
+        localStorage.removeItem("notifications"); // show ONCE
+      } catch (err) {
+        console.error("Failed to parse notifications", err);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      startNotificationConnection((message: string) => {
+        console.log("📥 Real-time message received:", message); // Add this!
+        toast.info("📢 " + message);
+
+        dispatch(addNotification({
+          id: uuidv4(),
+          userId: user.id,
+          message,
+          timestamp: new Date().toISOString(),
+          isRead: false
+        }));
+      }, token);
+    }
+  }, []);
+
   return (
        <>
 
@@ -158,6 +208,7 @@ function App() {
           <Route path="select-schedule" element={<SelectScheduleType />} /> 
           <Route path="myschedule" element={<MySchedule />} />   
           <Route path="/lecturer" element={<DashboardLecturer />}/>
+          <Route path="/lecturer/notifications" element={<NotificationPage/>}/>
           <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
           <Route path="dailyschedule-lecturer" element={<MySchedule />} />
           <Route path="/GroupSelectionPeriod" element={<GroupSelectionPeriodTable />} />
@@ -165,6 +216,7 @@ function App() {
       </Route>
         </Routes>
       </Router>
+      <ToastContainer position="top-right" autoClose={5000} />
      </>
   );
 }

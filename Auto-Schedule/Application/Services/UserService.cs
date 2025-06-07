@@ -27,48 +27,41 @@ namespace Application.Services
         private readonly AppDbContext appDbContext;
         private readonly IMapper mapper;
         private readonly IConfiguration _configuration;
+        private readonly INotificationService notificationService;
 
-        public UserService(UserManager<User> userManager,RoleManager<Role> roleManager,AppDbContext appDbContext ,IMapper mapper,IConfiguration configuration)
+        public UserService(UserManager<User> userManager,RoleManager<Role> roleManager,AppDbContext appDbContext ,IMapper mapper,IConfiguration configuration, INotificationService notificationService)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             this.appDbContext = appDbContext;
             this.mapper = mapper;
             _configuration = configuration;
+            this.notificationService = notificationService;
         }
         public async Task<AuthenticationModel> LoginAsync(LoginModel loginModel, CancellationToken cancellationToken)
         {
-            var user = await appDbContext.Users.Where(x => x.Email == loginModel.Email).FirstOrDefaultAsync(cancellationToken);
+            var user = await appDbContext.Users
+                .FirstOrDefaultAsync(x => x.Email == loginModel.Email, cancellationToken);
 
             if (user is null)
-            {
-                throw new Exception();
-            }
+                throw new Exception("User not found");
 
             if (!await userManager.CheckPasswordAsync(user, loginModel.Password))
-            {
-                throw new Exception("Incorrect Password");
-            }
+                throw new Exception("Incorrect password");
+
             var authClaims = new List<Claim>()
             {
-                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                 new Claim(ClaimTypes.Name,user.UserName),
-                 new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
             };
+
             var userRoles = await userManager.GetRolesAsync(user);
-            Student? student = null;
-            if (userRoles.Contains("Student"))
-            {
-                student = await appDbContext.Students.FirstOrDefaultAsync(s => s.Id == user.Id, cancellationToken);
-            }
-
-
-
             foreach (var role in userRoles)
-            {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
-            }
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:TokenKey"]));
+
+            var authSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["JWTSettings:TokenKey"]));
 
             var token = new JwtSecurityToken(
                 claims: authClaims,
@@ -78,43 +71,34 @@ namespace Application.Services
             IdentityModelEventSource.ShowPII = true;
 
             var userData = mapper.Map<UserModel>(user);
-            if (userRoles.Contains("Admin"))
-                userData.Role = Domain.Enum.Role.Admin;
-            else if (userRoles.Contains("Coordinator"))
-                userData.Role = Domain.Enum.Role.Coordinator;
-            else if (userRoles.Contains("Receptionist"))
-                userData.Role = Domain.Enum.Role.Receptionist;
-            else if (userRoles.Contains("Lecture"))
-                userData.Role = Domain.Enum.Role.Lecture;
-            else
-                userData.Role = Domain.Enum.Role.Student;
-
-            if (student != null)
-            {   
-                userData.DepartmentId = student.DepartmentId;
-                userData.AcademicProgram = student.AcademicProgram;
-                userData.AcademicYear = student.AcademicYear;
-                userData.Registred = student.Registred;
-            }
+            if (userRoles.Contains("Admin")) userData.Role = Domain.Enum.Role.Admin;
+            else if (userRoles.Contains("Coordinator")) userData.Role = Domain.Enum.Role.Coordinator;
+            else if (userRoles.Contains("Receptionist")) userData.Role = Domain.Enum.Role.Receptionist;
+            else if (userRoles.Contains("Lecture")) userData.Role = Domain.Enum.Role.Lecture;
+            else userData.Role = Domain.Enum.Role.Student;
 
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(16);
             await appDbContext.SaveChangesAsync(cancellationToken);
 
-            var jwtTOken = new JwtSecurityTokenHandler().WriteToken(token);
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            var notifications = await notificationService.GetUserNotificationsAsync(user.Id);
+
             var response = new AuthenticationModel()
             {
-                Token = jwtTOken,
+                Token = jwtToken,
                 RefreshToken = refreshToken,
                 ExpiresAt = token.ValidTo,
                 UserData = userData!,
-                UserRole = userRoles.FirstOrDefault()!
-
+                UserRole = userRoles.FirstOrDefault()!,
+                Notifications = notifications
             };
 
             return response;
         }
+
 
         public async Task<AuthenticationModel> RefreshTokenAsync(RefreshTokenRequest model)
         {
@@ -151,7 +135,7 @@ namespace Application.Services
             var newRefreshToken = GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddHours(2);
-
+            var notifications = await notificationService.GetUserNotificationsAsync(user.Id);
             await appDbContext.SaveChangesAsync();
 
             return new AuthenticationModel
@@ -160,7 +144,8 @@ namespace Application.Services
                 RefreshToken = newRefreshToken,
                 ExpiresAt = token.ValidTo,
                 UserData = mapper.Map<UserModel>(user),
-                UserRole = userRoles.FirstOrDefault()!
+                UserRole = userRoles.FirstOrDefault()!,
+                Notifications = notifications
             };
         }
         private string GenerateRefreshToken()

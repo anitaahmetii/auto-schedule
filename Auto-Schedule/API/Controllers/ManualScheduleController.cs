@@ -2,9 +2,12 @@
 using Domain.Enum;
 using Domain.Interface;
 using Domain.Model;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace API.Controllers
 {
@@ -12,10 +15,16 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class ManualScheduleController : ControllerBase
     {
+        private readonly AppDbContext _context;
+        private readonly INotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _hubContext;
         private readonly IManualScheduleService _service;
-        public ManualScheduleController(IManualScheduleService service)
+        public ManualScheduleController(AppDbContext context, IManualScheduleService service, INotificationService notificationService, IHubContext<NotificationHub> hubContext)
         {
+            _context = context;
             _service = service;
+            _notificationService = notificationService;
+            _hubContext = hubContext;
         }
         [HttpPost]
         public async Task<IActionResult> CreateManualScheduleAsync(ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
@@ -220,6 +229,43 @@ namespace API.Controllers
             var result = await _service.CancelSchedule(id, cancellationToken);
             if (result == null)
                 return NotFound();
+
+            // Get the schedule again if needed to access users (or return it from the service)
+            var schedule = await _context.Schedules
+                .Include(x => x.CourseLectures)
+                .ThenInclude(cl => cl.Course)
+                .Include(x => x.CourseLectures)
+                .ThenInclude(cl => cl.User)
+                .Include(x => x.Group)
+                .ThenInclude(g => g.Students)
+                .Include(x => x.Halls)
+                .Include(x => x.Location)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+            var courseName = schedule.CourseLectures?.Course?.Name ?? "the course";
+            var hallName = schedule.Halls?.Name ?? "a hall";
+            var locationName = schedule.Location?.Name ?? "your campus";
+
+            var start = DateTime.Parse(result.StartTime).ToString("HH:mm", CultureInfo.InvariantCulture);
+            var end = DateTime.Parse(result.EndTime).ToString("HH:mm", CultureInfo.InvariantCulture);
+            var day = schedule.Day;
+
+            var lecturer = schedule.CourseLectures.User;
+            var lecturerMessage = $"📅 Hello {lecturer.UserName}, your class scheduled on {day} from {start} to {end} for the course \"{courseName}\" in {hallName}, {locationName} has been canceled.";
+            await _notificationService.CreateNotificationAsync(lecturer.Id, lecturerMessage);
+            await _hubContext.Clients.User(lecturer.Id.ToString()).SendAsync("ReceiveNotification", lecturerMessage);
+
+
+            // Notify students (if applicable)
+            if (schedule.Group?.Students != null)
+            {
+                foreach (var student in schedule.Group.Students)
+                {
+                    var message = $"📅 Hello {student.UserName}, your class scheduled on {day} from {start} to {end} for the course \"{courseName}\" in {hallName}, {locationName} has been canceled.";
+                    await _notificationService.CreateNotificationAsync(student.Id, message);
+                    await _hubContext.Clients.User(student.Id.ToString()).SendAsync("ReceiveNotification", message, cancellationToken: cancellationToken);
+                }
+            }
 
             return Ok(result);
         }

@@ -11,18 +11,20 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService service;
-        public UserController(IUserService service)
+        private readonly INotificationService notificationService;
+
+        public UserController(IUserService service, INotificationService notificationService)
         {
             this.service = service;
+            this.notificationService = notificationService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<AuthenticationModel>> Login([FromBody] LoginModel loginModel, CancellationToken cancellationToken)
         {
-            var userModel = await service.LoginAsync(loginModel, cancellationToken);
-
-            return Ok(userModel);
+            var result = await service.LoginAsync(loginModel, cancellationToken);
+            return Ok(result);
         }
         [HttpPost]
         public async Task<IActionResult> AddOrEditUserAsync([FromBody] UserModel model, CancellationToken cancellationToken)

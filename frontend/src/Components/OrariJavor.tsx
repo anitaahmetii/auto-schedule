@@ -25,7 +25,17 @@ export default function OrariJavor() {
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
     const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
     const [confirmMessage, setConfirmMessage] = useState<string>('Are you sure?');
+    const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+    const sortedSchedules = schedules.slice().sort((a, b) => 
+    {
+        const dayComparison = daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
+        if (dayComparison !== 0) return dayComparison;
+
+        if (a.startTime < b.startTime) return -1;
+        if (a.startTime > b.startTime) return 1;
+        return 0;
+    });
   useEffect(() => {
     const fetchData = async () => {
     const result = await ManualScheduleService.getAllManualSchedulesAsync();
@@ -125,11 +135,11 @@ export default function OrariJavor() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {schedules.map((item) => (
+            {sortedSchedules.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.day}</TableCell>
-                <TableCell>{new Date(item.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</TableCell>
-                <TableCell>{new Date(item.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</TableCell>
+                <TableCell>{item.startTime}</TableCell>
+                <TableCell>{item.endTime}</TableCell>
                 <Table.Cell >{departmentsList.find(d => d.id === item.departmentId)?.name}</Table.Cell>
                 <Table.Cell>{hallsList.find(h => h.id === item.hallsId)?.name}</Table.Cell>
                 <Table.Cell>{locationsList.find(l => l.id === item.locationId)?.name}</Table.Cell>
