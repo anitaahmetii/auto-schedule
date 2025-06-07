@@ -29,7 +29,7 @@ namespace Domain.Entities
         public ICollection<Halls> Halls { get; set; } = new List<Halls>();
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
-
         public ICollection<CourseLectures> CourseLectures { get; set; } = new List<CourseLectures>();
+        public ICollection<Attendance> Attendances { get; set; }
     }
 }

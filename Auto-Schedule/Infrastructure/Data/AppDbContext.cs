@@ -36,7 +36,8 @@ namespace Infrastructure.Data
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<GroupSelectionPeriod> GroupSelectionPeriods { get; set; }
-
+        public DbSet<AttendanceCodePeriod> AttendanceCodePeriods { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
 
     }
 }

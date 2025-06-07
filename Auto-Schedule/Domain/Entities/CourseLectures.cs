@@ -14,5 +14,6 @@ namespace Domain.Entities
         public Guid CourseId { get; set; }
         public Course Course { get; set; }
         public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+       
     }
 }

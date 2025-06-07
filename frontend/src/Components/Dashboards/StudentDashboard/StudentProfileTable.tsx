@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Card, List, ListHeader, ListItem } from "semantic-ui-react";
-import { StudentProfileModel } from "../../Interfaces/StudentProfileModel";
-import { StudentProfileService } from "../../Services/StudentProfileService";
-import { SelectListItem } from "../../Interfaces/SelectListItem";
-import { CityService } from "../../Services/CityService";
-import { DepartmentService } from "../../Services/DepartmentService";
+import { StudentProfileModel } from "../../../Interfaces/StudentProfileModel";
+import { StudentProfileService } from "../../../Services/StudentProfileService";
+import { SelectListItem } from "../../../Interfaces/SelectListItem";
+import { CityService } from "../../../Services/CityService";
+import { DepartmentService } from "../../../Services/DepartmentService";
 
-export default function StudentProfileTable() {
+export default function StudentProfileTable() 
+{
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [student, setStudent] = useState<StudentProfileModel>();
     const mapTo = (data: any[]): SelectListItem[] => data.map((item, i) => ({key: i, value: item.id, text: item.name}))
     const [city, setCity] = useState<SelectListItem[]>([]); 
     const [department, setDepartment] = useState<SelectListItem[]>([]); 
+
     useEffect(() => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole)
+        {
+            setUserRole(storedRole);
+        }
+    }, []);
+    useEffect(() => {
+        if (userRole !== "Student") return;
         const fetchData = async () => {
             const result = await StudentProfileService.getStudentProfileAsync();
             setStudent(result);
         };
         fetchData();
-    }, []);
+    }, [userRole]);
     useEffect(() => {
         let cancelled = false; 
         const fetchData = async () => {
@@ -43,10 +54,10 @@ export default function StudentProfileTable() {
     }, []);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "20px", height: "100vh", }}>
-        <Card raised style={{ width: "90vw", maxWidth: "700px", maxHeight: "90vh", display: "flex", flexDirection: "column",}}>
+    <div style={{ display: "flex", width: '670px', height: "88vh",  marginLeft: '0%', marginTop: '-1%',  }}>
+        <Card raised style={{ width: "90vw", maxWidth: "680px", maxHeight: "95vh", display: "flex", flexDirection: "column", }}>
             {/* {student.map(s => ())} */}
-            <Card.Content style={{ backgroundColor: "#1b2a4e", color: "white", padding: "1.5em", borderTopLeftRadius: "1px",
+            <Card.Content style={{ backgroundColor: "#556B2F", color: "white", padding: "1.5em", borderTopLeftRadius: "1px",
                                 borderTopRightRadius: "0.28571429rem", flexShrink: 0, }}>
                 <Card.Header style={{ fontSize: "1.8rem", marginBottom: "0.3em", color: "white" }}>
                     {student?.userName} {student?.lastName}

@@ -1,12 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
-import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
-import { SelectListItem } from "../../Interfaces/SelectListItem";
-import { GroupService } from "../../Services/GroupService";
-import ShowTable from "./ShowTable";
-import { ManualScheduleService } from "../../Services/ManualScheduleService";
+import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
+import { SelectListItem } from "../../../Interfaces/SelectListItem";
+import { GroupService } from "../../../Services/GroupService";
+import { ManualScheduleService } from "../../../Services/ManualScheduleService";
 import { Button } from "semantic-ui-react";
-import { GroupSelectionPeriodService } from "../../Services/GroupSelectionPeriodService";
-import { GroupSelectionPeriodModel } from "../../Interfaces/GroupSelectionPeriodModel";
+import { GroupSelectionPeriodService } from "../../../Services/GroupSelectionPeriodService";
+import { GroupSelectionPeriodModel } from "../../../Interfaces/GroupSelectionPeriodModel";
+import ShowTable from "./ShowTable";
 
 export default function GroupSchedule()
 {
@@ -117,6 +117,7 @@ export default function GroupSchedule()
             setSchedules([]); 
         }
         setToSelect(false);
+        setError(false);
     };
     useEffect(() => {
         if (!departmentId || userRole !== "Student") return;

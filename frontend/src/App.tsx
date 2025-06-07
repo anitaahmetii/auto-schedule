@@ -33,12 +33,18 @@ import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
-import StudentProfileTable from './Components/StudentProfile/StudentProfileTable';
+import StudentProfileTable from './Components/Dashboards/StudentDashboard/StudentProfileTable';
 import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
 import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
 import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
 import GroupSelectionPeriodTable from './Components/GroupSelectionPeriod/GroupSelectionPeriodTable';
-import GroupSchedule from './Components/GroupSchedule/GroupScheduleTable';
+import GroupSchedule from './Components/Dashboards/StudentDashboard/GroupScheduleTable';
+import StudentDashboard from './Components/Dashboards/StudentDashboard/StudentDashboard';
+import MySchedule from './Components/Dashboards/StudentDashboard/MySchedule';
+import DailySchedule from './Components/Dashboards/StudentDashboard/DailySchedule';
+import DailyScheduleLecture from './Components/Dashboards/LectureDashboard/DailyScheduleLecture';
+import MyAttendances from './Components/Dashboards/StudentDashboard/MyAttendances';
+import StudentAttendance from './Components/Dashboards/LectureDashboard/StudentAttendance';
 
 function App() {
   return (
@@ -108,11 +114,24 @@ function App() {
           <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
           <Route path="/EditManualSchedule/:id" element={<EditManualSchedule />} />
           
-          <Route path='/StudentProfile' element={<StudentProfileTable />} />
+          {/* <Route path='/StudentProfile' element={<StudentProfileTable />} /> */}
 
           <Route path='/GroupSelection' element={<GroupSelectionPeriodTable />} />
 
-          <Route path='/GroupTable' element={<GroupSchedule />} />
+          {/* <Route path='/GroupTable' element={<GroupSchedule />} /> */}
+
+          {/* <Route path='/StudentDashboard' element={<StudentDashboard />}/> */}
+
+          <Route path="/student" element={<StudentDashboard />}>
+            <Route path="profile" element={<StudentProfileTable />} />
+            <Route path="group" element={<GroupSchedule />} />
+            <Route path="myschedule" element={<MySchedule />} />
+            <Route path="dailyschedule" element={<DailySchedule />} />
+            <Route path="attendances" element={<MyAttendances />} />
+          </Route>
+
+          <Route path="/lecture" element={<DailyScheduleLecture />} />
+          <Route path="/lecture/studentattendance" element={<StudentAttendance />} />
 
         </Routes>
       </Router>

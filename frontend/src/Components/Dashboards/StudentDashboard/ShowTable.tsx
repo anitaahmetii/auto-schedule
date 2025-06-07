@@ -1,12 +1,12 @@
 import { Fragment } from "react/jsx-runtime";
 import { Table } from "semantic-ui-react";
-import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
-import { SelectListItem } from "../../Interfaces/SelectListItem";
 import { useEffect, useState } from "react";
-import { CourseLecturesService } from "../../Services/CourseLecturesService";
-import { GroupService } from "../../Services/GroupService";
-import { HallService } from "../../Services/HallService";
-import { LocationService } from "../../Services/LocationService";
+import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
+import { SelectListItem } from "../../../Interfaces/SelectListItem";
+import { CourseLecturesService } from "../../../Services/CourseLecturesService";
+import { GroupService } from "../../../Services/GroupService";
+import { HallService } from "../../../Services/HallService";
+import { LocationService } from "../../../Services/LocationService";
 
 type ScheduleModel = {
     schedule: ManualScheduleModel[];
@@ -51,8 +51,8 @@ export default function ShowTable({ schedule }: ScheduleModel)
     });
     return (
         <Fragment>
-                <div className={`ui segment px-4 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
-                 style={{ marginTop: '30px', width: '100%'}}>
+                <div className={`ui segment px-1 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
+                 style={{ marginTop: '30px', width: '100%',  backgroundColor: 'transparent', border: 'none', boxShadow: 'none'}}>
                         <Table className={`ui striped single line table ${(schedule && schedule.length > 0) ? "olive" : ""}`} >
                             <Table.Header>
                                 <Table.Row>

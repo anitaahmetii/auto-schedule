@@ -30,6 +30,8 @@ namespace Domain.Entities
         //public Guid UserId { get; set; }
         //public User User { get; set; }
         public Report Report { get; set; }
+        public ICollection<AttendanceCodePeriod> AttendanceCodePeriods { get; set; } = new List<AttendanceCodePeriod>();
+        public ICollection<Attendance> Attendances { get; set; }
 
     }
 }

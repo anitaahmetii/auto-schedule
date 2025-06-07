@@ -193,5 +193,10 @@ namespace API.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpGet("dailyschedules")]
+        public async Task<IActionResult> GetDailySchedules(CancellationToken cancellationToken)
+        {
+            return Ok(await _service.GetDailySchedules(cancellationToken));
+        }
     }
 }

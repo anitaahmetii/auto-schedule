@@ -354,5 +354,16 @@ namespace Application.Services
                                 .CountAsync(g => g.GroupId == groupId && g.DepartmentId == departmentId);
             return capacity <= numb;
         }
+        public async Task<List<ManualScheduleModel>> GetDailySchedules(CancellationToken cancellationToken)
+        {
+            var currentDay = Enum.Parse<Days>(DateTime.Now.DayOfWeek.ToString(), ignoreCase: true);
+
+            var dailySchedules = await _context.Schedules
+                            .Where(s => s.Day == currentDay)
+                            .ProjectTo<ManualScheduleModel>(_mapper.ConfigurationProvider)
+                            .ToListAsync(cancellationToken);
+            return dailySchedules;
+        }
+
     }
 }

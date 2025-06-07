@@ -117,4 +117,17 @@ export class ManualScheduleService
             throw error;
         }
     }
+    public static async getDailySchedules(): Promise<ManualScheduleModel[]>
+    {
+        try
+        {
+            const response = await axios.get(`${this.baseUrl}/dailyschedules`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error retrieving daily schedules:", error);
+            throw error;
+        }
+    }
 }
