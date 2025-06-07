@@ -129,5 +129,36 @@ export class ManualScheduleService
             console.error("Error retrieving daily schedules:", error);
             throw error;
         }
+
+    static async GetSchedulesByDay(day: string): Promise<ManualScheduleModel[]> {
+      const response = await axios.get(`${ManualScheduleService.baseUrl}/by-day/${day}`);
+      return response.data;
+    }
+
+    public static async RestoreSchedule(id: string): Promise<void>{
+      var result = await axios.put(`${ManualScheduleService.baseUrl}/restore/${id}`);
+    }
+
+    public static async CancelSchedule(id: string): Promise<void>{
+      var result = await axios.put(`${ManualScheduleService.baseUrl}/cancel/${id}`);
+    }
+    public static async GetCanceledSchedules(): Promise<ManualScheduleModel[]> {
+     const result = await axios.get(`${ManualScheduleService.baseUrl}/canceled`);
+     return result.data;
+    }
+
+    public static async CountSchedule() : Promise<number>{
+    const result = await axios.get(`${ManualScheduleService.baseUrl}/countSchedule`);
+    return result.data;
+    }
+    public static async CountCanceledSchedules() : Promise<number>{
+    const result = await axios.get(`${ManualScheduleService.baseUrl}/canceled/count`);
+    return result.data;
+    }
+
+    public static async CountSchedulesByDay(): Promise<Record<string, number>> {
+  
+    const response = await axios.get(`${ManualScheduleService.baseUrl}/scheudlesOfWeek`);
+    return response.data;
     }
 }

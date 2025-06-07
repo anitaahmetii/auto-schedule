@@ -50,7 +50,7 @@ export default function EditReceptionist() {
   };
 
   const sendToOverview = () => {
-    navigate('/Receptionists');
+    navigate('/receptionist');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

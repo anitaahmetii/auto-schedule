@@ -41,6 +41,17 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+
+        [HttpGet("schedule/{scheduleId}")]
+        public async Task<IActionResult> GetByScheduleId(Guid scheduleId, CancellationToken cancellationToken)
+        {
+            var report = await service.GetByScheduleIdAsync(scheduleId, cancellationToken);
+
+            if (report == null)
+                return NotFound("No report found for this schedule ID.");
+
+            return Ok(report);
+        }
     }
 }
 

@@ -81,8 +81,11 @@ namespace Application.Services
 
             if (!string.IsNullOrWhiteSpace(searchParams))
             {
+                var lowerSearch = searchParams.ToLower();
+
                 query = query.Where(d =>
-                    d.Name.Contains(searchParams) || d.Code.Contains(searchParams));
+                    d.Name.ToLower().Contains(lowerSearch) ||
+                    d.Code.ToLower().Contains(lowerSearch));
             }
 
             var results = await query

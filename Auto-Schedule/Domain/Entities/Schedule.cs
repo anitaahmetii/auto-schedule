@@ -33,5 +33,10 @@ namespace Domain.Entities
         public ICollection<AttendanceCodePeriod> AttendanceCodePeriods { get; set; } = new List<AttendanceCodePeriod>();
         public ICollection<Attendance> Attendances { get; set; }
 
+        public bool HasReport { get; set; }
+        public bool IsCanceled { get; set; } = false;
+
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
+
     }
 }

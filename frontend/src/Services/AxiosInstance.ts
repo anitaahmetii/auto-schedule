@@ -1,6 +1,8 @@
 import axios from "axios";
 import { UserService } from "./UserService";
 
+const AxiosInstance = axios.create();
+
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jwt");
@@ -54,3 +56,4 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+export default AxiosInstance;

@@ -98,13 +98,15 @@ export default function EditUser() {
   const fetchScheduleTypeList = async () => {
     const response = await ScheduleTypeService.GetSelectList();
   
-    setScheduleTypeList(response.map((item,i)=>({
+    const formattedList = response
+    .map((item: any, i: number) => ({
       key: i,
       value: item.id,
-      text: item.scheduleTypes,
-    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
-  
-  
+      text: item.name // this is already "Morning", "Afternoon", etc.
+    } as SelectListItem))
+    .filter(x => x.text !== '' && x.text !== null);
+
+  setScheduleTypeList(formattedList);
   }
   useEffect(() => {
       fetchScheduleTypeList();

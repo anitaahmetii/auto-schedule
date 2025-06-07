@@ -39,7 +39,7 @@ export class UserService {
     window.history.replaceState(null, '', '/login');
   }
   public static GetUserRole(): string | null {
-    return localStorage.get("role")!;
+    return localStorage.getItem("role")!;
   }
   public static async DeleteUser(id: string): Promise<void> {
     await axios.delete(`${UserService.baseUrl}/${id}`);

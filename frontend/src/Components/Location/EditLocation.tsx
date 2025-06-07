@@ -62,7 +62,7 @@ export default function EditLocation(){
     };
 
     function sendToOverview(){
-        navigate('/');
+        navigate('/Location');
     }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

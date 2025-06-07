@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Domain.Enum;
 using Domain.Interface;
 using Domain.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -179,6 +180,7 @@ namespace API.Controllers
             var schedule = await _service.ImportScheduleFromExcelAsync(file);
             return Ok(schedule);
         }
+
         [Authorize(Roles = "Student")]
         [HttpPost("selectGroup")]
         public async Task<IActionResult> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken)
@@ -197,6 +199,58 @@ namespace API.Controllers
         public async Task<IActionResult> GetDailySchedules(CancellationToken cancellationToken)
         {
             return Ok(await _service.GetDailySchedules(cancellationToken));
+        }
+
+        [HttpGet("countSchedule")]
+        public async Task<IActionResult> CountSchedule(CancellationToken cancellationToken)
+        {
+            var count = await _service.CountSchedule(cancellationToken);
+            return Ok(count);
+        }
+        [HttpGet("by-day/{day}")]
+        public async Task<IActionResult> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
+        {
+            var schedules = await _service.GetSchedulesByDay(day, cancellationToken);
+            return Ok(schedules);
+        }
+
+        [HttpPut("cancel/{id}")]
+        public async Task<IActionResult> CancelSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _service.CancelSchedule(id, cancellationToken);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        [HttpPut("restore/{id}")]
+        public async Task<IActionResult> RestoreSchedule(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _service.RestoreSchedule(id, cancellationToken);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+        [HttpGet("canceled")]
+        public async Task<IActionResult> GetCanceledSchedules(CancellationToken cancellationToken)
+        {
+            var schedule = await _service.GetCanceledSchedules(cancellationToken);
+
+            return Ok(schedule);
+        }
+
+        [HttpGet("canceled/count")]
+        public async Task<IActionResult> CountCanceledSchedules(CancellationToken cancellationToken)
+        {
+            var count = await _service.CountCanceledSchedule(cancellationToken);
+            return Ok(count);
+        }
+        [HttpGet("scheudlesOfWeek")]
+        public async Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken)
+        {
+            var schedules = await _service.CountSchedulesByDayAsync(cancellationToken);
+            return schedules;
         }
     }
 }

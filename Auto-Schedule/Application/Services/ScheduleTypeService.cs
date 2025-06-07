@@ -114,6 +114,7 @@ namespace Application.Services
             var model = await appDbContext.ScheduleType.Select(x => new ListItemModel()
             {
                 Id = x.Id,
+                Name = x.scheduleTypes.ToString(), // <-- Converts enum to string name
                 scheduleTypes = x.scheduleTypes
             }).ToListAsync(cancellationToken);
 
