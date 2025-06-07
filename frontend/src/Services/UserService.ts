@@ -3,6 +3,9 @@ import { UserModel } from "../Interfaces/UserModel";
 import { toast } from "react-toastify";
 import { LoginModel } from "../Interfaces/LoginModel";
 import { AuthenticationModel } from "../Interfaces/AuthenticationModel";
+import { NotificationModel } from "../Interfaces/NotificationModel";
+import { store } from "../store";
+import { addNotification } from "./notificationsSlice";
 
 export class UserService {
   private static baseUrl = "https://localhost:7085/api/User";
@@ -22,10 +25,30 @@ export class UserService {
     UserService.LoggedInUser = response.data?.userData;
     localStorage.setItem("role", response.data.userRole);
     UserService.role = response.data?.userRole;
+    localStorage.setItem("notifications", JSON.stringify(response.data.notifications));
     toast.success("Logged in successfuly");
+    const userId = response.data.userData.id;
+    const unread = await axios.get<NotificationModel[]>(
+      `https://localhost:7085/api/Notifications/unread/${userId}`
+    );
+
+    const existing = store.getState().notifications;
+
+    unread.data.forEach((n) => {
+      const alreadyExists = existing.some(e => e.message === n.message && e.timestamp === n.timestamp);
+      if (!alreadyExists) {
+        toast.info("🔔 Missed: " + n.message);
+        store.dispatch(addNotification({ ...n, isRead: false }));
+      }
+    });
+
+  // Optionally mark them as read in the backend
+  await axios.put(`https://localhost:7085/api/Notifications/markAllRead/${userId}`);
     return response.data;
   }
   public static LogOut(): void {
+    const notifications = store.getState().notifications;
+    localStorage.setItem("notifications", JSON.stringify(notifications));
     console.log('logged out');
     localStorage.removeItem("jwt");
     localStorage.removeItem("expiresAt");

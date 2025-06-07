@@ -3,7 +3,9 @@ using Domain.Entities;
 using Domain.Interface;
 using Infrastructure.Data;
 using Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -44,6 +46,20 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Allow the token to be read from query string for SignalR
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -83,11 +99,12 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowAllOrigin", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000", "https://localhost:3001") // Add frontend URLs
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials(); // Use AllowCredentials only if necessary
     });
 });
 var principal = new ClaimsPrincipal();
@@ -120,16 +137,16 @@ builder.Services.AddScoped<IGroupSelectionPeriodService, GroupSelectionPeriodSer
 builder.Services.AddScoped<IAttendanceCodePeriodService, AttendanceCodePeriodService>();
 builder.Services.AddHostedService<CleanupExpiredCodesService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSignalR();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
+
 
 
 var app = builder.Build();
 
-app.UseCors();
-using (var scope = app.Services.CreateAsyncScope())
-{
-    var dbInitialization = scope.ServiceProvider.GetRequiredService<DbInitialization>();
-    await dbInitialization.Init(CancellationToken.None);
-}
+
 //app.Lifetime.ApplicationStarted.Register(async () =>
 //{
 //    using var scope = app.Services.CreateScope();
@@ -144,7 +161,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigin");
+using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbInitialization = scope.ServiceProvider.GetRequiredService<DbInitialization>();
+    await dbInitialization.Init(CancellationToken.None);
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHub<NotificationHub>("/notificationHub");
 app.MapControllers();
 app.Run();

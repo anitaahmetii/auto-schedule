@@ -6,4 +6,5 @@ import { UserModel } from "./UserModel";
      expiresAt: Date,
      userData:UserModel,
      userRole: string,
+     notifications: Notification[];
  }

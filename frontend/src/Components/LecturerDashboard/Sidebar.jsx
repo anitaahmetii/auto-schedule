@@ -1,16 +1,27 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaCalendar,
   FaCheckSquare,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { UserService } from "../../Services/UserService";
+import { Button } from "semantic-ui-react";
+import NotificationBell from '../Notifications/NotificationBell';
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const navigate = useNavigate();
+  function LogOut(){
+    UserService.LogOut();
+    setTimeout(()=>{
+      navigate("/");
+    },1000)
+  }
 
   const activeStyle = {
     fontWeight: "bold",
@@ -52,37 +63,39 @@ function Sidebar() {
           flexDirection: "column",
         }}
       >
-        {/* Header */}
+        {/* Inside your header div: */}
         <div
           style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: isOpen ? "space-between" : "center",
-            padding: "1rem",
-            backgroundColor: "#2c3e50",
-            boxSizing: "border-box",
-            borderBottom: "1px solid #34495e",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: isOpen ? "space-between" : "center",
+          padding: "1rem",
+          backgroundColor: "#2c3e50",
+          boxSizing: "border-box",
+          borderBottom: "1px solid #34495e",
           }}
         >
           {isOpen && <h2 style={{ margin: 0, color: "#ecf0f1" }}>Lecturer</h2>}
 
-          <button
-            onClick={toggleSidebar}
-            style={{
-              fontSize: "1.5rem",
-              background: "none",
-              border: "none",
-              color: "#a0c4ff",
-              cursor: "pointer",
-              padding: 0,
-            }}
-            aria-label="Toggle sidebar"
-          >
-            <FaBars />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <NotificationBell />
+            <button
+              onClick={toggleSidebar}
+              style={{
+                fontSize: "1.5rem",
+                background: "none",
+                border: "none",
+                color: "#a0c4ff",
+                cursor: "pointer",
+                padding: 0,
+              }}
+              aria-label="Toggle sidebar"
+            >
+              <FaBars />
+            </button>
+          </div>
         </div>
-
         {/* Menu items */}
         <ul
           style={{
@@ -102,6 +115,15 @@ function Sidebar() {
             >
               <FaCalendar />
               {isOpen && <span>My Schedule</span>}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/lecturer/notifications"
+              style={({ isActive }) => (isActive ? activeStyle : defaultStyle)}
+            >
+              <FaCalendar />
+              {isOpen && <span>Notifications</span>}
             </NavLink>
           </li>
 
@@ -127,13 +149,14 @@ function Sidebar() {
 
           {/* Ikona për Logout */}
           <li>
-            <NavLink
-              to="/login" // ose kthe në login, ose implemento logout logic
+            <Button
               style={defaultStyle}
+              type="button"
+              onClick={LogOut}
             >
               <FaSignOutAlt />
               {isOpen && <span>Logout</span>}
-            </NavLink>
+            </Button>
           </li>
         </ul>
       </nav>

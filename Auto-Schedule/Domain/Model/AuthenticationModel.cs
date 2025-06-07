@@ -9,5 +9,7 @@ namespace Domain.Model
         public DateTime ExpiresAt { get; set; }
         public UserModel UserData { get; set; } = default!;
         public string UserRole { get; set; } = default!;
+        public List<Notification>? Notifications { get; set; }
+
     }
 }
