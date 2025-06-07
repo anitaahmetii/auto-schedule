@@ -8,17 +8,26 @@ import { Role } from '../../Interfaces/Role';
 import { LectureType } from '../../Interfaces/LectureType';
 import { ScheduleTypeService } from '../../Services/ScheduleTypeService';
 import { SelectListItem } from '../../Interfaces/SelectListItem';
-import { GroupService } from '../../Services/GroupService';
+import { CityService } from '../../Services/CityService';
+import { DepartmentService } from '../../Services/DepartmentService';
 
 export default function EditUser() {
   const { id } = useParams<{ id: string }>(); 
   const [scheduleTypeList, setScheduleTypeList] = useState<SelectListItem[]>([]);
-  const [groupList, setGroupList] = useState<SelectListItem[]>([]);
+  const [cityList, setCityList] = useState<SelectListItem[]>([]);
+  const [departmentList, setDepartmentList] = useState<SelectListItem[]>([]);
   const [values, setValues] = useState<UserModel>({
     id: id!,
     userName: '',
     email: '',
     lastName: '',
+    personalID: '',
+    personalEmail: '',
+    birthdate: '',
+    phoneNumber: '',
+    cityId: '',
+    address: '',
+    gender: '',
     password: '',
     role: Role.Student, 
     responsibilities: '',
@@ -26,8 +35,10 @@ export default function EditUser() {
     academicGrade: '',
     lectureType: LectureType.Proffessor,
     scheduleTypeId: '',
+    departmentId: '',
     academicProgram: '',
-    groupId: '',
+    academicYear: '',
+    registred: '',
   } as UserModel);
 
    useEffect(() => {
@@ -61,6 +72,13 @@ export default function EditUser() {
         userName: userData.userName,
         lastName: userData.lastName,
         email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        personalID: userData.personalID,
+        personalEmail: userData.personalEmail,
+        birthdate: userData.birthdate ? new Date(userData.birthdate).toISOString().split('T')[0] : '',
+        cityId: userData.cityId,
+        address: userData.address,
+        gender: userData.gender,
         password: userData.password,
         role: userData.role,
         responsibilities: userData.responsibilities,
@@ -68,8 +86,10 @@ export default function EditUser() {
         academicGrade: userData.academicGrade,
         lectureType: userData.lectureType,
         scheduleTypeId: userData.scheduleTypeId,
+        departmentId: userData.departmentId,
         academicProgram: userData.academicProgram,
-        groupId: userData.groupId,
+        academicYear: userData.academicYear,
+        registred: userData.registred ? new Date(userData.registred).toISOString().split('T')[0] : '',
       } as UserModel);
    };
    const navigate = useNavigate();
@@ -92,19 +112,28 @@ export default function EditUser() {
       fetchScheduleTypeList();
   }, []);
 
-  const fetchGroupList = async () => {
-    const response = await GroupService.GetSelectList();
+   const fetchCitiesList = async () => {
+    const response = await CityService.GetSelectList();
   
-    setGroupList(response.map((item,i)=>({
+    setCityList(response.map((item,i)=>({
       key: i,
       value: item.id,
       text: item.name,
     } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
-  
-  
   }
   useEffect(() => {
-    fetchGroupList();
+    fetchCitiesList();
+  }, []);
+  const fetchDepartmentList = async () => {
+    const response = await DepartmentService.GetSelectList();
+    setDepartmentList(response.map((item,i)=>({
+      key: i,
+      value: item.id,
+      text: item.name,
+    } as SelectListItem)).filter(x=>x.text != '' &&x.text != null));
+  }
+  useEffect(() => {
+    fetchDepartmentList();
   }, []);
 
   const cleanPayload = (values: UserModel) => {
@@ -114,8 +143,10 @@ export default function EditUser() {
       case Role.Admin:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         delete payload.status;
         delete payload.responsibilities;
@@ -123,15 +154,19 @@ export default function EditUser() {
       case Role.Coordinator:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         break;
       case Role.Receptionist:
         delete payload.lectureType;
         delete payload.scheduleTypeId;
-        delete payload.groupId;
+        delete payload.departmentId;
         delete payload.academicProgram;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.academicGrade;
         break;
       case Role.Student:
@@ -142,8 +177,10 @@ export default function EditUser() {
         delete payload.academicGrade;
         break;
       case Role.Lecture:
-        delete payload.groupId;
         delete payload.academicProgram;
+        delete payload.departmentId;
+        delete payload.academicYear;
+        delete payload.registred;
         delete payload.responsibilities;
         break;
     }
@@ -154,6 +191,7 @@ export default function EditUser() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+
       const model = cleanPayload(values);
 
       const response = await axios.post(
@@ -227,7 +265,74 @@ export default function EditUser() {
               onChange={handleChange}
             />
           </div>
-
+          <div className="form-group">
+            <label>Birthdate</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="date"
+              placeholder="Birthdate"
+              className="form-control"
+              id="birthdate"
+              name="birthdate"
+              value={values.birthdate ?? ''}
+              onChange={handleChange}
+            />
+          </div>
+           <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="cityId" 
+                id="cityId"
+                value= {values.cityId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select City</option>
+                {cityList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
+          <div className="form-group">
+            <label>Address</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Address"
+              className="form-control"
+              id="address"
+              name="address"
+              value={values.address!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Gender</label>
+            <select
+              style={{ padding: "5px", margin: "5px" }}
+              className="form-control"
+              id="gender"
+              name="gender"
+              value={values.gender!}
+              onChange={handleChange}
+              >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Phone Number</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Phone Number"
+              className="form-control"
+              id="phoneNumber"
+              name="phoneNumber"
+              value={values.phoneNumber!}
+              onChange={handleChange}
+            />
+          </div>
           <div className="form-group">
             <label>Email</label>
             <input
@@ -238,6 +343,32 @@ export default function EditUser() {
               id="email"
               name="email"
               value={values.email!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Personal ID</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="text"
+              placeholder="Personal ID"
+              className="form-control"
+              id="personalID"
+              name="personalID"
+              value={values.personalID!}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Personal Email</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="email"
+              placeholder="Personal Email"
+              className="form-control"
+              id="personalEmail"
+              name="personalEmail"
+              value={values.personalEmail!}
               onChange={handleChange}
             />
           </div>
@@ -392,6 +523,20 @@ export default function EditUser() {
 
           {values.role === Role.Student && (
           <>
+           <div className="col-md-6-w-100%">
+              <select className="form-control"
+                name="departmentId" 
+                id="departmentId"
+                value= {values.departmentId!}
+                onChange={handleChange}
+                style={{ marginBottom: "15px"}}
+              >
+                <option value="" disabled>Select Department</option>
+                {departmentList.map((x) => (
+                  <option key={x.key} value={x.value!}>{x.text}</option>
+                ))}
+              </select>
+            </div>
             <div className="form-group">
              <label>Academic Program</label>
              <input 
@@ -404,19 +549,30 @@ export default function EditUser() {
               value={values.academicProgram!} 
               onChange={handleChange} />
             </div>
-            <div className="col-md-6-w-100%">
-              <select className="form-control"
-                name="groupId" 
-                id="groupId"
-                value= {values.groupId!}
-                onChange={handleChange}
-                style={{ marginBottom: "15px"}}
-              >
-                <option value="" disabled>Select GroupId</option>
-                {groupList.map((x) => (
-                  <option key={x.key} value={x.value!}>{x.text}</option>
-                ))}
-              </select>
+            <div className="form-group">
+             <label>Academic Year</label>
+             <input 
+              style={{ padding: "5px", margin: "5px" }}
+              type="text" 
+              className="form-control"
+              placeholder="Academic Year"
+              name="academicYear" 
+              id="academicYear"
+              value={values.academicYear!} 
+              onChange={handleChange} />
+            </div>
+              <div className="form-group">
+            <label>Registred</label>
+            <input
+              style={{ padding: "5px", margin: "5px" }}
+              type="date"
+              placeholder="Registred"
+              className="form-control"
+              id="registred"
+              name="registred"
+              value={values.registred ?? ''}
+              onChange={handleChange}
+            />
             </div>
           </>
           )}

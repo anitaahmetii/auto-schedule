@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enum;
 using Domain.Interface;
@@ -312,6 +313,14 @@ namespace Application.Services
             var scheduleModels = _mapper.Map<List<ImportScheduleModel>>(scheduleList);
             return scheduleModels;
         }
+        public async Task<IReadOnlyList<ManualScheduleModel>> GetGroupScheduleAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            var schedules = await _context.Schedules
+                .Where(x => x.GroupId == groupId)
+                .ProjectTo<ManualScheduleModel>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+            return (!schedules.Any()) ? throw new KeyNotFoundException($"Group {groupId} has no schedules.") : schedules;
+        }
         private void ValidateManualScheduleModel(ManualScheduleModel manualSchedule)
         {
             if (manualSchedule == null)
@@ -343,7 +352,7 @@ namespace Application.Services
             if (manualSchedule.GroupId == Guid.Empty)
                 throw new ArgumentException("GroupID is required.");
 
-            if( _context.Schedules.Any(s =>
+            if (_context.Schedules.Any(s =>
                 s.Day == dayEnum &&
                 s.StartTime.Equals(manualSchedule.StartTime) &&
                 s.EndTime.Equals(manualSchedule.EndTime) &&
@@ -356,6 +365,57 @@ namespace Application.Services
                 throw new InvalidOperationException("This schedule already exists!");
             }
         }
+
+        public async Task<List<ManualScheduleModel>> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken)
+        {
+            var student = await _context.Users
+                .OfType<Student>()
+                .FirstOrDefaultAsync(s => s.Id == studentId, cancellationToken)
+                  ?? throw new Exception("Student does not exist!");
+
+            var group = await _context.Groups
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.CourseLectures)
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.Halls)
+                .Include(g => g.Schedules)
+                    .ThenInclude(s => s.Location)
+                .FirstOrDefaultAsync(g => g.Id == groupId, cancellationToken)
+                ?? throw new Exception("Group does not exist!");
+
+            if (await IsGroupFullAsync(student.DepartmentId, groupId))
+            {
+                throw new Exception("Group is full. Cannot add more students.");
+            }
+
+            student.GroupId = group.Id;
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var groupSchedule = _mapper.Map<List<ManualScheduleModel>>(group.Schedules);
+            return groupSchedule;
+        }
+        public async Task<bool> IsGroupFullAsync(Guid departmentId, Guid groupId)
+        {
+            var capacity = await _context.Groups
+                                    .Where(g => g.Id == groupId)
+                                    .Select(g => g.Capacity)
+                                    .FirstOrDefaultAsync();
+            var numb =  await _context.Users
+                                .OfType<Student>()
+                                .CountAsync(g => g.GroupId == groupId && g.DepartmentId == departmentId);
+            return capacity <= numb;
+        }
+        public async Task<List<ManualScheduleModel>> GetDailySchedules(CancellationToken cancellationToken)
+        {
+            var currentDay = Enum.Parse<Days>(DateTime.Now.DayOfWeek.ToString(), ignoreCase: true);
+
+            var dailySchedules = await _context.Schedules
+                            .Where(s => s.Day == currentDay)
+                            .ProjectTo<ManualScheduleModel>(_mapper.ConfigurationProvider)
+                            .ToListAsync(cancellationToken);
+            return dailySchedules;
+        }
+
 
         public async Task<int> CountSchedule(CancellationToken cancellationToken)
         {

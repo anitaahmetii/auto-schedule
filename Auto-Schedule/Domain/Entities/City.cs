@@ -13,5 +13,6 @@ namespace Domain.Entities
         public Guid StateId { get; set; }
 
         public State State { get; set; }
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }

@@ -27,14 +27,16 @@ export class UserService {
   }
   public static LogOut(): void {
     console.log('logged out');
-    localStorage.remove("jwt");
-    localStorage.remove("expiresAt");
-    localStorage.remove("userModel");
-    localStorage.remove("role");
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("expiresAt");
+    localStorage.removeItem("userModel");
+    localStorage.removeItem("role");
 
     UserService.token = null;
     UserService.role = null;
     UserService.LoggedInUser = null;
+
+    window.history.replaceState(null, '', '/login');
   }
   public static GetUserRole(): string | null {
     return localStorage.getItem("role")!;

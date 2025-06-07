@@ -114,10 +114,12 @@ builder.Services.AddScoped<ICoordinatorService, CoordinatorService>();
 builder.Services.AddScoped<ICourseLecturesService, CourseLecturesService>();
 builder.Services.AddScoped<IAuthorizationManager, AuthorizationManager>();
 builder.Services.AddScoped<DbInitialization>();
+builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
 builder.Services.AddScoped<IManualScheduleService, ManualScheduleService>();
-
-
-
+builder.Services.AddScoped<IGroupSelectionPeriodService, GroupSelectionPeriodService>();
+builder.Services.AddScoped<IAttendanceCodePeriodService, AttendanceCodePeriodService>();
+builder.Services.AddHostedService<CleanupExpiredCodesService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 
 var app = builder.Build();
@@ -128,6 +130,12 @@ using (var scope = app.Services.CreateAsyncScope())
     var dbInitialization = scope.ServiceProvider.GetRequiredService<DbInitialization>();
     await dbInitialization.Init(CancellationToken.None);
 }
+//app.Lifetime.ApplicationStarted.Register(async () =>
+//{
+//    using var scope = app.Services.CreateScope();
+//    var service = scope.ServiceProvider.GetRequiredService<IAttendanceCodePeriodService>();
+//    await service.DeleteAttendanceCodePeriodAsync(CancellationToken.None);
+//});
 
 if (app.Environment.IsDevelopment())
 {

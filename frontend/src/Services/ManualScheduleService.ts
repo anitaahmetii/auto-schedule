@@ -5,6 +5,13 @@ import { ScheduleModel } from "../Interfaces/ScheduleModel";
 export class ManualScheduleService
 {
     private static readonly baseUrl = "https://localhost:7085/api/ManualSchedule";
+    private static getAuthHeaders() 
+    {
+        const token = localStorage.getItem("token");
+        return {
+            Authorization: token ? `Bearer ${token}` : "",
+        };
+    }
 
     public static async createManualScheduleAsync(model: ManualScheduleModel): Promise<ManualScheduleModel>
     {
@@ -71,6 +78,19 @@ export class ManualScheduleService
             throw error;
         }
     }
+    public static async getGroupScheduleAsync(groupId: string): Promise<ManualScheduleModel[]>
+    {
+        try 
+        {
+            var response = await axios.get(`${ManualScheduleService.baseUrl}/group/${groupId}`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error retrieving the schedule:", error);
+            throw error;
+        }
+    }
     public static async ImportSchedule(file: File) : Promise<ScheduleModel[]>
     {
         const formData = new FormData();
@@ -82,6 +102,33 @@ export class ManualScheduleService
         });
         return result.data;
     }
+    public static async selectGroupByStudent(studentId: string, groupId: string): Promise<ManualScheduleModel[]>
+    {
+        try
+        {
+            const response = await axios.post(`${this.baseUrl}/selectGroup?studentId=${studentId}&groupId=${groupId}`, null, {
+                headers: this.getAuthHeaders(),
+            });
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error selecting the group:", error);
+            throw error;
+        }
+    }
+    public static async getDailySchedules(): Promise<ManualScheduleModel[]>
+    {
+        try
+        {
+            const response = await axios.get(`${this.baseUrl}/dailyschedules`);
+            return response.data;
+        }
+        catch (error) 
+        {
+            console.error("Error retrieving daily schedules:", error);
+            throw error;
+        }
 
     static async GetSchedulesByDay(day: string): Promise<ManualScheduleModel[]> {
       const response = await axios.get(`${ManualScheduleService.baseUrl}/by-day/${day}`);

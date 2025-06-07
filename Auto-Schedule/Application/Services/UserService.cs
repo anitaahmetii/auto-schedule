@@ -56,6 +56,14 @@ namespace Application.Services
                  new Claim(ClaimTypes.Email,user.Email),
             };
             var userRoles = await userManager.GetRolesAsync(user);
+            Student? student = null;
+            if (userRoles.Contains("Student"))
+            {
+                student = await appDbContext.Students.FirstOrDefaultAsync(s => s.Id == user.Id, cancellationToken);
+            }
+
+
+
             foreach (var role in userRoles)
             {
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
@@ -80,6 +88,14 @@ namespace Application.Services
                 userData.Role = Domain.Enum.Role.Lecture;
             else
                 userData.Role = Domain.Enum.Role.Student;
+
+            if (student != null)
+            {   
+                userData.DepartmentId = student.DepartmentId;
+                userData.AcademicProgram = student.AcademicProgram;
+                userData.AcademicYear = student.AcademicYear;
+                userData.Registred = student.Registred;
+            }
 
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
@@ -175,6 +191,13 @@ namespace Application.Services
                 user.UserName = model.UserName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
+                user.PersonalID = model.PersonalID;
+                user.PersonalEmail = model.PersonalEmail;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Birthdate = model.Birthdate;
+                user.CityId = model.CityId;
+                user.Address = model.Address;
+                user.Gender = model.Gender;
 
                 // Set derived properties
                 SetRoleSpecificFields(user, model);
@@ -195,6 +218,13 @@ namespace Application.Services
                 user.UserName = model.UserName;
                 user.LastName = model.LastName;
                 user.Email = model.Email;
+                user.PersonalID = model.PersonalID;
+                user.PersonalEmail = model.PersonalEmail;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Birthdate = model.Birthdate;
+                user.CityId = model.CityId;
+                user.Address = model.Address;
+                user.Gender = model.Gender;
 
                 SetRoleSpecificFields(user, model);
 
@@ -243,8 +273,10 @@ namespace Application.Services
                     break;
 
                 case Student student:
+                    student.DepartmentId = model.DepartmentId!.Value;
                     student.AcademicProgram = model.AcademicProgram;
-                    student.GroupId = model.GroupId!.Value;
+                    student.AcademicYear = model.AcademicYear;
+                    student.Registred = model.Registred;
                     break;
             }
         }
@@ -368,7 +400,9 @@ namespace Application.Services
                 {
                     model.Role = Domain.Enum.Role.Student;
                     model.AcademicProgram = student.AcademicProgram;
-                    model.GroupId = student.GroupId;
+                    model.AcademicYear = model.AcademicYear;
+                    model.DepartmentId = model.DepartmentId;
+                    model.Registred = model.Registred;
                 }
 
                 userModels.Add(model);
@@ -429,7 +463,9 @@ namespace Application.Services
             {
                 model.Role = Domain.Enum.Role.Student;
                 model.AcademicProgram = student.AcademicProgram;
-                model.GroupId = student.GroupId;
+                model.AcademicYear = model.AcademicYear;
+                model.DepartmentId = model.DepartmentId;
+                model.Registred = model.Registred;
             }
 
             return model;

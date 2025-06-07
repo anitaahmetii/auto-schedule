@@ -10,21 +10,40 @@ export default function Login() {
   });
 
   const[isSubmitting,setIsSubmitting] = useState<boolean>(false);
-   const navigete = useNavigate();
+   const navigate = useNavigate();
  
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
      const { name, value } = e.target;
      setFormData({ ...formData, [name]: value });
    };
    async function submitForm(e: React.FormEvent<HTMLFormElement>) {
-     e.preventDefault();
-     setIsSubmitting(true);
-     var user: LoginModel = {
-       email: formData.email,
-       password: formData.password,
-     };
-     const response = await UserService.Login(user);
-     navigete("/state");
+      e.preventDefault();
+      setIsSubmitting(true);
+      var user: LoginModel = {
+        email: formData.email,
+        password: formData.password,
+      };
+      const response = await UserService.Login(user);
+      localStorage.setItem("userRole", response.userRole);  
+      localStorage.setItem("id", response.userData.id!);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("departmentId", response.userData.departmentId!);
+
+    if (response.userRole === "Student") 
+    {
+      localStorage.setItem("studentId", response.userData.id!);
+      localStorage.setItem("departmentId", response.userData.departmentId!);
+      navigate("/student/profile");
+    }
+    else if (response.userRole === "Lecture")
+    {
+      localStorage.setItem("lectureId", response.userData.id!);
+      navigate("/lecture");
+    }
+    else 
+    { 
+      navigate("/state")
+    };
     }
 
     return (

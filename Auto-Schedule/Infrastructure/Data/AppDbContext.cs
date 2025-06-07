@@ -8,7 +8,11 @@ namespace Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Student>().HasBaseType<User>();
         }
 
         public DbSet<User> Users { get; set; }
@@ -31,8 +35,9 @@ namespace Infrastructure.Data
         public DbSet<Halls> Halls { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Report> Reports { get; set; }
-
-
+        public DbSet<GroupSelectionPeriod> GroupSelectionPeriods { get; set; }
+        public DbSet<AttendanceCodePeriod> AttendanceCodePeriods { get; set; }
+        public DbSet<Attendance> Attendances { get; set; }
 
     }
 }

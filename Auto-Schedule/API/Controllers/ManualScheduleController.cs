@@ -2,6 +2,7 @@
 using Domain.Enum;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,7 +94,7 @@ namespace API.Controllers
             }
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpadteManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
         {
             try
             {
@@ -150,6 +151,26 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpGet("group/{groupId}")]
+        public async Task<IActionResult> GetGroupScheduleAsync(Guid groupId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return Ok(await _service.GetGroupScheduleAsync(groupId, cancellationToken));
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest($"Missing data: {ex.Message}");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest($"Invalid input: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An unexpected error occurred: {ex.Message}");
+            }
+        }
         [HttpPost("upload")]
         public async Task<IActionResult> ImportScheduleFromExcelAsync(IFormFile file)
         {
@@ -158,6 +179,26 @@ namespace API.Controllers
 
             var schedule = await _service.ImportScheduleFromExcelAsync(file);
             return Ok(schedule);
+        }
+
+        [Authorize(Roles = "Student")]
+        [HttpPost("selectGroup")]
+        public async Task<IActionResult> SelectGroupByStudent(Guid studentId, Guid groupId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var schedules = await _service.SelectGroupByStudent(studentId, groupId, cancellationToken);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+        [HttpGet("dailyschedules")]
+        public async Task<IActionResult> GetDailySchedules(CancellationToken cancellationToken)
+        {
+            return Ok(await _service.GetDailySchedules(cancellationToken));
         }
 
         [HttpGet("countSchedule")]
