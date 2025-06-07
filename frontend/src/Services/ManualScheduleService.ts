@@ -99,4 +99,19 @@ export class ManualScheduleService
      const result = await axios.get(`${ManualScheduleService.baseUrl}/canceled`);
      return result.data;
     }
+
+    public static async CountSchedule() : Promise<number>{
+    const result = await axios.get(`${ManualScheduleService.baseUrl}/countSchedule`);
+    return result.data;
+    }
+    public static async CountCanceledSchedules() : Promise<number>{
+    const result = await axios.get(`${ManualScheduleService.baseUrl}/canceled/count`);
+    return result.data;
+    }
+
+    public static async CountSchedulesByDay(): Promise<Record<string, number>> {
+  
+    const response = await axios.get(`${ManualScheduleService.baseUrl}/scheudlesOfWeek`);
+    return response.data;
+    }
 }

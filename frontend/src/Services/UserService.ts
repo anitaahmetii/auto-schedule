@@ -37,7 +37,7 @@ export class UserService {
     UserService.LoggedInUser = null;
   }
   public static GetUserRole(): string | null {
-    return localStorage.get("role")!;
+    return localStorage.getItem("role")!;
   }
   public static async DeleteUser(id: string): Promise<void> {
     await axios.delete(`${UserService.baseUrl}/${id}`);

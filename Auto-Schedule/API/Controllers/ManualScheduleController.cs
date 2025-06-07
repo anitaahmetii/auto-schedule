@@ -160,6 +160,12 @@ namespace API.Controllers
             return Ok(schedule);
         }
 
+        [HttpGet("countSchedule")]
+        public async Task<IActionResult> CountSchedule(CancellationToken cancellationToken)
+        {
+            var count = await _service.CountSchedule(cancellationToken);
+            return Ok(count);
+        }
         [HttpGet("by-day/{day}")]
         public async Task<IActionResult> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
         {
@@ -191,6 +197,19 @@ namespace API.Controllers
             var schedule = await _service.GetCanceledSchedules(cancellationToken);
 
             return Ok(schedule);
+        }
+
+        [HttpGet("canceled/count")]
+        public async Task<IActionResult> CountCanceledSchedules(CancellationToken cancellationToken)
+        {
+            var count = await _service.CountCanceledSchedule(cancellationToken);
+            return Ok(count);
+        }
+        [HttpGet("scheudlesOfWeek")]
+        public async Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken)
+        {
+            var schedules = await _service.CountSchedulesByDayAsync(cancellationToken);
+            return schedules;
         }
     }
 }

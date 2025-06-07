@@ -1,16 +1,4 @@
-import React from 'react';
-import './Services/AxiosInstance'
-import StateTable from './Components/State/StateTable';
-import EditState from './Components/State/EditState';
-import CityTable from './Components/City/CityTable';
-import EditCity from './Components/City/EditCity';
-import LecturesTable from './Components/Lectures/LecturesTable';
-import EditLectures from './Components/Lectures/EditLectures';
-import ScheduleTypeTable from "./Components/ScheduleType/ScheduleTypeTable"; 
-import EditScheduleType from "./Components/ScheduleType/EditScheduleType"; 
-import UserTable from "./Components/User/UserTable";
-import EditUser from "./Components/User/EditUser";
-import ReportTable from "./Components/Report/ReportTable";
+
 import EditReport from "./Components/Report/EditReport";
 import CourseTable from "./Components/CourseComponent/CourseTable";
 import AddCourse from './Components/CourseComponent/AddCourse';
@@ -33,35 +21,51 @@ import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
-import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
-import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
-import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
-import OrariDitor from './Components/OrariDitor';
-import OrariJavor from './Components/OrariJavor';
-import RaportetAnuluara from './Components/CancelledSchedules/CancelledSchedules';
-import AddRaportetAnuluara from './Components/CancelledSchedules/AddRaportetAnuluara';
-import AddTemporarySchedule from './Components/ManualSchedule/AddTemporarySchedule';
+
+//import SelectScheduleType from './Components/Lectures/SelectScheduleType';
+//import DashboardLayout from "./Components/LecturerDashboard/DashboardLayout";
+
 import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
 import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
-import MySchedule from "./Components/LecturerDashboard/MySchedule";       
-        
-        
+import MySchedule from "./Components/LecturerDashboard/MySchedule";
+//import DailySchedule from "./Components/LecturerDashboard/DailySchedule";
+import LecturesTable from "./Components/Lectures/LecturesTable";
+import EditLectures from "./Components/Lectures/EditLectures";
+import EditCity from "./Components/City/EditCity";
+import EditState from "./Components/State/EditState";
+import StateTable from "./Components/State/StateTable";
+import ScheduleTypeTable from "./Components/ScheduleType/ScheduleTypeTable";
+import EditScheduleType from "./Components/ScheduleType/EditScheduleType";
+import UserTable from "./Components/User/UserTable";
+import EditUser from "./Components/User/EditUser";
+import ReportTable from "./Components/Report/ReportTable";
+import ManualScheduleTable from "./Components/ManualSchedule/ManualScheduleTable";
+import CreateManualSchedule from "./Components/ManualSchedule/CreateManualSchedule";
+import OrariDitor from "./Components/OrariDitor";
+import EditManualSchedule from "./Components/ManualSchedule/EditManualSchedule";
+import RaportetAnuluara from "./Components/CancelledSchedules/CancelledSchedules";
+import AddRaportetAnuluara from "./Components/CancelledSchedules/AddRaportetAnuluara";
+import AddTemporarySchedule from "./Components/ManualSchedule/AddTemporarySchedule";
+import OrariJavor from "./Components/OrariJavor";
+import CoordinatorDashboard from "./Components/CoordinatorDashboard";
+import LayoutWithSideBar from './Components/LayoutWithSideBar';
+import CityTable from "./Components/City/CityTable";
 
 function App() {
   return (
-    <>
+       <>
 
     <Router>
      <Routes>
-          <Route path="/Header" element={<Header/>}/>
-          <Route path="/login" element={<Login/>}/>
+      
+       <Route path="/" element={<Login/>}/>
+       <Route element={<LayoutWithSideBar />}>
           <Route path="/State" element={<StateTable />} />
           <Route path="/EditState/:id" element={<EditState />} />
           <Route path="/AddState" element={<EditState />} />
-
-          <Route path="/city" element={<CityTable />} />
           <Route path="/EditCity/:id" element={<EditCity />} />
           <Route path="/AddCity" element={<EditCity />} />
+          <Route path="/City" element={<CityTable/>}/>
 
           <Route path="/lectures" element={<LecturesTable />} />
           <Route path="/EditLectures/:id" element={<EditLectures />} />
@@ -78,6 +82,7 @@ function App() {
           <Route path="/reports" element={<ReportTable />} />
           <Route path="/EditReport/:reportId" element={<EditReport />} />
           <Route path="/AddReport/:scheduleId" element={<EditReport />} />
+          <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
 
           <Route path='/Group' element={<GroupTable />} />
           <Route path="/AddGroup" element={<AddGroup />} />
@@ -100,38 +105,28 @@ function App() {
           <Route path="/AddReceptionist" element={<EditReceptionist />} />
 
           <Route path="/CoordinatorTable" element={<CoordinatorTable />} />
-          <Route path="/EditCoordinator/:id" element={<EditCoordinator />} />
-          <Route path="/AddCoordinator" element={<EditCoordinator />} />
-
-          <Route path="/DepartmentTable" element={<DepartmentTable />} />
-          <Route path="/EditDepartment/:id" element={<EditDepartment />} />
-          <Route path="/AddDepartment" element={<EditDepartment />} />
-
-          <Route path="/" element={<CourseLecturesTable />} />
-          <Route path="/EditCourseLecture/:id" element={<EditCourseLectures />} />
-          <Route path="/AddCourseLecture" element={<EditCourseLectures />} />
-
           <Route path="/ManualSchedule" element={<ManualScheduleTable />} />
-          <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
-          <Route path="/EditManualSchedule/:id" element={<EditManualSchedule />} />
-
-          <Route path="/OrariDitor" element={<OrariDitor />} />
-
-          <Route path="/OrariJavor" element={<OrariJavor />} />
-          <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
+          <Route path="/CreateManualSchedule" element={<CreateManualSchedule/>}/>
+          <Route path="/EditManualSchedule/:id" element={<EditManualSchedule/>}/>
+          <Route path="OrariDitor" element={<OrariDitor />} />
+          <Route path="OrariJavor" element={<OrariJavor />} />
+          <Route path="/CoordinatorDashboard" element={<CoordinatorDashboard />} />
+          <Route path="/DepartmentTable"  element={<DepartmentTable/>}/>
+          <Route path="/AddDepartment" element={<EditDepartment/>}/>
+          <Route path="/EditDepartment/:id" element={<EditDepartment/>}/>
+          <Route path="/AddCourseLecture" element={<EditCourseLectures/>}/>
+          <Route path="/EditCourseLectures/:id" element={<EditCourseLectures/>}/>
+          <Route path="/CourseLecturesTable" element={<CourseLecturesTable/>}/>
+          <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
           <Route path="/AddRaportetAnuluara/:scheduleId" element={<AddRaportetAnuluara />} />
           <Route path="/EditRaportetAnuluara/:reportId" element={<AddRaportetAnuluara />} />
-
-          <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
-
-
-         
-          <Route path="/lecturer" element={<DashboardLecturer />}>
-          <Route path="myschedule" element={<MySchedule />} />         
           <Route path="select-schedule" element={<SelectScheduleType />} /> 
-
-        </Route>
-
+          <Route path="myschedule" element={<MySchedule />} />   
+          <Route path="/lecturer" element={<DashboardLecturer />}/>
+          <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
+          <Route path="dailyschedule-lecturer" element={<MySchedule />} />
+          
+      </Route>
         </Routes>
       </Router>
      </>

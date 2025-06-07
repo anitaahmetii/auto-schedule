@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -192,13 +193,30 @@ namespace Application.Services
 
             var scheduleList = new List<Schedule>();
 
+
             for (int row = 1; row < table.Rows.Count; row++)
             {
+                var startTimeValue = table.Rows[row][1];
+                var endTimeValue = table.Rows[row][2];
+
+                string formattedStartTime = null;
+                string formattedEndTime = null;
+
+                if (DateTime.TryParse(startTimeValue?.ToString(), out DateTime startTime))
+                {
+                    formattedStartTime = startTime.ToString("HH:mm");
+                }
+
+                if (DateTime.TryParse(endTimeValue?.ToString(), out DateTime endTime))
+                {
+                    formattedEndTime = endTime.ToString("HH:mm");
+                }
+
                 var dto = new ImportScheduleModel
                 {
                     Day = table.Rows[row][0]?.ToString()?.Trim(),
-                    StartTime = table.Rows[row][1]?.ToString()?.Trim(),
-                    EndTime = table.Rows[row][2]?.ToString()?.Trim(),
+                    StartTime = formattedStartTime,
+                    EndTime = formattedEndTime,
                     Halls = table.Rows[row][3].ToString()?.Trim(),
                     Location = table.Rows[row][4].ToString()?.Trim(),
                     Department = table.Rows[row][5]?.ToString()?.Trim(),
@@ -339,6 +357,24 @@ namespace Application.Services
             }
         }
 
+        public async Task<int> CountSchedule(CancellationToken cancellationToken)
+        {
+            return await _context.Schedules.CountAsync(cancellationToken);  
+        }
+        public async Task<int> CountCanceledSchedule(CancellationToken cancellationToken)
+        {
+            return await _context.Schedules.Where(x => x.IsCanceled == true).CountAsync(cancellationToken);
+        }
+
+        public async Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken)
+        {
+           var countSchedule= await _context.Schedules
+                .Where(x => !x.IsCanceled)                        
+                .GroupBy(x => x.Day)                             
+                .Select(g => new { Day = g.Key, Count = g.Count() }) 
+                .ToDictionaryAsync(x => x.Day.ToString(), x => x.Count, cancellationToken);
+            return countSchedule;
+        }
         public async Task<List<ManualScheduleModel>> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
         {
             var today = DateTime.UtcNow.Date;

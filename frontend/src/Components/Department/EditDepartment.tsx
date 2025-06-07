@@ -52,7 +52,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 };
 function sendToOverview(){
-  navigate('/');
+  navigate('/DepartmentTable');
  }
 const handleChange = (
   e: React.ChangeEvent<HTMLInputElement>

@@ -21,6 +21,8 @@ namespace Domain.Interface
         Task<ManualScheduleModel> CancelSchedule(Guid id, CancellationToken cancellationToken);
         Task<ManualScheduleModel> RestoreSchedule(Guid id, CancellationToken cancellationToken);
         Task<List<ManualScheduleModel>> GetCanceledSchedules(CancellationToken cancellationToken);
-
+        Task<int> CountSchedule(CancellationToken cancellationToken);
+        Task<int> CountCanceledSchedule(CancellationToken cancellationToken);
+        Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken);
     }
 }
