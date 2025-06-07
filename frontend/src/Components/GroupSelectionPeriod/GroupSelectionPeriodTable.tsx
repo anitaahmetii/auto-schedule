@@ -92,13 +92,13 @@ export default function GroupSelectionPeriodTable()
     }
     return (
         <Fragment>
-            <div className="d-flex justify-content-center align-items-center mt-4 mb-3 px-4">
+            <div className="d-flex justify-content-center align-items-center mt-1 mb-4 px-3" >
                 <Header as="h1">Create Group Selection Period</Header>
             </div>
             <div className="px-4 d-flex justify-content-center align-items-center">
-                <div className="ui segment" style={{ padding: "1.5rem" }}>
+                <div className="ui segment" style={{ padding: "1.5rem", maxWidth: "900px", width: "120%" }}>
                     <Form className="ui form" onSubmit={handleSubmit}>
-                        <div className="fields" style={{ marginBottom: "1rem", display: "flex", gap: "1rem",}} >
+                        <div className="fields" style={{ marginBottom: "1rem", display: "flex", gap: "1rem", flexWrap: "wrap" }} >
                             <div className="field" style={{ flex: 1 }}>
                                 <label>Start Date</label>
                                 <input type="date" style={{ width: "100%", height: "38px" }} 
@@ -134,7 +134,7 @@ export default function GroupSelectionPeriodTable()
                             <Button color="grey" type="button" onClick={() =>setGroupSelectionPeriods({ id: null, startDate: "", endDate: "", startTime: "", endTime: "", departmentId: ""})}>
                                 Cancel
                             </Button>
-                            <Button color="olive" type="submit">
+                            <Button style={{backgroundColor: '#34495e', color: 'white'}} type="submit">
                                 {isEditing ? "Update" : "Create"}
                             </Button>
                         </div>

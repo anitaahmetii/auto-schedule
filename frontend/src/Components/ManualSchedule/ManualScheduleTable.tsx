@@ -87,24 +87,26 @@ export default function ManualScheduleTable()
             setOpenConfirm(false);
             setDeletedScheduleId("");
         }
-    const styleWidth = {maxWidth: "120px", whiteSpace: "normal", wordWrap: "break-word" };
+
     return (
         <Fragment>
-            <div style={{ height: "100vh", overflow: "hidden" }}>
-                <div className="d-flex align-items-center mt-4 mb-3 px-4">
+            <div className="table-container my-4">
+                <div className="d-flex align-items-center justify-content-between">
                     <h1 style={{ marginLeft: "30px"}}>Manual Schedules</h1>
-                    <Button type="button" style={{color: "white"}} color="olive" 
+                        <Button type="button" style={{ backgroundColor: "#34495e", color: "white" }}
                             className="ms-auto" 
-                            onClick={() => navigate('/CreateManualSchedule')}> Add New Manual Schedule </Button>
+                            onClick={() => navigate('/CreateManualSchedule')}> 
+                            Add New Manual Schedule 
+                        </Button>
                 </div>   
-                <div className="px-2" style={{ maxHeight: "500px", overflowY: "auto" }}>
-                    <Table className="ui olive striped  single line table">
+                <div className="table-responsive mt-4">
+                    <Table size="small" compact="very" celled style={{ fontSize: "0.8rem", borderTop: "2px solid navy" }}>
                         <Table.Header>
                             <Table.Row>
-                                <Table.HeaderCell>Course Lecture</Table.HeaderCell>
+                                <Table.HeaderCell>Lecture</Table.HeaderCell>
                                 <Table.HeaderCell>Day</Table.HeaderCell>
-                                <Table.HeaderCell>Start Time</Table.HeaderCell>
-                                <Table.HeaderCell>End Time</Table.HeaderCell>
+                                <Table.HeaderCell>Start</Table.HeaderCell>
+                                <Table.HeaderCell>End</Table.HeaderCell>
                                 <Table.HeaderCell>Group</Table.HeaderCell>
                                 <Table.HeaderCell>Hall</Table.HeaderCell>
                                 <Table.HeaderCell>Location</Table.HeaderCell>
@@ -115,18 +117,25 @@ export default function ManualScheduleTable()
                         <Table.Body>
                             {sortedSchedules.map(schedule => (
                                 <Table.Row key={schedule.id}>
-                                    <Table.Cell style={{...styleWidth, maxWidth: "250px"}}>
-                                        {courseLecturesList.find(c => c.id === schedule.courseLecturesId)?.name}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{schedule.day}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{schedule.startTime}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{schedule.endTime}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{groupsList.find(g => g.id === schedule.groupId)?.name}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{hallsList.find(h => h.id === schedule.hallsId)?.name}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{locationsList.find(l => l.id === schedule.locationId)?.name}</Table.Cell>
-                                    <Table.Cell style={styleWidth}>{departmentsList.find(d => d.id === schedule.departmentId)?.name}</Table.Cell>
                                     <Table.Cell>
-                                        <Button color="olive" className="mr-2" onClick={() => navigate(`/EditManualSchedule/${schedule.id}`)}>Edit</Button>
-                                        <Button color="red" className="mr-2" onClick={() => deleteSchedule(schedule.id!)}>Del</Button>
+                                        {courseLecturesList.find(c => c.id === schedule.courseLecturesId)?.name}</Table.Cell>
+                                    <Table.Cell >{schedule.day}</Table.Cell>
+                                    <Table.Cell >{schedule.startTime}</Table.Cell>
+                                    <Table.Cell >{schedule.endTime}</Table.Cell>
+                                    <Table.Cell >{groupsList.find(g => g.id === schedule.groupId)?.name}</Table.Cell>
+                                    <Table.Cell >{hallsList.find(h => h.id === schedule.hallsId)?.name}</Table.Cell>
+                                    <Table.Cell >{locationsList.find(l => l.id === schedule.locationId)?.name}</Table.Cell>
+                                    <Table.Cell >{departmentsList.find(d => d.id === schedule.departmentId)?.name}</Table.Cell>
+                                    <Table.Cell>
+                                        <div style={{display: 'flex', flexDirection: 'column' }}>
+                                            <Button size="mini" style={{ backgroundColor: "#34495e", color: "white"}} className="mr-2" onClick={() => navigate(`/EditManualSchedule/${schedule.id}`)}>
+                                                Edit
+                                            </Button>
+                                            <Button size="mini" color="red" className="mr-2" onClick={() => deleteSchedule(schedule.id!)} style={{marginTop: '3%'}}>
+                                                Del
+                                            </Button>
+                                        </div>
+                                        
                                     </Table.Cell>
                                 </Table.Row>
                             ))}

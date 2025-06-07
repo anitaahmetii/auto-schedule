@@ -1,12 +1,13 @@
 import { Fragment } from "react/jsx-runtime";
 import { Table } from "semantic-ui-react";
 import { useEffect, useState } from "react";
-import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
-import { SelectListItem } from "../../../Interfaces/SelectListItem";
-import { CourseLecturesService } from "../../../Services/CourseLecturesService";
-import { GroupService } from "../../../Services/GroupService";
-import { HallService } from "../../../Services/HallService";
-import { LocationService } from "../../../Services/LocationService";
+import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { CourseLecturesService } from "../../Services/CourseLecturesService";
+import { GroupService } from "../../Services/GroupService";
+import { HallService } from "../../Services/HallService";
+import { LocationService } from "../../Services/LocationService";
+
 
 type ScheduleModel = {
     schedule: ManualScheduleModel[];
@@ -51,15 +52,16 @@ export default function ShowTable({ schedule }: ScheduleModel)
     });
     return (
         <Fragment>
-                <div className={`ui segment px-1 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
-                 style={{ marginTop: '30px', width: '100%',  backgroundColor: 'transparent', border: 'none', boxShadow: 'none'}}>
-                        <Table className={`ui striped single line table ${(schedule && schedule.length > 0) ? "olive" : ""}`} >
+                <div className={`ui segment px-1 pt-3 pt-2 ${(!schedule || schedule.length === 0) ? "disabled" : ""}`} 
+                 style={{ marginTop: '30px', backgroundColor: 'transparent', border: 'none', boxShadow: 'none'}}>
+                        <Table className="ui striped compact very small single line table" celled 
+                            style={{ borderTop: '2px solid navy', tableLayout: 'fixed', width: '100%', fontSize: '0.8rem'}}>
                             <Table.Header>
                                 <Table.Row>
                                     <Table.HeaderCell>Day</Table.HeaderCell>
                                     <Table.HeaderCell>Start Time</Table.HeaderCell>
                                     <Table.HeaderCell>End Time</Table.HeaderCell>
-                                    <Table.HeaderCell>Course Lecture</Table.HeaderCell>
+                                    <Table.HeaderCell>Lecture</Table.HeaderCell>
                                     <Table.HeaderCell>Group</Table.HeaderCell>
                                     <Table.HeaderCell>Hall</Table.HeaderCell>
                                     <Table.HeaderCell>Location</Table.HeaderCell>
@@ -72,7 +74,9 @@ export default function ShowTable({ schedule }: ScheduleModel)
                                             <Table.Cell>{item.day}</Table.Cell>
                                             <Table.Cell>{item.startTime}</Table.Cell>
                                             <Table.Cell>{item.endTime}</Table.Cell>
-                                            <Table.Cell>{courseLecture.find(c => c.value === item.courseLecturesId)?.text}</Table.Cell>
+                                            <Table.Cell style={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
+                                                {courseLecture.find(c => c.value === item.courseLecturesId)?.text}
+                                            </Table.Cell>
                                             <Table.Cell>{group.find(g => g.value === item.groupId)?.text}</Table.Cell>
                                             <Table.Cell>{hall.find(h => h.value === item.hallsId)?.text}</Table.Cell>
                                             <Table.Cell>{location.find(l => l.value === item.locationId)?.text}</Table.Cell>

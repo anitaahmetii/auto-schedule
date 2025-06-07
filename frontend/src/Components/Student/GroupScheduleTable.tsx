@@ -1,11 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
-import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
-import { SelectListItem } from "../../../Interfaces/SelectListItem";
-import { GroupService } from "../../../Services/GroupService";
-import { ManualScheduleService } from "../../../Services/ManualScheduleService";
 import { Button } from "semantic-ui-react";
-import { GroupSelectionPeriodService } from "../../../Services/GroupSelectionPeriodService";
-import { GroupSelectionPeriodModel } from "../../../Interfaces/GroupSelectionPeriodModel";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
+import { GroupSelectionPeriodModel } from "../../Interfaces/GroupSelectionPeriodModel";
+import { GroupService } from "../../Services/GroupService";
+import { ManualScheduleService } from "../../Services/ManualScheduleService";
+import { GroupSelectionPeriodService } from "../../Services/GroupSelectionPeriodService";
 import ShowTable from "./ShowTable";
 
 export default function GroupSchedule()
@@ -142,8 +142,8 @@ export default function GroupSchedule()
                         No available spots in the selected group. Please try another group or contact administration.
                     </p>
                 }
-                <select className="olive" style={{ width: '200px', padding: '10px', fontSize: '16px', border: '2px solid olive', fontWeight: 'bold',  cursor: activePeriod ? 'pointer' : 'not-allowed',
-                                                    pointerEvents: activePeriod ? 'auto' : 'none' }}
+                <select className="blue" style={{ width: '200px', padding: '10px', fontSize: '16px', border: '2px solid navy',
+                    fontWeight: 'bold', cursor: activePeriod ? 'pointer' : 'not-allowed', pointerEvents: activePeriod ? 'auto' : 'none' }}
                 name="groupId" value={groupId || ""} onChange={(e) => handleChange(e)} disabled={canChange === true && activePeriod !== null}>
                     <option value="" disabled>Select Your Group</option>
                     {groups.map(g => (
@@ -157,13 +157,13 @@ export default function GroupSchedule()
                                 <Button color="grey" type="submit" onClick={handleCancel}>
                                     Cancel
                                 </Button>
-                                <Button color="olive" type="submit" onClick={handleSubmit}>
+                                <Button style={{ backgroundColor: "#34495e", color: "white" }} type="submit" onClick={handleSubmit}>
                                     Select
                                 </Button>
                             </div>
                         )}
                         {canChange && (
-                            <Button color="olive" style={{marginTop: '2%'}} onClick={() => {setCanChange(false); setToSelect(true)}}>
+                            <Button style={{marginTop: '2%', backgroundColor: "#34495e", color: "white"}} onClick={() => {setCanChange(false); setToSelect(true)}}>
                                 Change
                             </Button>
                         )}

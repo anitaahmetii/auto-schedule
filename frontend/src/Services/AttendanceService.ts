@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AttendanceModel } from "../Interfaces/AttendanceModel";
 
-export default class AttedanceService 
+export default class AttendanceService 
 {
     private static readonly baseUrl = "https://localhost:7085/api/Attendance";
     private static getAuthHeaders() 

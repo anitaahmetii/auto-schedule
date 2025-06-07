@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
-import { GroupService } from "../../../Services/GroupService";
-import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
-import { ManualScheduleService } from "../../../Services/ManualScheduleService";
+import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
+import { GroupService } from "../../Services/GroupService";
+import { ManualScheduleService } from "../../Services/ManualScheduleService";
 import ShowTable from "./ShowTable";
 
-export default function MySchedule()
+
+export default function MyStudentSchedule()
 {
     const [studentId, setStudentId] = useState<string | null>(null);
     const [groupId, setGroupId] = useState<string | null>(null);

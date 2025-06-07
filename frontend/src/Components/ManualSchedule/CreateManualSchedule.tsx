@@ -107,10 +107,10 @@ export default function CreateManualSchedule()
     }
     return (
         <Fragment>
-            <div className="d-flex justify-content-center align-items-center mt-4 mb-3 px-4">
+            <div className="d-flex justify-content-center align-items-center mt-3" style={{marginTop: '-2%'}}>
                 <Header as="h1">Create Manual Schedule</Header>
             </div>
-            <div className="px-4 d-flex justify-content-center align-items-center">
+            <div className="mt-4  d-flex justify-content-center align-items-center">
                 <div className="ui segment" style={{ padding: "1.5rem" }}>
                     <Form className="ui form" onSubmit={handleSubmit}>
                         <div className="fields" style={{ marginBottom: "1rem",
@@ -191,14 +191,15 @@ export default function CreateManualSchedule()
                         </div>
                         <div className="d-flex justify-content-center" style={{ marginTop: "5%", marginLeft: "1%" }} >
                             <Button color="grey" type="submit" onClick={() => navigate(`/ManualSchedule`)}>Cancel</Button>
-                            <Button color="olive" type="submit">Create</Button>
+                            <Button style={{ backgroundColor: "#34495e", color: "white" }} type="submit">Create</Button>
                         </div>
                     </Form>
                     <Divider style={{marginTop: '5%'}} />
                     <div className="d-flex align-items-center gap-3" style={{ marginTop: "2rem", marginLeft: '0%'}} >
                         {/* <Header as="h2">Import Schedule</Header>
                         <input type="file" accept=".xlsx,.xls" onChange={handleFileChange}/> */}
-                        <Button color="grey" onClick={() => fileInputRef.current?.click()} style={{fontSize: '15px', marginLeft: '35%'}}> 
+                        <Button onClick={() => fileInputRef.current?.click()} style={{fontSize: '15px', marginLeft: '35%', 
+                            backgroundColor: "white", color: "#34495e", border: '2px solid #34495e' }}> 
                             Upload Schedule 
                         </Button>
                             <input

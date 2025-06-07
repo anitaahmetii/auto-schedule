@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card, List, ListHeader, ListItem } from "semantic-ui-react";
-import { StudentProfileModel } from "../../../Interfaces/StudentProfileModel";
-import { StudentProfileService } from "../../../Services/StudentProfileService";
-import { SelectListItem } from "../../../Interfaces/SelectListItem";
-import { CityService } from "../../../Services/CityService";
-import { DepartmentService } from "../../../Services/DepartmentService";
+import { StudentProfileModel } from "../../Interfaces/StudentProfileModel";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { StudentProfileService } from "../../Services/StudentProfileService";
+import { CityService } from "../../Services/CityService";
+import { DepartmentService } from "../../Services/DepartmentService";
+
 
 export default function StudentProfileTable() 
 {
@@ -54,11 +55,11 @@ export default function StudentProfileTable()
     }, []);
 
   return (
-    <div style={{ display: "flex", width: '670px', height: "88vh",  marginLeft: '0%', marginTop: '-1%',  }}>
-        <Card raised style={{ width: "90vw", maxWidth: "680px", maxHeight: "95vh", display: "flex", flexDirection: "column", }}>
+    <div style={{ display: "flex"}}>
+        <Card raised style={{ width: "90vw", maxWidth: "680px", height: '40%',  }}>
             {/* {student.map(s => ())} */}
-            <Card.Content style={{ backgroundColor: "#556B2F", color: "white", padding: "1.5em", borderTopLeftRadius: "1px",
-                                borderTopRightRadius: "0.28571429rem", flexShrink: 0, }}>
+            <Card.Content style={{ backgroundColor: "#34495e", color: "white", padding: "1.5em", borderTopLeftRadius: "1px",
+                                borderTopRightRadius: "0.28571429rem", }}>
                 <Card.Header style={{ fontSize: "1.8rem", marginBottom: "0.3em", color: "white" }}>
                     {student?.userName} {student?.lastName}
                 </Card.Header>
@@ -66,7 +67,7 @@ export default function StudentProfileTable()
                     {department.find(d => d.value === student?.departmentId)?.text} - {student?.academicProgram} [{student?.academicYear}]
                 </Card.Meta>
             </Card.Content>
-            <Card.Content style={{ overflowY: "auto", paddingTop: "1em", }}>
+            <Card.Content style={{  paddingTop: "1em", flexGrow: 1, }}>
             <List divided relaxed>
                 <ListItem>
                     <ListHeader>Student ID</ListHeader>

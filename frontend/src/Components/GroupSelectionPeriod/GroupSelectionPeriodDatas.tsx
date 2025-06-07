@@ -24,7 +24,7 @@ export default function GroupSelectionPeriodDatas({ periods, onEdit, onDelete }:
     }, []);
     return (
         <Fragment>
-                <Table className="ui striped single line table" style={{ maxHeight: "300px", overflowY: "auto" }}>
+                <Table className="ui striped single line table" >
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Start Date</Table.HeaderCell>
@@ -44,12 +44,15 @@ export default function GroupSelectionPeriodDatas({ periods, onEdit, onDelete }:
                                     <Table.Cell>{p.endTime}</Table.Cell>
                                     <Table.Cell>{departments.find(d => d.value === p.departmentId)?.text}</Table.Cell>
                                     <Table.Cell>
-                                        <Button color="olive" className="mr-2" onClick={() => onEdit(p)}>
-                                            Edit
-                                        </Button>
-                                        <Button color="red" className="mr-2" onClick={() => onDelete(p.id)}>
-                                            Del
-                                        </Button>
+                                        <div style={{ display: 'flex', flexDirection: 'column', }}>
+                                            <Button size="mini" style={{backgroundColor: '#34495e', color: 'white'}} className="mr-2" onClick={() => onEdit(p)}>
+                                                Edit
+                                            </Button>
+                                            <Button size="mini" style={{marginTop:' 5%'}} color="red" className="mr-2" onClick={() => onDelete(p.id)}>
+                                                Del
+                                            </Button>
+                                        </div>
+                                        
                                     </Table.Cell>
                                 </Table.Row>
                             ))}

@@ -1,14 +1,15 @@
 import  { Fragment, useEffect, useState } from "react";
 import { Table } from "semantic-ui-react";
-import { AttendanceModel } from "../../../Interfaces/AttendanceModel";
-import AttedanceService from "../../../Services/AttendanceService";
-import { SelectListItem } from "../../../Interfaces/SelectListItem";
-import { CourseLecturesService } from "../../../Services/CourseLecturesService";
-import { GroupService } from "../../../Services/GroupService";
-import { HallService } from "../../../Services/HallService";
-import { LocationService } from "../../../Services/LocationService";
-import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
-import { ManualScheduleService } from "../../../Services/ManualScheduleService";
+import { AttendanceModel } from "../../Interfaces/AttendanceModel";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
+import { CourseLecturesService } from "../../Services/CourseLecturesService";
+import { GroupService } from "../../Services/GroupService";
+import { HallService } from "../../Services/HallService";
+import { LocationService } from "../../Services/LocationService";
+import AttedanceService from "../../Services/AttendanceService";
+import { ManualScheduleService } from "../../Services/ManualScheduleService";
+
 
 export default function MyAttendances()
 {
@@ -77,21 +78,21 @@ export default function MyAttendances()
     }, []);
     return (
         <Fragment>
-            <div className="d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%', }}>
+            <div className="d-flex justify-content-center align-items-center flex-column" style={{ paddingTop: '1%' }}>
                 <h1 style={{ marginBottom: '20px', fontWeight: 'bold', wordSpacing: '2px' }}>My Attendances</h1>
                 <div className={`ui segment pt-3 px-1 ${(!studentAttendances || studentAttendances.length === 0) ? "disabled" : ""}`} 
-                    style={{ width: '107%', maxWidth: '1400px',  backgroundColor: 'transparent', border: 'none', boxShadow: 'none' }}>
-                    <Table className={`ui striped  compact celled table ${(studentAttendances && studentAttendances.length > 0) ? "olive" : ""}`} >
+                    style={{ backgroundColor: 'transparent', border: 'none', boxShadow: 'none' }}>
+                   <Table celled style={{ width: '70vw',fontSize: "0.9rem", borderTop: "2px solid navy" }}>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>Day</Table.HeaderCell>
-                                <Table.HeaderCell>Start Time</Table.HeaderCell>
-                                <Table.HeaderCell>End Time</Table.HeaderCell>
-                                <Table.HeaderCell>Course Lecture</Table.HeaderCell>
+                                <Table.HeaderCell>Start</Table.HeaderCell>
+                                <Table.HeaderCell>End</Table.HeaderCell>
+                                <Table.HeaderCell>Lecture</Table.HeaderCell>
                                 <Table.HeaderCell>Group</Table.HeaderCell>
                                 <Table.HeaderCell>Hall</Table.HeaderCell>
                                 <Table.HeaderCell>Location</Table.HeaderCell>
-                                <Table.HeaderCell>Conf Time</Table.HeaderCell>
+                                <Table.HeaderCell>Confirmed</Table.HeaderCell>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -112,7 +113,9 @@ export default function MyAttendances()
                                     <Table.Cell>{location.find(l =>
                                         l.value === schedules.find(x => x.id === s.scheduleId)?.locationId)?.text}
                                     </Table.Cell>
-                                    <Table.Cell> {new Date(s.confirmationTime!).toLocaleString()}</Table.Cell>
+                                    <Table.Cell style={{whiteSpace: 'normal', wordWrap: 'break-word', maxWidth: '150px' }}> 
+                                        {new Date(s.confirmationTime!).toLocaleString()}
+                                    </Table.Cell>
                             </Table.Row>
                             ))}
                         </Table.Body>

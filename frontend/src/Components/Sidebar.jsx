@@ -39,6 +39,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
  const isAdmin = UserService.GetUserRole()=== "Admin";
  const isCoordinator = UserService.GetUserRole()==="Coordinator";
  const isReceptionist = UserService.GetUserRole()==="Receptionist";
+ const isStudent = UserService.GetUserRole() === "Student";
 
   const sidebarLinks = [
     { name: "Dashboard Koordinatori", path: "/CoordinatorDashboard", icon: <MdDashboard /> },
@@ -54,6 +55,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "City", path: "/City", icon: <MdLocationOn /> },
     { name: "SchedulteType", path: "/scheduleType", icon: <MdSchedule /> },
     { name: "Schedule", path: "/ManualSchedule", icon: <MdSchedule /> },
+    { name: "Group Selection", path: "/GroupSelectionPeriod", icon: <MdGroup /> },
     { name: "Users", path: "/UserTable", icon: <MdPeople /> },
     { name: "Reports", path: "/reports", icon: <MdDashboard /> },
     { name: "Canceled Report", path: "/RaportetAnuluara", icon: <MdDashboard /> },
@@ -64,6 +66,13 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "Zgjedh Lloj Orari", path: "/select-schedule", icon: <MdSchedule /> },
     { name: "Orari Im", path: "/myschedule", icon: <MdSchedule /> },
     { name: "Kyçja", path: "/", icon: <FaSignOutAlt /> },
+    { name: "Profile", path: "/student/profile", icon: <MdPeople /> },
+    { name: "Daily Schedule", path: "/student/dailyschedule", icon: <MdSchedule /> },
+    { name: "Group", path: "/student/group", icon: <MdGroup /> },
+    { name: "My Schedule", path: "/student/myschedule", icon: <MdSchedule /> },
+    { name: "My Attendances", path: "/student/attendances", icon: <MdSchool /> },
+    { name: "Notification", path: "/student/njoftimet", icon: <MdSchedule /> },
+    { name: "Logout", path: "/", icon: <FaSignOutAlt /> },
   ];
   let filteredLinks = [];
 
@@ -76,6 +85,7 @@ if (isAdmin) {
       "/OrariDitor",
       "/OrariJavor",
       "/ManualSchedule",
+      "/GroupSelectionPeriod",
       "/"
     ].includes(link.path)
   );
@@ -88,7 +98,21 @@ if (isAdmin) {
       "/"
     ].includes(link.path)
   );
-}
+} 
+else if (isStudent) {
+  filteredLinks = sidebarLinks.filter(link =>
+    [
+      "/student/profile",
+      "/student/dailyschedule",
+      "/student/group",
+      "/student/myschedule",
+      "/student/attendances",
+      "/student/njoftimet",
+      "/"
+    ].includes(link.path)
+  );
+} 
+
 
   return (
     <nav

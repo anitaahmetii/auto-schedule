@@ -1,14 +1,15 @@
 import { Fragment, useEffect, useState } from "react";
 import { Button, Input, Label, Modal, Table } from "semantic-ui-react";
-import { ManualScheduleModel } from "../../../Interfaces/ManualScheduleModel";
-import { ManualScheduleService } from "../../../Services/ManualScheduleService";
-import { SelectListItem } from "../../../Interfaces/SelectListItem";
-import { CourseLecturesService } from "../../../Services/CourseLecturesService";
-import { GroupService } from "../../../Services/GroupService";
-import { HallService } from "../../../Services/HallService";
-import { LocationService } from "../../../Services/LocationService";
-import { AttendanceModel } from "../../../Interfaces/AttendanceModel";
-import AttedanceService from "../../../Services/AttendanceService";
+import { ManualScheduleModel } from "../../Interfaces/ManualScheduleModel";
+import { SelectListItem } from "../../Interfaces/SelectListItem";
+import { AttendanceModel } from "../../Interfaces/AttendanceModel";
+import { ManualScheduleService } from "../../Services/ManualScheduleService";
+import { CourseLecturesService } from "../../Services/CourseLecturesService";
+import { GroupService } from "../../Services/GroupService";
+import { HallService } from "../../Services/HallService";
+import { LocationService } from "../../Services/LocationService";
+import AttendanceService from "../../Services/AttendanceService";
+
 
 export default function DailySchedule()
 {
@@ -86,7 +87,7 @@ export default function DailySchedule()
     };
     async function handleConfirm()
     {
-        const presence = await AttedanceService.confirmPresenceAsync(selectedStudentId!, selectedScheduleId!, codeInput!);
+        const presence = await AttendanceService.confirmPresenceAsync(selectedStudentId!, selectedScheduleId!, codeInput!);
         if (presence)
         {
             setOpenConfirm(false);
@@ -101,7 +102,7 @@ export default function DailySchedule()
     useEffect(() => {
         if (!studentId) return;
         const fetchAttendances = async () => {
-            const data = await AttedanceService.getAttendancesAsync(studentId);
+            const data = await AttendanceService.getAttendancesAsync(studentId);
             setAttendances(data);
         };
         fetchAttendances();
@@ -111,8 +112,8 @@ export default function DailySchedule()
             <div className="d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%', }}>
                 <h1 style={{ marginBottom: '20px', fontWeight: 'bold', wordSpacing: '2px' }}>Daily Schedule</h1>
                 <div className={`ui segment pt-3 px-1 ${(!dailyschedules || dailyschedules.length === 0) ? "disabled" : ""}`} 
-                    style={{ width: '107%', maxWidth: '1400px',  backgroundColor: 'transparent', border: 'none', boxShadow: 'none' }}>
-                    <Table className={`ui striped olive compact celled table ${(dailyschedules && dailyschedules.length > 0) ? "olive" : ""}`} >
+                    style={{ backgroundColor: 'transparent', border: 'none', boxShadow: 'none' }}>
+                    <Table className={`ui striped  compact celled table`} style={{ borderTop: '2px solid navy'}}>
                         <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>Day</Table.HeaderCell>
@@ -138,9 +139,9 @@ export default function DailySchedule()
                                         <Table.Cell>{location.find(l => l.value === item.locationId)?.text}</Table.Cell>
                                         <Table.Cell>
                                             {attendances.find(x => x.scheduleId === item.id) ? (
-                                                <Label color="green">Confirmed</Label>
+                                                <Label color="blue">Confirmed</Label>
                                             ) : (
-                                                <Button color="olive" onClick={() => handleCode(item.id!, studentId!)}>
+                                                <Button style={{ backgroundColor: "#34495e", color: 'white'}} onClick={() => handleCode(item.id!, studentId!)}>
                                                     Code
                                                 </Button>
                                             )}

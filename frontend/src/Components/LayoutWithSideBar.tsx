@@ -21,7 +21,9 @@ const LayoutWithSideBar = () => {
           transition: "margin-left 0.3s ease", // Animacion i butë për ndryshim margin
         }}
       >
-        <Outlet />
+        {/* <div style={{ flex: 1, padding: '2rem', background: 'white',  overflowY: "auto"}}> */}
+          <Outlet />
+        {/* </div> */}
       </main>
     </div>
   );
