@@ -11,8 +11,16 @@ import {
   MdPeople,
 } from "react-icons/md";
 import { UserService } from "../Services/UserService";
+import NotificationBell from "./Notifications/NotificationBell";
+import { Button } from "semantic-ui-react";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ collapsed, toggleSidebar }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    UserService.LogOut(); 
+    navigate("/"); 
+  };
   const activeStyle = {
     fontWeight: "bold",
     color: "#a0c4ff",
@@ -39,6 +47,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
  const isAdmin = UserService.GetUserRole()=== "Admin";
  const isCoordinator = UserService.GetUserRole()==="Coordinator";
  const isReceptionist = UserService.GetUserRole()==="Receptionist";
+ const isLecturer = UserService.GetUserRole() === "Lecture";
  const isStudent = UserService.GetUserRole() === "Student";
 
   const sidebarLinks = [
@@ -71,7 +80,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "Group", path: "/student/group", icon: <MdGroup /> },
     { name: "My Schedule", path: "/student/myschedule", icon: <MdSchedule /> },
     { name: "My Attendances", path: "/student/attendances", icon: <MdSchool /> },
-    { name: "Notification", path: "/student/njoftimet", icon: <MdSchedule /> },
+    { name: "Notification", path: "/notifications", icon: <MdSchedule /> },
     { name: "Logout", path: "/", icon: <FaSignOutAlt /> },
   ];
   let filteredLinks = [];
@@ -94,7 +103,8 @@ if (isAdmin) {
     [
       "/reports",
       "/RaportetAnuluara",
-      "/receptionist",
+      "/OrariDitor",
+      "/OrariJavor",
       "/"
     ].includes(link.path)
   );
@@ -107,7 +117,7 @@ else if (isStudent) {
       "/student/group",
       "/student/myschedule",
       "/student/attendances",
-      "/student/njoftimet",
+      "/notifications",
       "/"
     ].includes(link.path)
   );
@@ -140,6 +150,7 @@ else if (isStudent) {
         }}
       >
         {!collapsed && <h2 style={{ margin: 0, color: "#ecf0f1" }}></h2>}
+        {(isLecturer || isStudent)&& <NotificationBell />}
         <button
           onClick={toggleSidebar}
           style={{
@@ -171,13 +182,30 @@ else if (isStudent) {
       >
         {filteredLinks.map((link, index) => (
           <li key={index}>
-            <NavLink
-              to={link.path}
-              style={({ isActive }) => (isActive ? activeStyle : defaultStyle)}
-            >
-              {link.icon}
-              {!collapsed && <span>{link.name}</span>}
-            </NavLink>
+            {link.name === "Logout" ? (
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  width: "100%",
+                  textAlign: "left",
+                  ...defaultStyle,
+                }}
+              >
+                {link.icon}
+                {!collapsed && <span>{link.name}</span>}
+              </button>
+            ) : (
+              <NavLink
+                to={link.path}
+                style={({ isActive }) => (isActive ? activeStyle : defaultStyle)}
+              >
+                {link.icon}
+                {!collapsed && <span>{link.name}</span>}
+              </NavLink>
+            )}
           </li>
         ))}
       </ul>

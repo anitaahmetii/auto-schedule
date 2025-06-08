@@ -49,17 +49,22 @@ export class UserService {
   public static LogOut(): void {
     const notifications = store.getState().notifications;
     localStorage.setItem("notifications", JSON.stringify(notifications));
-    console.log('logged out');
+
+    console.log("Logging out...");
+
     localStorage.removeItem("jwt");
-    localStorage.removeItem("expiresAt");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("token");
     localStorage.removeItem("userModel");
     localStorage.removeItem("role");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("studentId");
+    localStorage.removeItem("id");
+    localStorage.removeItem("departmentId");
 
     UserService.token = null;
     UserService.role = null;
     UserService.LoggedInUser = null;
-
-    window.history.replaceState(null, '', '/login');
   }
   public static GetUserRole(): string | null {
     return localStorage.getItem("role")!;

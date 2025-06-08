@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddCourse() {
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("userModel") || "{}");
   const [course, setCourse] = useState<CourseModel>({
     id: null,
     name: "",
@@ -13,7 +14,7 @@ export default function AddCourse() {
     semester: "",
     isLecture: false,
     isExcercise: false,
-    userId: ""
+    userId: user.id
   });
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => 
   {
@@ -92,16 +93,6 @@ export default function AddCourse() {
                               checked={course.isExcercise}
                               onChange={handleCheckBoxChange} />
                   </div>
-              </Form.Field>
-              <Form.Field>
-                  <label>Administrator</label>
-                  <input  type="text" 
-                          name="userId" 
-                          value={course.userId}
-                          placeholder="Administrator" 
-                          style={{ border: "1px solid olive"}}
-                          onChange={handleChange}  
-                          />
               </Form.Field>
               <Button color="grey" type="button" onClick={() => navigate(`/Course`)}>Cancel</Button>
               <Button color="olive" type="submit">Submit</Button>

@@ -69,17 +69,17 @@ export default function ReportTable() {
                 />
                 <Button
                     type="button"
-                    style={{ color: "white" }}
-                    color="olive"
-                    className="ms-auto"
+                    className="ui positive basic button ms-4"
                     onClick={() => addReport()}
                 >
                     Add New Report
                 </Button>
+                <div className="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
+                </div>
             </div>
 
             <div className="px-4">
-                <Table className="ui olive single line table">
+                <Table striped>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Comment</Table.HeaderCell>
@@ -101,15 +101,16 @@ export default function ReportTable() {
                                     <Table.Cell>{new Date(report.dateTime).toLocaleString()}</Table.Cell>
                                     <Table.Cell>
                                         <Button
-                                            color="olive"
-                                            className="mr-2"
+                                            type="button"
+                                            className="btn ui green basic button"
                                             onClick={() => editReport(report.id!)}
                                         >
                                             Edit
                                         </Button>
                                         <Button
-                                            color="red"
-                                            className="mr-2"
+                                            type="button"
+                                            className="btn btn-danger"
+                                            negative
                                             onClick={() => deleteReport(report.id!)}
                                         >
                                             Del

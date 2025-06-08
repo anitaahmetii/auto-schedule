@@ -8,18 +8,18 @@ import { UserService } from '../../Services/UserService';
 
 export default function EditReport() {
   const { reportId, scheduleId } = useParams<{ reportId?: string; scheduleId?: string }>();
+  const user = JSON.parse(localStorage.getItem("userModel") || "{}");
   const [values, setValues] = useState<ReportModel>({
     id: '',
     absence: 0,
     comment: '',
-    dateTime: '',
-    userId: '',
+    dateTime: new Date().toISOString().slice(0, 16),
+    userId: user.id,
     scheduleId: scheduleId ?? '',
   });
 
   console.log(reportId)
   console.log(scheduleId)
-  const [userList, setUserList] = useState<SelectListItem[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false); // Add this success state
   const navigate = useNavigate();
@@ -51,37 +51,17 @@ export default function EditReport() {
     fetchReport();
   }, [reportId, scheduleId]);
 
-  useEffect(() => {
-    const fetchUserList = async () => {
-      try {
-        const response = await UserService.GetSelectList();
   
-        const filteredList = response
-          .filter((item) => item.role === 2) // vetëm recepsionistët
-          .map((item, i) => ({
-            key: i,
-            value: item.id,
-            text: item.userName,
-          }) as SelectListItem);
-  
-        setUserList(filteredList);
-      } catch (error) {
-        setErrorMessage('Error fetching user list.');
-      }
-    };
-  
-    fetchUserList();
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const now = new Date().toISOString();
   
     const model = {
       id: values.id || null,
       absence: values.absence,
       comment: values.comment,
-      dateTime: values.dateTime,
-      userId: values.userId,
+      dateTime: now,
+      userId: user.id,
       scheduleId: values.scheduleId || null,
     };
   
@@ -148,35 +128,8 @@ export default function EditReport() {
             />
           </div>
 
-          <div className="form-group">
-            <label>Date and Time</label>
-            <input
-  type="datetime-local"
-  className="form-control"
-  name="dateTime"
-  value={values.dateTime ? values.dateTime.slice(0, 16) : ''} // formaton si duhet
-  onChange={handleChange}
-/>
-          </div>
 
-          <div className="col-md-6-w-100%">
-            <label>User</label>
-            <select
-              className="form-control"
-              name="userId"
-              id="userId"
-              value={values.userId || ''}
-              onChange={handleSelectChange}
-              style={{ marginBottom: '15px' }}
-            >
-              <option value="" disabled>Select User</option>
-              {userList.map((x) => (
-                <option key={x.key} value={x.value!}>
-                  {x.text}
-                </option>
-              ))}
-            </select>
-          </div>
+          
 
           <div>
             <label style={{ display: 'block', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>

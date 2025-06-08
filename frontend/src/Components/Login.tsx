@@ -40,9 +40,9 @@ export default function Login() {
       localStorage.setItem("lectureId", response.userData.id!);
       navigate("/lecture");
     }
-    else 
+    else if (response.userRole === "Receptionist")
     { 
-      navigate("/state")
+      navigate("/reports")
     };
     }
 
