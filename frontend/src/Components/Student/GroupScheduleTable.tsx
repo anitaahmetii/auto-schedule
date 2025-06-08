@@ -39,8 +39,9 @@ export default function GroupSchedule()
         }
     }, []);
     useEffect(() => {
+        if (!studentId || !departmentId || userRole !== "Student") return;
         const fetchGroupsDepartment = async () => {
-            if (!studentId || !departmentId || userRole !== "Student") return;
+            console.log("ok" + departmentId);
             const [groupR] = await Promise.all([GroupService.GetSelectListByDepartment(departmentId!)]);
             setGroups(mapTo(groupR));
         };

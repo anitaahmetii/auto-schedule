@@ -407,7 +407,10 @@ namespace Application.Services
         }
         public async Task<List<ManualScheduleModel>> GetDailySchedules(CancellationToken cancellationToken)
         {
-            var currentDay = Enum.Parse<Days>(DateTime.Now.DayOfWeek.ToString(), ignoreCase: true);
+            var today = DateTime.Now.DayOfWeek;
+            if (today == DayOfWeek.Sunday) return new List<ManualScheduleModel>();
+
+            var currentDay = Enum.Parse<Days>(today.ToString(), ignoreCase: true);
 
             var dailySchedules = await _context.Schedules
                             .Where(s => s.Day == currentDay)

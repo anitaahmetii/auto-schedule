@@ -57,6 +57,8 @@ namespace Application.Services
             };
 
             var userRoles = await userManager.GetRolesAsync(user);
+            
+
             foreach (var role in userRoles)
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
 
@@ -75,7 +77,17 @@ namespace Application.Services
             else if (userRoles.Contains("Coordinator")) userData.Role = Domain.Enum.Role.Coordinator;
             else if (userRoles.Contains("Receptionist")) userData.Role = Domain.Enum.Role.Receptionist;
             else if (userRoles.Contains("Lecture")) userData.Role = Domain.Enum.Role.Lecture;
-            else userData.Role = Domain.Enum.Role.Student;
+            else if (userRoles.Contains("Student")) userData.Role = Domain.Enum.Role.Student;
+            //else userData.Role = Domain.Enum.Role.Student;
+
+            if (user is Student student)
+            {
+                userData.DepartmentId = student.DepartmentId;
+                userData.AcademicProgram = student.AcademicProgram;
+                userData.AcademicYear = student.AcademicYear;
+                userData.Registred = student.Registred;
+            }
+
 
             var refreshToken = GenerateRefreshToken();
             user.RefreshToken = refreshToken;
@@ -258,7 +270,7 @@ namespace Application.Services
                     break;
 
                 case Student student:
-                    student.DepartmentId = model.DepartmentId!.Value;
+                    student.DepartmentId = model.DepartmentId.Value;
                     student.AcademicProgram = model.AcademicProgram;
                     student.AcademicYear = model.AcademicYear;
                     student.Registred = model.Registred;
@@ -385,9 +397,9 @@ namespace Application.Services
                 {
                     model.Role = Domain.Enum.Role.Student;
                     model.AcademicProgram = student.AcademicProgram;
-                    model.AcademicYear = model.AcademicYear;
-                    model.DepartmentId = model.DepartmentId;
-                    model.Registred = model.Registred;
+                    model.AcademicYear = student.AcademicYear;
+                    model.DepartmentId = student.DepartmentId;
+                    model.Registred = student.Registred;
                 }
 
                 userModels.Add(model);
@@ -448,9 +460,9 @@ namespace Application.Services
             {
                 model.Role = Domain.Enum.Role.Student;
                 model.AcademicProgram = student.AcademicProgram;
-                model.AcademicYear = model.AcademicYear;
-                model.DepartmentId = model.DepartmentId;
-                model.Registred = model.Registred;
+                model.AcademicYear = student.AcademicYear;
+                model.DepartmentId = student.DepartmentId;
+                model.Registred = student.Registred;
             }
 
             return model;
