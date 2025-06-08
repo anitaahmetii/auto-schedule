@@ -7,13 +7,14 @@ import { GroupModel } from '../../Interfaces/GroupModel';
 
 export default function EditGroup() {
 const { id } = useParams<{ id: string}>();
+const user = JSON.parse(localStorage.getItem("userModel") || "{}");
 const navigate = useNavigate();
 
 const [group, setGroup] = useState<GroupModel>({
     id: null,
     name: "",
     capacity: 0,
-    userId: ""
+    userId: user.id
 } as GroupModel);
 useEffect(() => {
     const fetchData = async () => {
@@ -69,15 +70,6 @@ return (
                             value={group.capacity} 
                             placeholder="ECTS" 
                             style={{ border: "1px solid olive"}} 
-                            onChange={handleChange} />
-                </Form.Field>
-                <Form.Field>
-                    <label>Administrator</label>
-                    <input  type="text" 
-                            name="userId" 
-                            value={group.userId}
-                            placeholder="Administrator" 
-                            style={{ border: "1px solid olive"}}
                             onChange={handleChange} />
                 </Form.Field>
                 <Button color="grey" type="button" onClick={() => navigate(`/Group`)}>Cancel</Button>

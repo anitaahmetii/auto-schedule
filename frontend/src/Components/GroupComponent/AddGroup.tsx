@@ -6,11 +6,12 @@ import { GroupService } from "../../Services/GroupService";
 
 export default function AddGroup() {
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("userModel") || "{}");
     const [group, setGroup] = useState<GroupModel>({
         id: null,
         name: "",
         capacity: 0,
-        userId: ""
+        userId: user.id
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => 
     {
@@ -65,15 +66,7 @@ export default function AddGroup() {
                             style={{ border: "1px solid olive"}} 
                             onChange={handleChange} />
                 </Form.Field>
-                <Form.Field>
-                    <label>Administrator</label>
-                    <input  type="text" 
-                            name="userId" 
-                            value={group.userId}
-                            placeholder="Administrator" 
-                            style={{ border: "1px solid olive"}}
-                            onChange={handleChange} />
-                </Form.Field>
+                
                 <Button color="grey" type="button" onClick={() => navigate(`/Group`)}>Cancel</Button>
                 <Button color="olive" type="submit">Submit</Button>
             </Form>

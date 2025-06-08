@@ -146,6 +146,7 @@ function App() {
           <Route path="/reports" element={<ReportTable />} />
           <Route path="/EditReport/:reportId" element={<EditReport />} />
           <Route path="/AddReport/:scheduleId" element={<EditReport />} />
+          <Route path="/AddReport" element={<EditReport />} />
           <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
 
           <Route path='/Group' element={<GroupTable />} />
@@ -208,7 +209,7 @@ function App() {
           <Route path="select-schedule" element={<SelectScheduleType />} /> 
           <Route path="myschedule" element={<MySchedule />} />   
           <Route path="/lecturer" element={<DashboardLecturer />}/>
-          <Route path="/lecturer/notifications" element={<NotificationPage/>}/>
+          <Route path="/notifications" element={<NotificationPage/>}/>
           <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
           <Route path="dailyschedule-lecturer" element={<MySchedule />} />
           <Route path="/GroupSelectionPeriod" element={<GroupSelectionPeriodTable />} />
