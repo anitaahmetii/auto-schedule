@@ -50,5 +50,12 @@ namespace API.Controllers
             var model = await service.GetLocationSelectListAsync();
             return Ok(model);
         }
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount(CancellationToken cancellationToken)
+        {
+            var count = await service.GetCount(cancellationToken);
+            return Ok(count);
+        }
     }
+
 }

@@ -78,5 +78,11 @@ namespace API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving departments.");
             }
         }
+        [HttpGet("student-count")]
+        public async Task<IActionResult> GetDepartmentsWithStudentCount(CancellationToken cancellationToken)
+        {
+            var result = await service.GetDepartmentsWithStudentCount(cancellationToken);
+            return Ok(result);
+        }
     }
 }

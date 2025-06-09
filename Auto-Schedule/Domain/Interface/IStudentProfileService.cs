@@ -11,5 +11,6 @@ namespace Domain.Interface
     {
         Task<StudentProfileModel> GetStudentProfileAsync(Guid Id, CancellationToken cancellationToken);
         Task<StudentProfileModel> UpdateStudentProfileAsync(StudentProfileModel studentProfile, CancellationToken cancellationToken);
+        Task<int> GetCount(CancellationToken cancellationToken);
     }
 }

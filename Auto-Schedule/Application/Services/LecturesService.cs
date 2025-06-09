@@ -68,5 +68,9 @@ namespace Application.Services
 
             return model;
         }
+        public async Task<int> GetCount(CancellationToken cancellationToken)
+        {
+            return await appDbContext.Lectures.CountAsync(cancellationToken);
+        }
     }
 }

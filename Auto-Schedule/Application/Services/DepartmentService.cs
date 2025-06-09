@@ -121,6 +121,18 @@ namespace Application.Services
                 })
                 .ToListAsync();
         }
+        public async Task<List<DepartmentStudentCountModel>> GetDepartmentsWithStudentCount(CancellationToken cancellationToken)
+        {
+            var result = await appDbContext.Departments
+                .Select(d => new DepartmentStudentCountModel
+                {
+                    DepartmentName = d.Name,
+                    StudentCount = d.Students.Count
+                })
+                .ToListAsync(cancellationToken);
+
+            return result;
+        }
 
 
 

@@ -21,6 +21,7 @@ import EditCourseLectures from './Components/CourseLectures/EditCourseLectures';
 import CourseLecturesTable from './Components/CourseLectures/CourseLecturesTable';
 import Login from './Components/Login';
 import Header from './Components/Header';
+import AdminDashboard from "./Components/AdminDashboard";
 
 import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
 import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
@@ -215,6 +216,7 @@ function App() {
           <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
           <Route path="dailyschedule-lecturer" element={<MySchedule />} />
           <Route path="/GroupSelectionPeriod" element={<GroupSelectionPeriodTable />} />
+           <Route path="/AdminDashboard" element={<AdminDashboard />} />
           {/* <Route path="search" element={<ScheduleSearchTable onResults={}/>}/> */}
       </Route>
         </Routes>

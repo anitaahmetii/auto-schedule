@@ -51,6 +51,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
  const isStudent = UserService.GetUserRole() === "Student";
 
   const sidebarLinks = [
+     { name: "Dashboard Admin", path: "/AdminDashboard", icon: <MdDashboard /> },
     { name: "Dashboard Koordinatori", path: "/CoordinatorDashboard", icon: <MdDashboard /> },
     { name: "Dashboard Lektori", path: "/lecturer", icon: <MdDashboard /> },
     { name: "Daily Schedule", path: "/OrariDitor", icon: <MdSchedule /> },

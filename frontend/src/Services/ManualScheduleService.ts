@@ -129,6 +129,7 @@ export class ManualScheduleService
             console.error("Error retrieving daily schedules:", error);
             throw error;
         }
+
     }
     public static async GetSchedulesByDay(day: string): Promise<ManualScheduleModel[]> {
       const response = await axios.get(`${ManualScheduleService.baseUrl}/by-day/${day}`);

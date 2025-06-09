@@ -1,6 +1,5 @@
 import axios from "axios";
 import { StudentProfileModel } from "../Interfaces/StudentProfileModel";
-
 export class StudentProfileService
 {
     private static readonly baseURL = "https://localhost:7085/api/StudentProfile";
@@ -39,5 +38,9 @@ export class StudentProfileService
           console.error("Error updating profile:", error);
           throw error;
         }
+    }
+     public static async CountStudents() : Promise<number>{
+    const result = await axios.get(`${StudentProfileService.baseURL}/count`);
+    return result.data;
     }
 }
