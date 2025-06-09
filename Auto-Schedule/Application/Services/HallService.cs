@@ -4,6 +4,7 @@ using Domain.Interface;
 using Domain.Model;
 using Infrastructure.Configuration;
 using Infrastructure.Data;
+using Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
@@ -12,19 +13,27 @@ namespace Application.Services
     {
         private readonly AppDbContext appDbContext;
         private readonly IMapper mapper;
+        private readonly IAuthorizationManager _authorizationManager;
 
-        public HallService(AppDbContext appDbContext, IMapper mapper)
+        public HallService(AppDbContext appDbContext, IMapper mapper, IAuthorizationManager authorizationManager)
         {
             this.appDbContext = appDbContext;
             this.mapper = mapper;
+            _authorizationManager = authorizationManager;
         }
 
         public async Task<HallModel> CreateOrUpdate(HallModel model, CancellationToken cancellationToken)
         {
             Halls hall = new Halls();
+            Guid? userId = _authorizationManager.GetUserId();
+            if (userId is null)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
 
             if (model.Id == null)
             {
+                hall.UserId = userId ?? Guid.Empty;
                 await appDbContext.Halls.AddAsync(hall);
             }
             else
@@ -53,14 +62,14 @@ namespace Application.Services
 
         public async Task<List<HallModel>> GetAll(CancellationToken cancellationToken)
         {
-            var hall = await appDbContext.Halls.ToListAsync(cancellationToken);
+            var hall = await appDbContext.Halls.Include(x => x.User).ToListAsync(cancellationToken);
             var model = mapper.Map<List<HallModel>>(hall);
             return model;
         }
 
         public async Task<HallModel> GetById(Guid Id, CancellationToken cancellationToken)
         {
-            var hall = await appDbContext.Halls.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
+            var hall = await appDbContext.Halls.Include(x => x.User).Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);
             var model = mapper.Map<HallModel>(hall);
             return model;
         }

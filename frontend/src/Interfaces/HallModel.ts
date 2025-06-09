@@ -3,4 +3,6 @@ export interface HallModel{
     name:string|null;
     capacity:number|null;
     locationId:string|null;
+    userId: string | null;
+    userName : string | null;
 }

@@ -70,6 +70,7 @@ export default function LocationTable() {
             <TableHeaderCell>StreetNo</TableHeaderCell>
             <TableHeaderCell>ZipCode</TableHeaderCell>
             <TableHeaderCell>Phone Number</TableHeaderCell>
+            <TableHeaderCell>UserName</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -82,6 +83,7 @@ export default function LocationTable() {
               <TableCell>{item.streetNo}</TableCell>
               <TableCell>{item.zipCode}</TableCell>
               <TableCell>{item.phoneNumber}</TableCell>
+              <TableCell>{item.userName}</TableCell>
               <TableCell>
                 <Button
                   type="button"

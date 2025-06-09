@@ -16,11 +16,6 @@ namespace Infrastructure.Configuration
         {
             builder.HasKey(x => x.Id);
 
-            //builder.HasOne<User>(x => x.User)
-            //   .WithMany(x => x.Schedules)
-            //   .HasForeignKey(x => x.UserId)
-            //   .OnDelete(DeleteBehavior.NoAction);
-
             builder.HasOne<Location>(x => x.Location)
                .WithMany(x => x.Schedules)
                .HasForeignKey(x => x.LocationId)

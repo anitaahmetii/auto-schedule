@@ -1,6 +1,8 @@
 ﻿using Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Infrastructure.Data
 {
@@ -12,9 +14,13 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Student>().HasBaseType<User>();
-        }
 
+            builder.Entity<Student>().HasBaseType<User>();
+            builder.Entity<ScheduleType>()
+            .Ignore(s => s.User);
+            builder.Entity<ScheduleType>()
+    .Ignore(s => s.Lectures);
+        }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }

@@ -16,10 +16,10 @@ namespace Infrastructure.Configuration
         {
             builder.HasKey(x => x.Id);
 
-            //builder.HasOne<User>(x => x.User)
-          //     .WithMany(x => x.Departments)
-            //   .HasForeignKey(x => x.UserId)
-              // .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne<User>(x => x.User)
+               .WithMany(x => x.Departments)
+               .HasForeignKey(x => x.UserId)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

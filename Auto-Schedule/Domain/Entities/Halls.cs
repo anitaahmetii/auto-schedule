@@ -12,8 +12,8 @@ namespace Domain.Entities
         public string Name { get; set; }
         public int Capacity { get; set; }
 
-        //public Guid UserId { get; set; }
-        //public User User { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
 
         public Guid LocationId { get; set; }
         public Location Location { get; set; }

@@ -14,7 +14,7 @@ export class ReportService {
     }
 
     public static async GetReportDetails(id: string, cancelToken?: AbortSignal): Promise<ReportModel> {
-        const result = await axios.get<ReportModel>(`${this.baseUrl}/${id}`, { signal: cancelToken });
+        const result = await axios.get<ReportModel>(`${this.baseUrl}/by-id/${id}`, { signal: cancelToken });
         return result.data;
     }
 

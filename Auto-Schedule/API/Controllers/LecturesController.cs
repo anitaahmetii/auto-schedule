@@ -1,5 +1,6 @@
 ﻿using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace API.Controllers
         {
             this.service = lecturesService;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -27,6 +29,7 @@ namespace API.Controllers
 
             return Ok(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(LecturesModel model, CancellationToken cancellationToken)
         {
@@ -34,6 +37,7 @@ namespace API.Controllers
 
             return Ok(lectures);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {

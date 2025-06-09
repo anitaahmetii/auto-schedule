@@ -11,8 +11,8 @@ namespace Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-        //public Guid UserId { get; set; }
-       // public User User { get; set; }
+        public Guid UserId { get; set; }
+        public User User { get; set; }
 
         public ICollection<LocationDepartment> LocationDepartments { get; set; } = new List<LocationDepartment>();
 

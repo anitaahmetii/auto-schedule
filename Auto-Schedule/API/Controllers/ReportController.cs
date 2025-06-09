@@ -1,4 +1,5 @@
-﻿using Domain.Interface;
+﻿using Application.Services;
+using Domain.Interface;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace API.Controllers
         {
             this.service = reportService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -21,7 +23,7 @@ namespace API.Controllers
             return Ok(model);
         }
         
-        [HttpGet("{id}")]
+        [HttpGet("by-id/{id}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var model = await service.GetById(id, cancellationToken);
@@ -51,6 +53,19 @@ namespace API.Controllers
                 return NotFound("No report found for this schedule ID.");
 
             return Ok(report);
+        }
+
+        [HttpPost("generate-pdf")]
+        public IActionResult GeneratePdf([FromBody] ReportModel report)
+        {
+            if (report == null)
+                return BadRequest("Report data is required.");
+
+            var pdfBytes = service.GenerateReportPdf(report);
+
+            var fileName = $"Raport_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+
+            return File(pdfBytes, "application/pdf", fileName);
         }
     }
 }

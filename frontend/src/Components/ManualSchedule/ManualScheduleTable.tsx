@@ -27,6 +27,19 @@ export default function ManualScheduleTable()
     const [openConfirm, setOpenConfirm] = useState<boolean>(false);
     const [deletedScheduleId, setDeletedScheduleId] = useState<string>("");
     const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+     const [advancedSearchTerm, setAdvancedSearchTerm] = useState<string>("");
+
+
+  const [filterDay, setFilterDay] = useState<string | "">("");
+  const [filterCourseLecture, setFilterCourseLecture] = useState<string | "">("");
+  const [filterGroup, setFilterGroup] = useState<string | "">("");
+  const [filterHall, setFilterHall] = useState<string | "">("");
+  const [filterLocation, setFilterLocation] = useState<string | "">("");
+  const [filterDepartment, setFilterDepartment] = useState<string | "">("");
+  const [filterIsCanceled, setFilterIsCanceled] = useState<boolean | null>(null);
+
+  // Funksion për filtrim
+  
 
     const sortedSchedules = schedules.slice().sort((a, b) => 
     {
@@ -37,6 +50,16 @@ export default function ManualScheduleTable()
         if (a.startTime > b.startTime) return 1;
         return 0;
     });
+    const filteredSchedules = sortedSchedules.filter(schedule => {
+    if (filterDay && schedule.day !== filterDay) return false;
+    if (filterCourseLecture && schedule.courseLecturesId !== filterCourseLecture) return false;
+    if (filterGroup && schedule.groupId !== filterGroup) return false;
+    if (filterHall && schedule.hallsId !== filterHall) return false;
+    if (filterLocation && schedule.locationId !== filterLocation) return false;
+    if (filterDepartment && schedule.departmentId !== filterDepartment) return false;
+    if (filterIsCanceled !== null && schedule.isCanceled !== filterIsCanceled) return false;
+    return true;
+  });
     useEffect(() => {
         const fetchData = async () => {
             const result = await ManualScheduleService.getAllManualSchedulesAsync();
@@ -90,6 +113,57 @@ export default function ManualScheduleTable()
 
     return (
         <Fragment>
+             <div className="filters-container" style={{ margin: "20px" }}>
+        <select onChange={e => setFilterDay(e.target.value)} value={filterDay}>
+          <option value="">All Days</option>
+          {daysOrder.map(day => (
+            <option key={day} value={day}>{day}</option>
+          ))}
+        </select>
+
+        <select onChange={e => setFilterCourseLecture(e.target.value)} value={filterCourseLecture}>
+          <option value="">All Lectures</option>
+          {courseLecturesList.map(c => (
+            <option key={c.id} value={c.id?? ''}>{c.name}</option>
+          ))}
+        </select>
+
+        <select onChange={e => setFilterGroup(e.target.value)} value={filterGroup}>
+          <option value="">All Groups</option>
+          {groupsList.map(g => (
+            <option key={g.id} value={g.id?? ''}>{g.name}</option>
+          ))}
+        </select>
+
+        <select onChange={e => setFilterHall(e.target.value)} value={filterHall}>
+          <option value="">All Halls</option>
+          {hallsList.map(h => (
+            <option key={h.id} value={h.id ?? ''}>{h.name}</option>
+          ))}
+        </select>
+
+        <select onChange={e => setFilterLocation(e.target.value)} value={filterLocation}>
+          <option value="">All Locations</option>
+          {locationsList.map(l => (
+            <option key={l.id} value={l.id?? ''}>{l.name}</option>
+          ))}
+        </select>
+
+        <select onChange={e => setFilterDepartment(e.target.value)} value={filterDepartment}>
+          <option value="">All Departments</option>
+          {departmentsList.map(d => (
+            <option key={d.id} value={d.id ?? ''}>{d.name}</option>
+          ))}
+        </select>
+
+        <label>
+          <input 
+            type="checkbox" 
+            checked={filterIsCanceled ?? false} 
+            onChange={e => setFilterIsCanceled(e.target.checked ? true : null)} 
+          /> Show only canceled
+        </label>
+      </div>
             <div className="table-container my-4">
                 <div className="d-flex align-items-center justify-content-between">
                     <h1 style={{ marginLeft: "30px"}}>Manual Schedules</h1>
@@ -115,7 +189,7 @@ export default function ManualScheduleTable()
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {sortedSchedules.map(schedule => (
+                            {filteredSchedules.map(schedule => (
                                 <Table.Row key={schedule.id}>
                                     <Table.Cell>
                                         {courseLecturesList.find(c => c.id === schedule.courseLecturesId)?.name}</Table.Cell>

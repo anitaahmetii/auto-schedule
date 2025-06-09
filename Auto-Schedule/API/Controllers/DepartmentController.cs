@@ -1,6 +1,7 @@
 ﻿using Application.Services;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace API.Controllers
         {
             this.service = service;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -28,6 +30,7 @@ namespace API.Controllers
 
             return Ok(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(DepartmentModel model, CancellationToken cancellationToken)
         {
@@ -35,6 +38,7 @@ namespace API.Controllers
 
             return Ok(state);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {
@@ -49,9 +53,9 @@ namespace API.Controllers
             return Ok(model);
         }
         [HttpGet("search")]
-        public async Task<IActionResult> SearchDepartments([FromQuery] string searchParams)
+        public async Task<IActionResult> SearchDepartments([FromQuery] string searchTerm, [FromQuery] string? sortBy, [FromQuery] string? searchField)
         {
-            var result = await service.SearchDepartments(searchParams);
+            var result = await service.SearchDepartments(searchTerm, sortBy, searchField);
             return Ok(result);
         }
         [HttpGet("GetDepartmentsSelectListAsync")]

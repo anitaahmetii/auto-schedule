@@ -26,9 +26,6 @@ namespace Domain.Entities
 
         public Guid GroupId { get;set ; }
         public Group Group { get; set; }
-
-        //public Guid UserId { get; set; }
-        //public User User { get; set; }
         public ICollection<AttendanceCodePeriod> AttendanceCodePeriods { get; set; } = new List<AttendanceCodePeriod>();
         public ICollection<Attendance> Attendances { get; set; }
 

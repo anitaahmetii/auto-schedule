@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Domain.Entities;
 using Domain.Enum;
 using Domain.Interface;
 using Domain.Model;
@@ -26,6 +27,7 @@ namespace API.Controllers
             _notificationService = notificationService;
             _hubContext = hubContext;
         }
+        [Authorize(Roles = "Admin, Coordinator")]
         [HttpPost]
         public async Task<IActionResult> CreateManualScheduleAsync(ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
         {
@@ -50,6 +52,7 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin, Coordinator")]
         [HttpGet]
         public async Task<IActionResult> GetAllManualSchedulesAsync(CancellationToken cancellationToken)
         {
@@ -102,6 +105,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin, Coordinator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateManualScheduleAsync(Guid Id, ManualScheduleModel manualSchedule, CancellationToken cancellationToken)
         {
@@ -136,6 +140,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin, Coordinator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteManualScheduleAsync(Guid Id, CancellationToken cancellationToken)
         {
@@ -180,6 +185,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin, Coordinator")]
         [HttpPost("upload")]
         public async Task<IActionResult> ImportScheduleFromExcelAsync(IFormFile file)
         {
@@ -298,5 +304,6 @@ namespace API.Controllers
             var schedules = await _service.CountSchedulesByDayAsync(cancellationToken);
             return schedules;
         }
+      
     }
 }

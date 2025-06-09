@@ -11,6 +11,5 @@
         public string Location { get; set; }
         public string Department { get; set; }
         public string Group { get; set; }
-        //public Guid? UserId { get; set; }
     }
 }

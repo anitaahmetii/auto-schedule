@@ -17,6 +17,7 @@ namespace API.Controllers
         {
             _groupService = groupService;
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateGroupAsync(GroupModel groupModel, CancellationToken cancellationToken)
         {
@@ -67,6 +68,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGroupAsync(Guid Id, GroupModel groupModel, CancellationToken cancellationToken)
         {
@@ -100,6 +102,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllGroupsAsync(CancellationToken cancellationToken)
         {
@@ -137,6 +140,7 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGroupModel(Guid Id, CancellationToken cancellationToken)
         {

@@ -42,6 +42,10 @@ namespace Infrastructure.Security
             return calaimsPrinclipal != null && calaimsPrinclipal?.Identity?.IsAuthenticated == true;
 
         }
+        public List<Claim> GetClaims()
+        {
+            return this.calaimsPrinclipal.Claims.ToList();
+        }
 
         private string GetCurrentToken()
         {

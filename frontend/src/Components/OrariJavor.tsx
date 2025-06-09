@@ -157,7 +157,7 @@ export default function OrariJavor() {
                   </Button>
                   )}
 
-                  {userRole === 'Receptionist' && !item.hasReport && !item.id?.startsWith('temp-') && (
+                  {userRole === 'Receptionist' || userRole==='Admin' && !item.hasReport && !item.id?.startsWith('temp-') && (
                     <Button
                       type="button"
                       className="ui blue basic button"
@@ -166,7 +166,7 @@ export default function OrariJavor() {
                       Perfundo
                     </Button>
                   )}
-                  {userRole === 'Receptionist' && (item.hasReport || item.id?.startsWith('temp-')) && (
+                  {userRole === 'Receptionist' || userRole==='Admin' && (item.hasReport || item.id?.startsWith('temp-')) && (
                     <span className="text-muted">Report Added</span>
                   )}
                 </TableCell>

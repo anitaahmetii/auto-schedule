@@ -14,6 +14,7 @@ namespace Domain.Interface
         public Task<ReportModel> CreateOrUpdate(ReportModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
         Task<ReportModel> GetByScheduleIdAsync(Guid scheduleId, CancellationToken cancellationToken);
+        public byte[] GenerateReportPdf(ReportModel report);
 
     }
 }

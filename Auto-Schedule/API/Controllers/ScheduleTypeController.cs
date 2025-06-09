@@ -1,6 +1,7 @@
 ﻿using Application.Services;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading;
@@ -14,13 +15,12 @@ namespace Application.Controllers
     {
         private readonly IScheduleTypeService service;
 
-        // Konstruktor që merr shërbimin IScheduleTypeService
         public ScheduleTypeController(IScheduleTypeService scheduleTypeService)
         {
             this.service = scheduleTypeService;
         }
 
-        // GET: api/ScheduleType
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -37,6 +37,7 @@ namespace Application.Controllers
         }
 
         // POST: api/ScheduleType (Create or Update)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(ScheduleTypeModel model, CancellationToken cancellationToken)
         {
@@ -45,6 +46,7 @@ namespace Application.Controllers
         }
 
         // DELETE: api/ScheduleType/{id}
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace API.Controllers
         {
             _courseService = courseService;
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCourseAsync(CourseModel courseModel, CancellationToken cancellationToken)
         {
@@ -40,6 +42,7 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCourseAsync(Guid Id, CourseModel courseModel, CancellationToken cancellationToken)
         {
@@ -102,6 +105,7 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllCoursesAsync(CancellationToken cancellationToken)
         {
@@ -139,6 +143,7 @@ namespace API.Controllers
                 return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourseModel(Guid Id, CancellationToken cancellationToken)
         {

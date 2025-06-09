@@ -18,7 +18,6 @@ namespace Domain.Model
         public Guid LocationId { get; set; }
         public Guid DepartmentId { get; set; }
         public Guid GroupId { get; set; }
-        //public Guid? UserId { get; set; }
 
         public bool HasReport { get; set; }
         public bool IsCanceled { get; set; }

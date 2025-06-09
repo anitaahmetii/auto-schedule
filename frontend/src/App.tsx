@@ -70,6 +70,7 @@ import MySchedule from "./Components/LecturerDashboard/MySchedule";
 import MyStudentSchedule from "./Components/Student/MySchedule";
 import DailySchedule from "./Components/Student/DailySchedule";
 import MyAttendances from "./Components/Student/MyAttendances";
+import AdminRoute from "./Components/AdminRouteProps";
 // import ScheduleSearchTable from "./Components/Student/ScheduleSearchTable";
 
 function App() {
@@ -125,24 +126,24 @@ function App() {
       
        <Route path="/" element={<Login/>}/>
        <Route element={<LayoutWithSideBar />}>
-          <Route path="/State" element={<StateTable />} />
-          <Route path="/EditState/:id" element={<EditState />} />
-          <Route path="/AddState" element={<EditState />} />
-          <Route path="/EditCity/:id" element={<EditCity />} />
-          <Route path="/AddCity" element={<EditCity />} />
-          <Route path="/City" element={<CityTable/>}/>
+          <Route path="/State" element={<AdminRoute component={StateTable} />} />
+          <Route path="/EditState/:id" element={<AdminRoute component={EditState} />} />
+          <Route path="/AddState"  element={<AdminRoute component={EditState} />} />
+          <Route path="/EditCity/:id"  element={<AdminRoute component={EditCity} />} />
+          <Route path="/AddCity"  element={<AdminRoute component={EditCity} />} />
+          <Route path="/City"  element={<AdminRoute component={CityTable} />} />
 
-          <Route path="/lectures" element={<LecturesTable />} />
-          <Route path="/EditLectures/:id" element={<EditLectures />} />
-          <Route path="/AddLectures" element={<EditLectures />} />
+          <Route path="/lectures" element={<AdminRoute component={LecturesTable} />} />
+          <Route path="/EditLectures/:id" element={<AdminRoute component={EditLectures} />} />
+          <Route path="/AddLectures" element={<AdminRoute component={EditLectures} />} />
 
-          <Route path="/scheduleType" element={<ScheduleTypeTable />} />
-          <Route path="/EditScheduleType/:id" element={<EditScheduleType />} />
-          <Route path="/AddScheduleType" element={<EditScheduleType />} />
+          <Route path="/scheduleType" element={<AdminRoute component={ScheduleTypeTable} />} />
+          <Route path="/EditScheduleType/:id" element={<AdminRoute component={EditScheduleType} />} />
+          <Route path="/AddScheduleType"element={<AdminRoute component={EditScheduleType} />} />
 
-          <Route path="/UserTable" element={<UserTable />} />
-          <Route path="/EditUser/:id" element={<EditUser />} />
-          <Route path="/AddUser" element={<EditUser />} />
+          <Route path="/UserTable" element={<AdminRoute component={UserTable} />} />
+          <Route path="/EditUser/:id" element={<AdminRoute component={EditUser} />} />
+          <Route path="/AddUser" element={<AdminRoute component={EditUser} />} />
 
           <Route path="/reports" element={<ReportTable />} />
           <Route path="/EditReport/:reportId" element={<EditReport />} />
@@ -150,27 +151,27 @@ function App() {
           <Route path="/AddReport" element={<EditReport />} />
           <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
 
-          <Route path='/Group' element={<GroupTable />} />
-          <Route path="/AddGroup" element={<AddGroup />} />
-          <Route path='/EditGroup/:id' element={<EditGroup />} />
+          <Route path='/Group' element={<AdminRoute component={GroupTable} />} />
+          <Route path="/AddGroup" element={<AdminRoute component={EditGroup} />} />
+          <Route path='/EditGroup/:id' element={<AdminRoute component={EditGroup} />} />
 
-          <Route path='/Course' element={<CourseTable />} />
-          <Route path="/AddCourse" element={<AddCourse />} />
-          <Route path='/EditCourse/:id' element={<EditCourse />} />
+          <Route path='/Course' element={<AdminRoute component={CourseTable} />} />
+          <Route path="/AddCourse" element={<AdminRoute component={EditCourse} />} />
+          <Route path='/EditCourse/:id' element={<AdminRoute component={EditCourse} />} />
 
-          <Route path="/hall" element={<HallTable />} />
-          <Route path="/EditHall/:id" element={<EditHall />} />
-          <Route path="/AddHall" element={<EditHall />} />
+          <Route path="/hall" element={<AdminRoute component={HallTable} />} />
+          <Route path="/EditHall/:id" element={<AdminRoute component={EditHall} />} />
+          <Route path="/AddHall" element={<AdminRoute component={EditHall} />} />
 
-          <Route path="/location" element={<LocationTable />} />
-          <Route path="/EditLocation/:id" element={<EditLocation />} />
-          <Route path="/AddLocation" element={<EditLocation />} />
+          <Route path="/location" element={<AdminRoute component={LocationTable} />} />
+          <Route path="/EditLocation/:id" element={<AdminRoute component={EditLocation} />} />
+          <Route path="/AddLocation" element={<AdminRoute component={EditLocation} />} />
           
-          <Route path="/receptionist" element={<ReceptionistTable />} />
-          <Route path="/EditReceptionist/:id" element={<EditReceptionist />} />
-          <Route path="/AddReceptionist" element={<EditReceptionist />} />
+          <Route path="/receptionist" element={<AdminRoute component={ReceptionistTable} />} />
+          <Route path="/EditReceptionist/:id" element={<AdminRoute component={EditReceptionist} />} />
+          <Route path="/AddReceptionist" element={<AdminRoute component={EditReceptionist} />} />
 
-          <Route path="/CoordinatorTable" element={<CoordinatorTable />} />
+          <Route path="/CoordinatorTable" element={<AdminRoute component={CoordinatorTable} />} />
           <Route path="/ManualSchedule" element={<ManualScheduleTable />} />
 
           <Route path="/CreateManualSchedule" element={<CreateManualSchedule />} />
@@ -198,12 +199,12 @@ function App() {
           <Route path="OrariDitor" element={<OrariDitor />} />
           <Route path="OrariJavor" element={<OrariJavor />} />
           <Route path="/CoordinatorDashboard" element={<CoordinatorDashboard />} />
-          <Route path="/DepartmentTable"  element={<DepartmentTable/>}/>
-          <Route path="/AddDepartment" element={<EditDepartment/>}/>
-          <Route path="/EditDepartment/:id" element={<EditDepartment/>}/>
-          <Route path="/AddCourseLecture" element={<EditCourseLectures/>}/>
-          <Route path="/EditCourseLectures/:id" element={<EditCourseLectures/>}/>
-          <Route path="/CourseLecturesTable" element={<CourseLecturesTable/>}/>
+          <Route path="/DepartmentTable"  element={<AdminRoute component={DepartmentTable} />} />
+          <Route path="/AddDepartment" element={<AdminRoute component={EditDepartment} />} />
+          <Route path="/EditDepartment/:id" element={<AdminRoute component={EditDepartment} />} />
+          <Route path="/AddCourseLecture" element={<AdminRoute component={EditCourseLectures} />} />
+          <Route path="/EditCourseLectures/:id" element={<AdminRoute component={EditCourseLectures} />} />
+          <Route path="/CourseLecturesTable" element={<AdminRoute component={CourseLecturesTable} />} />
           <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
           <Route path="/AddRaportetAnuluara/:scheduleId" element={<AddRaportetAnuluara />} />
           <Route path="/EditRaportetAnuluara/:reportId" element={<AddRaportetAnuluara />} />

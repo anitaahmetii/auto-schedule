@@ -43,6 +43,8 @@ export default function Login() {
         navigate("/reports");
       } else if (response.userRole === "Coordinator") {
         navigate("/CoordinatorDashboard");
+      }else{
+        navigate("/OrariDitor");
       }
     } catch (error) {
       alert("Login failed. Please check your credentials.");

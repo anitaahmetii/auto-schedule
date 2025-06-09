@@ -5,4 +5,6 @@ export interface LocationModel{
     streetNo:string|null;
     zipCode:string|null;
     phoneNumber:string|null;
+    userId: string | null;
+    userName : string | null;
 }

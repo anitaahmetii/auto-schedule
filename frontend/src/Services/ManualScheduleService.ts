@@ -161,4 +161,5 @@ export class ManualScheduleService
     const response = await axios.get(`${ManualScheduleService.baseUrl}/scheudlesOfWeek`);
     return response.data;
     }
+   
 }

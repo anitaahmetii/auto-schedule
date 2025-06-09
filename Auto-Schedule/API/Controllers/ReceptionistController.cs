@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Interface;
 using Domain.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,6 +16,7 @@ namespace API.Controllers
         {
             this.service = receptionistService;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -28,6 +30,7 @@ namespace API.Controllers
 
             return Ok(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(ReceptionistModel model, CancellationToken cancellationToken)
         {
@@ -35,6 +38,7 @@ namespace API.Controllers
 
             return Ok(receptionist);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {

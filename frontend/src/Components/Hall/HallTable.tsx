@@ -66,6 +66,7 @@ export default function HallTable() {
             <TableHeaderCell>Name</TableHeaderCell>
             <TableHeaderCell>Capacity</TableHeaderCell>
             <TableHeaderCell>Location</TableHeaderCell>
+            <TableHeaderCell>UserName</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -76,6 +77,7 @@ export default function HallTable() {
               <TableCell>{item.name}</TableCell>
               <TableCell>{item.capacity}</TableCell>
               <TableCell>{item.locationId}</TableCell>
+               <TableCell>{item.userName}</TableCell>
               <TableCell>
                 <Button
                   type="button"

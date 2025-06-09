@@ -400,7 +400,7 @@ namespace Application.Services
                                     .Where(g => g.Id == groupId)
                                     .Select(g => g.Capacity)
                                     .FirstOrDefaultAsync();
-            var numb =  await _context.Users
+            var numb = await _context.Users
                                 .OfType<Student>()
                                 .CountAsync(g => g.GroupId == groupId && g.DepartmentId == departmentId);
             return capacity <= numb;
@@ -422,7 +422,7 @@ namespace Application.Services
 
         public async Task<int> CountSchedule(CancellationToken cancellationToken)
         {
-            return await _context.Schedules.CountAsync(cancellationToken);  
+            return await _context.Schedules.CountAsync(cancellationToken);
         }
         public async Task<int> CountCanceledSchedule(CancellationToken cancellationToken)
         {
@@ -431,11 +431,11 @@ namespace Application.Services
 
         public async Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken)
         {
-           var countSchedule= await _context.Schedules
-                .Where(x => !x.IsCanceled)                        
-                .GroupBy(x => x.Day)                             
-                .Select(g => new { Day = g.Key, Count = g.Count() }) 
-                .ToDictionaryAsync(x => x.Day.ToString(), x => x.Count, cancellationToken);
+            var countSchedule = await _context.Schedules
+                 .Where(x => !x.IsCanceled)
+                 .GroupBy(x => x.Day)
+                 .Select(g => new { Day = g.Key, Count = g.Count() })
+                 .ToDictionaryAsync(x => x.Day.ToString(), x => x.Count, cancellationToken);
             return countSchedule;
         }
         public async Task<List<ManualScheduleModel>> GetSchedulesByDay(Days day, CancellationToken cancellationToken)
@@ -539,6 +539,7 @@ namespace Application.Services
 
             return _mapper.Map<List<ManualScheduleModel>>(schedules);
         }
+       
 
     }
 }

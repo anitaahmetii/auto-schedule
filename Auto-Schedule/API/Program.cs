@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
+using QuestPDF;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -142,7 +144,7 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
 builder.Services.AddScoped<IScheduleSearchService, ScheduleSearchService>();
-
+Settings.License = LicenseType.Community;
 
 var app = builder.Build();
 

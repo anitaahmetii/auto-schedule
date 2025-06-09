@@ -19,11 +19,11 @@ export class DepartmentService {
     const result = await axios.post(`${DepartmentService.baseUrl}`, model);
   }
 
-  public static async SearchDepartments(searchParams: string): Promise<DepartmentModel[]> {
-    const result = await axios.get(`${DepartmentService.baseUrl}/search`, {
-        params: {searchParams}
-    });
-    return result.data;
+  public static async SearchDepartments(searchTerm?: string,sortBy?: string, searchField?: string): Promise<DepartmentModel[]> {
+  const result = await axios.get(`${DepartmentService.baseUrl}/search`, {
+    params: { searchTerm, sortBy, searchField }
+  });
+  return result.data;
   }
   public static async GetSelectList(): Promise<DepartmentModel[]> 
   {

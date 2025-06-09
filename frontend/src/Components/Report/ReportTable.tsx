@@ -56,7 +56,32 @@ export default function ReportTable() {
         setOpenConfirm(false);
         setDeletedReportId("");
     }
+    const downloadPdf = async (report: ReportModel) => {
+    try {
+        const response = await fetch('https://localhost:7085/api/Report/generate-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/pdf',
+            },
+            body: JSON.stringify(report),
+        });
 
+        if (!response.ok) {
+            throw new Error('Failed to download PDF');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Report-${report.id}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading PDF:', error);
+    }
+};
     return (
         <Fragment>
             <div className="d-flex align-items-center mt-4 mb-3 px-4">
@@ -115,6 +140,7 @@ export default function ReportTable() {
                                         >
                                             Del
                                         </Button>
+                                       <Button onClick={() => downloadPdf(report)}>Export as PDF</Button>
                                     </Table.Cell>
                                 </Table.Row>
                             );

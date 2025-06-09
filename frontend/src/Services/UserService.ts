@@ -66,6 +66,13 @@ export class UserService {
     UserService.role = null;
     UserService.LoggedInUser = null;
   }
+   public static isAuthenticated() {
+    if (UserService.token) {
+      return true;
+    }
+    const token = localStorage.getItem("jwt");
+    return token != null;
+  }
   public static GetUserRole(): string | null {
     return localStorage.getItem("role")!;
   }
@@ -93,5 +100,8 @@ export class UserService {
   public static async GetSelectList(): Promise<UserModel[]> {
     const result = await axios.get(`${this.baseUrl}`);
     return result.data;
+  }
+   public static isAdmin(): boolean{
+     return UserService.GetUserRole() == 'Admin';
   }
 }

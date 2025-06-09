@@ -13,30 +13,86 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { DepartmentModel } from "../../Interfaces/DepartmentModel";
 import { DepartmentService } from "../../Services/DepartmentService";
+import { Dropdown } from "semantic-ui-react";
 
 export default function DepartmentTable() {
   const [departments, setDepartments] = useState<DepartmentModel[]>([]);
   const [openConfirm, setOpenConfirm] = useState<boolean>(false);
   const [deleteDepartmentId, setDeleteDepartmentId] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<string>("");
+  const [selectedName, setSelectedName] = useState<string | "">("");
+const [selectedCode, setSelectedCode] = useState<string | "">("");
+const nameOptions = [
+  { key: "all", value: "", text: "All Names" },
+  ...Array.from(new Set(
+    departments
+      .map(d => d.name)
+      .filter((name): name is string => typeof name === "string" && name.trim() !== "")
+  )).map(name => ({
+    key: name,
+    value: name,
+    text: name
+  }))
+];
+const codeOptions = [
+  { key: "all", value: "", text: "All Names" },
+  ...Array.from(new Set(
+    departments
+      .map(d => d.code)
+      .filter((code): code is string => typeof code === "string" && code.trim() !== "")
+  )).map(code => ({
+    key: code,
+    value: code,
+    text: code
+  }))
+];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (searchTerm.trim() === "") {
-        const result = await DepartmentService.GetAllDepartments();
-        setDepartments(result);
-      } else {
-        const result = await DepartmentService.SearchDepartments(searchTerm);
-        setDepartments(result);
-      }
-    };
-  
-    const delayDebounceFn = setTimeout(() => {
-      fetchData();
-    }, 500); // kjo e shtyn kërkimin për 500ms pasi ndalet së shkruari
-  
-    return () => clearTimeout(delayDebounceFn); // pastron nëse shkruan shpejt
-  }, [searchTerm]);
+ useEffect(() => {
+  const fetchData = async () => {
+    let result = await DepartmentService.GetAllDepartments();
+
+    // filtro me searchTerm (emër ose kod)
+    if (searchTerm.trim() !== "") {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(
+        (d) =>
+            (d.name?.toLowerCase() ?? "").includes(term) || (d.code?.toLowerCase() ?? "").includes(term)
+      );
+    }
+
+    // filtro sipas selectedName nëse është zgjedhur
+    if (selectedName) {
+      result = result.filter((d) => d.name === selectedName);
+    }
+
+    // filtro sipas selectedCode nëse është zgjedhur
+    if (selectedCode) {
+      result = result.filter((d) => d.code === selectedCode);
+    }
+
+    // bëj sortimin
+    if (sortBy) {
+      if (sortBy === "name_asc")
+  result.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+else if (sortBy === "name_desc")
+  result.sort((a, b) => (b.name ?? "").localeCompare(a.name ?? ""));
+else if (sortBy === "code_asc")
+  result.sort((a, b) => (a.code ?? "").localeCompare(b.code ?? ""));
+else if (sortBy === "code_desc")
+  result.sort((a, b) => (b.code ?? "").localeCompare(a.code ?? ""));
+    }
+
+    setDepartments(result);
+  };
+
+  const delayDebounceFn = setTimeout(() => {
+    fetchData();
+  }, 500);
+
+  return () => clearTimeout(delayDebounceFn);
+}, [searchTerm, sortBy, selectedName, selectedCode]);
+
 
   const navigate = useNavigate();
   function deleteDepartment(id: string) {
@@ -58,6 +114,17 @@ export default function DepartmentTable() {
   function AddDepartment() {
     navigate(`/AddDepartment`);
   }
+  const sortOptions = [
+  { key: 'name_asc', value: 'name_asc', text: 'Name A-Z' },
+  { key: 'name_desc', value: 'name_desc', text: 'Name Z-A' },
+  { key: 'code_asc', value: 'code_asc', text: 'Code A-Z' },
+  { key: 'code_desc', value: 'code_desc', text: 'Code Z-A' },
+];
+const searchFieldOptions = [
+  { key: "all", value: "all", text: "Name or Code" },
+  { key: "name", value: "name", text: "Name" },
+  { key: "code", value: "code", text: "Code" },
+];
 
   return (
     <Fragment>
@@ -80,13 +147,37 @@ export default function DepartmentTable() {
          onChange={(e) => setSearchTerm(e.target.value)}
         style={{ marginRight: "10px" }}
       />
+        <Dropdown
+    placeholder="Sort By"
+    selection
+    options={sortOptions}
+    onChange={(e, { value }) => setSortBy(value as string)}
+    value={sortBy}
+  />
+   <Dropdown
+    placeholder="Filter by Name"
+    selection
+    options={nameOptions}
+    value={selectedName}
+    onChange={(e, { value }) => setSelectedName(value as string)}
+    style={{ marginRight: "10px" }}
+  />
+
+  <Dropdown
+    placeholder="Filter by Code"
+    selection
+    options={codeOptions}
+    value={selectedCode}
+    onChange={(e, { value }) => setSelectedCode(value as string)}
+    style={{ marginRight: "10px" }}
+  />
     </div>
       <Table striped>
         <TableHeader>
           <TableRow>
           <TableHeaderCell>Name</TableHeaderCell>
           <TableHeaderCell>Code</TableHeaderCell>
-          {/* <TableHeaderCell>UserName</TableHeaderCell> */}
+          <TableHeaderCell>UserName</TableHeaderCell>
             <TableHeaderCell>Actions</TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -96,7 +187,7 @@ export default function DepartmentTable() {
             <TableRow key={item.id}>
               <TableCell>{item.name}</TableCell>
               <TableCell>{item.code}</TableCell>
-              {/* <TableCell>{item.userName}</TableCell> */}
+              <TableCell>{item.userName}</TableCell>
               <TableCell>
                 <Button
                   type="button"

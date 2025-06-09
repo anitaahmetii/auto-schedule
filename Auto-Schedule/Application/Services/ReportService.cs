@@ -7,8 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace Application.Services
 {
@@ -101,5 +105,94 @@ namespace Application.Services
                 ScheduleId = report.ScheduleId
             };
         }
+
+
+        public byte[] GenerateReportPdf(ReportModel report)
+        {
+            try
+            {
+                var document = QuestPDF.Fluent.Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.Size(PageSizes.A4);
+                        page.Margin(2, Unit.Centimetre);
+
+                        // Header me titull dhe vijë nënvizuese
+                        page.Header()
+                            .Column(column =>
+                            {
+                                column.Item().Text("Raporti")
+                                    .SemiBold().FontSize(24).FontColor(Colors.Blue.Darken1);
+                                column.Item().LineHorizontal(1).LineColor(Colors.Blue.Lighten3);
+                            });
+
+                        page.Content()
+                            .PaddingVertical(10)
+                            .Column(column =>
+                            {
+                                column.Spacing(20);
+
+                                // Seksioni i Komentit me kuti rreth tij
+                                column.Item()
+                                    .Text("Koment")
+                                    .Bold()
+                                    .FontSize(14)
+                                    .FontColor(Colors.Grey.Darken2);
+
+                                column.Item()
+                                    .Padding(10)
+                                    .Border(1)
+                                    .BorderColor(Colors.Grey.Lighten2)
+                                    .Background(Colors.Grey.Lighten5)
+                                    .MinHeight(80)  // hapsirë minimale për koment, mund ta rregullosh
+                                    .Text(report.Comment ?? "—")
+                                    .FontSize(12)
+                                    .FontColor(Colors.Grey.Darken3);
+
+                                // Absenca
+                                column.Item().Text("Absencë")
+                                    .Bold()
+                                    .FontSize(14)
+                                    .FontColor(Colors.Grey.Darken2);
+                                column.Item().Text(report.Absence.ToString())
+                                    .FontSize(12);
+
+                                // Data
+                                var formattedDate = report.DateTime != DateTime.MinValue ? report.DateTime.ToString("dd.MM.yyyy HH:mm") : "Data e papërcaktuar";
+                                column.Item().Text("Data")
+                                    .Bold()
+                                    .FontSize(14)
+                                    .FontColor(Colors.Grey.Darken2);
+                                column.Item().Text(formattedDate)
+                                    .FontSize(12);
+                            });
+
+                        // Footer me numër faqesh në qendër
+                        page.Footer()
+                            .AlignCenter()
+                            .Text(text =>
+                            {
+                                text.Span("Faqja ").FontSize(10).FontColor(Colors.Grey.Lighten2);
+                                text.CurrentPageNumber().FontSize(10).FontColor(Colors.Grey.Lighten2);
+                                text.Span(" nga ").FontSize(10).FontColor(Colors.Grey.Lighten2);
+                                text.TotalPages().FontSize(10).FontColor(Colors.Grey.Lighten2);
+                            });
+                    });
+                });
+
+                return document.GeneratePdf();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Gabim gjatë gjenerimit të PDF: " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                throw;
+            }
+        }
+
+
+
+
     }
 }

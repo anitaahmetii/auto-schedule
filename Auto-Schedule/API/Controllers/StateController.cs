@@ -29,6 +29,7 @@ namespace API.Controllers
 
             return Ok(model);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOrUpdate(StateModel model, CancellationToken cancellationToken)
         {
@@ -36,6 +37,7 @@ namespace API.Controllers
 
             return Ok(state);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(Guid id, CancellationToken cancellationToken)
         {
