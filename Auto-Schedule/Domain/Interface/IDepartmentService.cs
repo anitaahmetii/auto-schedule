@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Domain.Interface
 {
@@ -10,5 +11,6 @@ namespace Domain.Interface
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
         public Task<List<ListItemModel>> GetDepartmentsSelectListAsync(CancellationToken cancellationToken);
         public Task<List<DepartmentModel>> SearchDepartments(string? searchTerm, string? sortBy, string? searchField);
+        public Task<List<DepartmentStudentCountModel>> GetDepartmentsWithStudentCount(CancellationToken cancellationToken);
     }
 }

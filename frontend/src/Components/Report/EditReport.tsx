@@ -27,7 +27,6 @@ export default function EditReport() {
   useEffect(() => {
     const fetchReport = async () => {
       if (!reportId) {
-        setErrorMessage('Report ID is not available.');
         return;
       }
 

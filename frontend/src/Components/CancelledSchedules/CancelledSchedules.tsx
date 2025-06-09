@@ -78,7 +78,11 @@ export default function RaportetAnuluara() {
   useEffect(() => {
     const filtered = canceledSchedules.filter(s =>
       (departmentsList.find(d => d.id === s.departmentId)?.name)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.day?.toLowerCase().includes(searchTerm.toLowerCase())
+      s.day?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (groupsList.find(g => g.id === s.groupId)?.name)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (locationsList.find(l => l.id === s.locationId)?.name)?.toLowerCase().includes(searchTerm.toLowerCase())||
+      s.startTime?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.endTime?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredSchedules(filtered);
   }, [searchTerm, canceledSchedules]);
@@ -102,7 +106,7 @@ export default function RaportetAnuluara() {
       <div className="d-flex align-items-center mt-4 mb-3 px-4">
         <h1 style={{ marginLeft: '30px' }}>Canceled Schedules</h1>
         <Input
-          placeholder="Search by day or department..."
+          placeholder="Search by day, department, location, group, start or end time"
           style={{ marginLeft: '20px', width: '250px' }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

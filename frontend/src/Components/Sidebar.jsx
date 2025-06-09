@@ -75,7 +75,6 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "CourseLecture", path: "/CourseLecturesTable", icon: <MdSchool /> },
     { name: "Zgjedh Lloj Orari", path: "/select-schedule", icon: <MdSchedule /> },
     { name: "Orari Im", path: "/myschedule", icon: <MdSchedule /> },
-    { name: "Kyçja", path: "/", icon: <FaSignOutAlt /> },
     { name: "Profile", path: "/student/profile", icon: <MdPeople /> },
     { name: "Daily Schedule", path: "/student/dailyschedule", icon: <MdSchedule /> },
     { name: "Group", path: "/student/group", icon: <MdGroup /> },
@@ -87,7 +86,26 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
   let filteredLinks = [];
 
 if (isAdmin) {
-  filteredLinks = sidebarLinks;
+  filteredLinks = sidebarLinks.filter(link =>
+  [
+    "/AdminDashboard",
+    "/OrariDitor",
+    "/OrariJavor",
+    "/Course",
+    "/Group",
+    "/hall",
+    "/location",
+    "/State",
+    "/City",
+    "/ManualSchedule",
+    "/UserTable",
+    "/reports",
+    "/RaportetAnuluara",
+    "/DepartmentTable",
+    "/CourseLecturesTable",
+    "/"
+  ].includes(link.path)
+  );
 } else if (isCoordinator) {
   filteredLinks = sidebarLinks.filter(link =>
     [
@@ -118,6 +136,14 @@ else if (isStudent) {
       "/student/group",
       "/student/myschedule",
       "/student/attendances",
+      "/notifications",
+      "/"
+    ].includes(link.path)
+  );
+} 
+else if (isLecturer) {
+  filteredLinks = sidebarLinks.filter(link =>
+    [
       "/notifications",
       "/"
     ].includes(link.path)
