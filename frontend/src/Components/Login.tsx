@@ -43,7 +43,11 @@ export default function Login() {
     else if (response.userRole === "Receptionist")
     { 
       navigate("/reports")
-    };
+    }
+    else if (response.userRole === "Coordinator") 
+    {
+      navigate("/CoordinatorDashboard");
+    }
     }
 
     return (

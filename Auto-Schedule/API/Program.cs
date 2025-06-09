@@ -141,7 +141,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
-
+builder.Services.AddScoped<IScheduleSearchService, ScheduleSearchService>();
 
 
 var app = builder.Build();

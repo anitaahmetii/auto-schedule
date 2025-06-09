@@ -539,5 +539,6 @@ namespace Application.Services
 
             return _mapper.Map<List<ManualScheduleModel>>(schedules);
         }
+
     }
 }

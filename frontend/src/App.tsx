@@ -70,6 +70,7 @@ import MySchedule from "./Components/LecturerDashboard/MySchedule";
 import MyStudentSchedule from "./Components/Student/MySchedule";
 import DailySchedule from "./Components/Student/DailySchedule";
 import MyAttendances from "./Components/Student/MyAttendances";
+// import ScheduleSearchTable from "./Components/Student/ScheduleSearchTable";
 
 function App() {
   window.addEventListener("beforeunload", () => {
@@ -213,7 +214,7 @@ function App() {
           <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
           <Route path="dailyschedule-lecturer" element={<MySchedule />} />
           <Route path="/GroupSelectionPeriod" element={<GroupSelectionPeriodTable />} />
-          
+          {/* <Route path="search" element={<ScheduleSearchTable onResults={}/>}/> */}
       </Route>
         </Routes>
       </Router>

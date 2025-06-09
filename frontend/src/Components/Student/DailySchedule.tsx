@@ -9,6 +9,7 @@ import { GroupService } from "../../Services/GroupService";
 import { HallService } from "../../Services/HallService";
 import { LocationService } from "../../Services/LocationService";
 import AttendanceService from "../../Services/AttendanceService";
+import ScheduleSearchTable from "./ScheduleSearchTable";
 
 
 export default function DailySchedule()
@@ -27,7 +28,7 @@ export default function DailySchedule()
     const [codeInput, setCodeInput] = useState<string>("");
     const [attendances, setAttendances] = useState<AttendanceModel[]>([]);
     const [error, setError] = useState<boolean>(false);
-
+    const [searchResults, setSearchResults] = useState<ManualScheduleModel[]>([]);
 
     useEffect(() => {
         const storedRole = localStorage.getItem("userRole");
@@ -97,7 +98,6 @@ export default function DailySchedule()
         {
             setError(true);
         }
-        
     }
     useEffect(() => {
         if (!studentId) return;
@@ -107,6 +107,11 @@ export default function DailySchedule()
         };
         fetchAttendances();
     }, [studentId]);
+    const handleSearchResults = (data: ManualScheduleModel[]) => 
+    {
+        setSearchResults(data);
+    };
+    const currentSchedules = searchResults.length > 0 ? searchResults : dailyschedules;
     return (
         <Fragment>
             <div className="d-flex justify-content-center align-items-center flex-column" style={{paddingTop: '2%', }}>
@@ -128,7 +133,7 @@ export default function DailySchedule()
                         </Table.Header>
                          {(dailyschedules && dailyschedules.length > 0) &&
                             <Table.Body>
-                                {dailyschedules.map(item => (
+                                {currentSchedules.map(item => (
                                     <Table.Row key={item.id}>
                                         <Table.Cell>{item.day}</Table.Cell>
                                         <Table.Cell>{item.startTime}</Table.Cell>
@@ -183,6 +188,8 @@ export default function DailySchedule()
                                 </Modal>
                             </Table.Body> } 
                     </Table>
+                    <h4 style={{ marginBottom: '20px', fontWeight: 'bold', wordSpacing: '2px', textAlign: 'center' }}>Search Bar</h4>
+                    <ScheduleSearchTable onResults={handleSearchResults} />
                 </div>
             </div>
         </Fragment>
