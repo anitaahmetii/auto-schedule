@@ -68,7 +68,7 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "Group Selection", path: "/GroupSelectionPeriod", icon: <MdGroup /> },
     { name: "Users", path: "/UserTable", icon: <MdPeople /> },
     { name: "Reports", path: "/reports", icon: <MdDashboard /> },
-    { name: "Canceled Report", path: "/RaportetAnuluara", icon: <MdDashboard /> },
+    { name: "Canceled Schedules", path: "/RaportetAnuluara", icon: <MdDashboard /> },
     { name: "Coordinator", path: "/CoordinatorTable", icon: <MdPeople /> },
     { name: "Receptionist", path: "/receptionist", icon: <MdPeople /> },
     { name: "Department", path: "/DepartmentTable", icon: <MdSchool /> },

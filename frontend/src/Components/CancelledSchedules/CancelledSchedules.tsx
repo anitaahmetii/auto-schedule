@@ -107,7 +107,7 @@ export default function RaportetAnuluara() {
         <h1 style={{ marginLeft: '30px' }}>Canceled Schedules</h1>
         <Input
           placeholder="Search by day, department, location, group, start or end time"
-          style={{ marginLeft: '20px', width: '250px' }}
+          style={{ marginLeft: '20px', width: '400px' }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
