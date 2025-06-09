@@ -23,24 +23,24 @@ import Login from './Components/Login';
 import Header from './Components/Header';
 
 import StudentProfileTable from './Components/Dashboards/StudentDashboard/StudentProfileTable';
-import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
-import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
-import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
+//import CreateManualSchedule from './Components/ManualSchedule/CreateManualSchedule';
+//import ManualScheduleTable from './Components/ManualSchedule/ManualScheduleTable';
+//import EditManualSchedule from './Components/ManualSchedule/EditManualSchedule';
 import GroupSelectionPeriodTable from './Components/GroupSelectionPeriod/GroupSelectionPeriodTable';
 import GroupSchedule from './Components/Dashboards/StudentDashboard/GroupScheduleTable';
 import StudentDashboard from './Components/Dashboards/StudentDashboard/StudentDashboard';
 import MySchedule from './Components/Dashboards/StudentDashboard/MySchedule';
 import DailySchedule from './Components/Dashboards/StudentDashboard/DailySchedule';
-import DailyScheduleLecture from './Components/Dashboards/LectureDashboard/DailyScheduleLecture';
+import DailyScheduleLecture from './Components/LecturerDashboard/DailyScheduleLecture';
 import MyAttendances from './Components/Dashboards/StudentDashboard/MyAttendances';
-import StudentAttendance from './Components/Dashboards/LectureDashboard/StudentAttendance';
+import StudentAttendance from './Components/LecturerDashboard/StudentAttendance';
 
 //import SelectScheduleType from './Components/Lectures/SelectScheduleType';
 //import DashboardLayout from "./Components/LecturerDashboard/DashboardLayout";
 
-import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
-import SelectScheduleType from "./Components/LecturerDashboard/SelectScheduleType";
-import MySchedule from "./Components/LecturerDashboard/MySchedule";
+//import DashboardLecturer from "./Components/LecturerDashboard/Dashboard";
+
+import MySchedulee from "./Components/LecturerDashboard/MySchedulee";
 //import DailySchedule from "./Components/LecturerDashboard/DailySchedule";
 import LecturesTable from "./Components/Lectures/LecturesTable";
 import EditLectures from "./Components/Lectures/EditLectures";
@@ -63,6 +63,10 @@ import OrariJavor from "./Components/OrariJavor";
 import CoordinatorDashboard from "./Components/CoordinatorDashboard";
 import LayoutWithSideBar from './Components/LayoutWithSideBar';
 import CityTable from "./Components/City/CityTable";
+
+
+import LecturerProfileTable from "./Components/LecturerDashboard/LecturerProfileTable";
+
 
 function App() {
   return (
@@ -141,6 +145,8 @@ function App() {
 
           <Route path="/lecture" element={<DailyScheduleLecture />} />
           <Route path="/lecture/studentattendance" element={<StudentAttendance />} />
+          <Route path="dailyschedule-lecturer" element={<MySchedule />} />
+         <Route path="/myschedulee" element={<MySchedulee />} />
 
           <Route path="/CreateManualSchedule" element={<CreateManualSchedule/>}/>
           <Route path="/EditManualSchedule/:id" element={<EditManualSchedule/>}/>
@@ -156,12 +162,13 @@ function App() {
           <Route path="/AddTemporarySchedule" element={<AddTemporarySchedule />} />
           <Route path="/AddRaportetAnuluara/:scheduleId" element={<AddRaportetAnuluara />} />
           <Route path="/EditRaportetAnuluara/:reportId" element={<AddRaportetAnuluara />} />
-          <Route path="select-schedule" element={<SelectScheduleType />} /> 
           <Route path="myschedule" element={<MySchedule />} />   
-          <Route path="/lecturer" element={<DashboardLecturer />}/>
-          <Route path="/SelectScheduleType" element={<SelectScheduleType />} />
+         
           <Route path="dailyschedule-lecturer" element={<MySchedule />} />
           
+
+          <Route path="/lecturer-profile" element={<LecturerProfileTable />} />
+
       </Route>
         </Routes>
       </Router>

@@ -129,7 +129,7 @@ export class ManualScheduleService
             console.error("Error retrieving daily schedules:", error);
             throw error;
         }
-
+    }
     static async GetSchedulesByDay(day: string): Promise<ManualScheduleModel[]> {
       const response = await axios.get(`${ManualScheduleService.baseUrl}/by-day/${day}`);
       return response.data;
@@ -161,4 +161,16 @@ export class ManualScheduleService
     const response = await axios.get(`${ManualScheduleService.baseUrl}/scheudlesOfWeek`);
     return response.data;
     }
+
+   public static async getMyScheduleAsync(): Promise<ManualScheduleModel[]> {
+    try {
+        const response = await axios.get(`${this.baseUrl}/my-schedule`, {
+            headers: this.getAuthHeaders(),
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error retrieving the schedule:", error);
+        throw error;
+    }
+}
 }

@@ -40,6 +40,8 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
  const isCoordinator = UserService.GetUserRole()==="Coordinator";
  const isReceptionist = UserService.GetUserRole()==="Receptionist";
 
+ const isLecture = UserService.GetUserRole()==="Lecture";
+
   const sidebarLinks = [
     { name: "Dashboard Koordinatori", path: "/CoordinatorDashboard", icon: <MdDashboard /> },
     { name: "Dashboard Lektori", path: "/lecturer", icon: <MdDashboard /> },
@@ -61,9 +63,18 @@ const Sidebar = ({ collapsed, toggleSidebar }) => {
     { name: "Receptionist", path: "/receptionist", icon: <MdPeople /> },
     { name: "Department", path: "/DepartmentTable", icon: <MdSchool /> },
     { name: "CourseLecture", path: "/CourseLecturesTable", icon: <MdSchool /> },
+    { name: "StudentAttendance", path: "/lecture/studentattendance", icon: <MdPeople /> },
+    { name: "DailyScheduleLecture", path: "/lecture", icon: <MdSchedule /> },
+
+    { name: "Profili im", path: "/lecturer-profile", icon: <MdPeople /> },
     { name: "Zgjedh Lloj Orari", path: "/select-schedule", icon: <MdSchedule /> },
-    { name: "Orari Im", path: "/myschedule", icon: <MdSchedule /> },
+    { name: "Orari Im", path: "/myschedulee", icon: <MdSchedule /> },
     { name: "Kyçja", path: "/", icon: <FaSignOutAlt /> },
+
+
+
+ 
+
   ];
   let filteredLinks = [];
 
@@ -89,6 +100,20 @@ if (isAdmin) {
     ].includes(link.path)
   );
 }
+
+ else if (isLecture) {
+  filteredLinks = sidebarLinks.filter(link =>
+    [
+      "/myschedulee",
+      "/OrariDitor",
+      "/lecturer-profile",
+     "/lecture/studentattendance",
+     "/lecture",
+      "/"
+    ].includes(link.path)
+  );
+}
+
 
   return (
     <nav
