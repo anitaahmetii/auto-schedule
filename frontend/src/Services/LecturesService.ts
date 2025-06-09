@@ -17,4 +17,8 @@ export class LecturesService {
    public static async EditOrAddLectures(model: LecturesModel): Promise<void> {
     const result = await axios.post(`${LecturesService.baseUrl}`, model);
   }
+   public static async CountLectures() : Promise<number> {
+  const result = await axios.get(`${LecturesService.baseUrl}/count`);
+  return result.data;
+}
 }

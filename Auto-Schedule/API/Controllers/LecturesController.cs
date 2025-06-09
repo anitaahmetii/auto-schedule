@@ -40,5 +40,11 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount(CancellationToken cancellationToken)
+        {
+            var count = await service.GetCount(cancellationToken);
+            return Ok(count);
+        }
     }
 }

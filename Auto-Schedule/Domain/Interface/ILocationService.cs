@@ -13,8 +13,10 @@ namespace Domain.Interface
         public Task<LocationModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<LocationModel> CreateOrUpdate(LocationModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
+        Task<int> GetCount(CancellationToken cancellationToken);
 
         Task<List<ListItemModel>> GetLocationSelectListAsync();
+    
 
     }
 }

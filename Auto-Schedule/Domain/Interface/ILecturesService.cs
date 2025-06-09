@@ -13,5 +13,6 @@ namespace Domain.Interface
         public Task<LecturesModel> GetById(Guid Id, CancellationToken cancellationToken);
         public Task<LecturesModel> CreateOrUpdate(LecturesModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
+        Task<int> GetCount(CancellationToken cancellationToken);
     }
 }

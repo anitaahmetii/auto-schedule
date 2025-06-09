@@ -22,5 +22,9 @@ export class LocationService {
     const result=await axios.get(`${LocationService.baseUrl}/GetLocationSelectListAsync`);
     return result.data;
   }
+   public static async CountLocations() : Promise<number>{
+    const result = await axios.get(`${LocationService.baseUrl}/count`);
+    return result.data;
+  }
 }
   

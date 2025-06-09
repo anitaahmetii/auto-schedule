@@ -70,5 +70,11 @@ namespace API.Controllers
                 return BadRequest($"An unexpected error occurred: {ex.Message}");
             }
         }
+        [HttpGet("count")]
+        public async Task<IActionResult> GetCount(CancellationToken cancellationToken)
+        {
+            var count = await _service.GetCount(cancellationToken);
+            return Ok(count);
+        }
     }
 }

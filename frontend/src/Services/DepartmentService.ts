@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DepartmentModel } from "../Interfaces/DepartmentModel";
 import { StateService } from "./StateService";
-
+import { DepartmentStudentCountModel } from "../Interfaces/DepartmentStudentCountModel";
 export class DepartmentService {
     private static baseUrl = "https://localhost:7085/api/Department";
     public static async DeleteDepartment(id: string): Promise<void> {
@@ -30,4 +30,8 @@ export class DepartmentService {
     const result = await axios.get(`${DepartmentService.baseUrl}/GetDepartmentsSelectListAsync`);
     return result.data;
   }
+  public static async GetDepartmentStudentCounts(): Promise<DepartmentStudentCountModel[]> {
+  const result = await axios.get(`${DepartmentService.baseUrl}/student-count`);
+  return result.data;
+ }
 }

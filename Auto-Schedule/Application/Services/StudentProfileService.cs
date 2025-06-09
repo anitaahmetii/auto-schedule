@@ -69,5 +69,9 @@ namespace Application.Services
                 throw new Exception("An error occurred while updating the profile.", ex);
             }
         }
+        public async Task<int> GetCount(CancellationToken cancellationToken)
+        {
+            return await _context.Students.CountAsync(cancellationToken);
+        }
     }
 }
