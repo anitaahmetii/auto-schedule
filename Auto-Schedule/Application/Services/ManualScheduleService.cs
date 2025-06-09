@@ -536,5 +536,16 @@ namespace Application.Services
 
             return _mapper.Map<List<ManualScheduleModel>>(schedules);
         }
+
+        public async Task<List<Schedule>> GetScheduleByLecturerAsync(Guid lecturerUserId, CancellationToken cancellationToken)
+        {
+            var schedules = await _context.CourseLectures
+                .Where(cl => cl.UserId == lecturerUserId)
+                .SelectMany(cl => cl.Schedules)
+                .ToListAsync(cancellationToken);
+
+            return schedules;
+        }
+
     }
 }

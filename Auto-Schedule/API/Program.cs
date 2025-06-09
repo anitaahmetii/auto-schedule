@@ -122,6 +122,8 @@ builder.Services.AddHostedService<CleanupExpiredCodesService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 
 
+builder.Services.AddScoped<ILecturerProfileService, LecturerProfileService>();
+
 var app = builder.Build();
 
 app.UseCors();

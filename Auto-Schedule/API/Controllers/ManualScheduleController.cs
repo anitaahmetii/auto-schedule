@@ -252,5 +252,28 @@ namespace API.Controllers
             var schedules = await _service.CountSchedulesByDayAsync(cancellationToken);
             return schedules;
         }
+
+
+        [Authorize(Roles = "Lecture")]
+        [HttpGet("my-schedule")]
+        public async Task<IActionResult> GetMySchedule(CancellationToken cancellationToken)
+        {
+            var lecturerIdString = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(lecturerIdString) || !Guid.TryParse(lecturerIdString, out var lecturerId))
+            {
+                return Unauthorized("Invalid user identifier.");
+            }
+
+            var schedule = await _service.GetScheduleByLecturerAsync(lecturerId, cancellationToken);
+
+            if (schedule == null || !schedule.Any())
+            {
+                return NotFound("No schedule found for the logged-in lecturer.");
+            }
+
+            return Ok(schedule);
+        }
+
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Domain.Enum;
+using Domain.Entities;
 
 namespace Domain.Interface
 {
@@ -29,5 +30,8 @@ namespace Domain.Interface
         Task<int> CountSchedule(CancellationToken cancellationToken);
         Task<int> CountCanceledSchedule(CancellationToken cancellationToken);
         Task<Dictionary<string, int>> CountSchedulesByDayAsync(CancellationToken cancellationToken);
+
+        Task<List<Schedule>> GetScheduleByLecturerAsync(Guid lecturerUserId, CancellationToken cancellationToken);
+
     }
 }

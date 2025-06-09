@@ -1,7 +1,14 @@
-﻿using Domain.Interface;
+﻿using Application.Services;
+using Domain.Entities;
+using Domain.Enum;
+using Domain.Interface;
 using Domain.Model;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -40,5 +47,11 @@ namespace API.Controllers
             await service.DeleteById(id, cancellationToken);
             return Ok();
         }
+
+
+       
+
+      
+
     }
 }
