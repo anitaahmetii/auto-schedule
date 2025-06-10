@@ -26,5 +26,6 @@ export class LocationService {
     const result = await axios.get(`${LocationService.baseUrl}/count`);
     return result.data;
   }
+  
 }
   

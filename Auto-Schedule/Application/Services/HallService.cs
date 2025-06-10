@@ -51,6 +51,7 @@ namespace Application.Services
             return await GetById(hall.Id, cancellationToken);
         }
 
+
         public async Task DeleteById(Guid Id, CancellationToken cancellationToken)
         {
             var hall = await appDbContext.Halls.Where(x => x.Id == Id).FirstOrDefaultAsync(cancellationToken);

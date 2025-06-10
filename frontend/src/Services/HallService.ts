@@ -22,5 +22,6 @@ export class HallService {
     const result = await axios.get(`${HallService.baseUrl}/GetHallsSelectListAsync`);
     return result.data;
   }
+  
 }
   

@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace Domain.Interface
         Task<int> GetCount(CancellationToken cancellationToken);
 
         Task<List<ListItemModel>> GetLocationSelectListAsync();
-    
+
+
 
     }
 }

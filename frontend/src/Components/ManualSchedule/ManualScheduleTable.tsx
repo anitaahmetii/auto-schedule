@@ -14,6 +14,8 @@ import { LocationModel } from "../../Interfaces/LocationModel";
 import { LocationService } from "../../Services/LocationService";
 import { DepartmentModel } from "../../Interfaces/DepartmentModel";
 import { DepartmentService } from "../../Services/DepartmentService";
+  import * as XLSX from 'xlsx';
+  import { saveAs } from 'file-saver';
 
 export default function ManualScheduleTable()
 {
@@ -37,6 +39,29 @@ export default function ManualScheduleTable()
   const [filterLocation, setFilterLocation] = useState<string | "">("");
   const [filterDepartment, setFilterDepartment] = useState<string | "">("");
   const [filterIsCanceled, setFilterIsCanceled] = useState<boolean | null>(null);
+
+const exportToExcel = () => {
+  const data = filteredSchedules.map(schedule => ({
+    Lecture: courseLecturesList.find(c => c.id === schedule.courseLecturesId)?.name || '',
+    Day: schedule.day,
+    Start: schedule.startTime,
+    End: schedule.endTime,
+    Group: groupsList.find(g => g.id === schedule.groupId)?.name || '',
+    Hall: hallsList.find(h => h.id === schedule.hallsId)?.name || '',
+    Location: locationsList.find(l => l.id === schedule.locationId)?.name || '',
+    Department: departmentsList.find(d => d.id === schedule.departmentId)?.name || '',
+    IsCanceled: schedule.isCanceled ? 'Yes' : 'No'
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "ManualSchedules");
+
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  saveAs(blob, 'ManualSchedules.xlsx');
+};
+
 
   // Funksion për filtrim
   
@@ -172,6 +197,11 @@ export default function ManualScheduleTable()
                             onClick={() => navigate('/CreateManualSchedule')}> 
                             Add New Manual Schedule 
                         </Button>
+                        <Button type="button"
+        style={{ backgroundColor: "#27ae60", color: "white", marginLeft: "10px" }}
+        onClick={exportToExcel}>
+  Export to Excel
+</Button>
                 </div>   
                 <div className="table-responsive mt-4">
                     <Table size="small" compact="very" celled style={{ fontSize: "0.8rem", borderTop: "2px solid navy" }}>
@@ -240,3 +270,4 @@ export default function ManualScheduleTable()
         </Fragment>
     );
 }
+

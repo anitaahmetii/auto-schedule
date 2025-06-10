@@ -10,6 +10,7 @@ namespace Domain.Interface
         public Task<DepartmentModel> CreateOrUpdate(DepartmentModel model, CancellationToken cancellationToken);
         public Task DeleteById(Guid Id, CancellationToken cancellationToken);
         public Task<List<ListItemModel>> GetDepartmentsSelectListAsync(CancellationToken cancellationToken);
+        Task<List<DepartmentStudentCountModel>> GetDepartmentsWithStudentCount(CancellationToken cancellationToken);
         public Task<List<DepartmentModel>> SearchDepartments(string? searchTerm, string? sortBy, string? searchField);
         public Task<List<DepartmentStudentCountModel>> GetDepartmentsWithStudentCount(CancellationToken cancellationToken);
     }

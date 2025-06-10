@@ -1,8 +1,14 @@
-﻿using Domain.Interface;
+﻿using Application.Services;
+using Domain.Entities;
+using Domain.Interface;
 using Domain.Model;
+using ExcelDataReader;
+using Infrastructure.Data;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -11,9 +17,13 @@ namespace API.Controllers
     public class LocationController : ControllerBase
     {
         private readonly ILocationService service;
-        public LocationController(ILocationService locationService)
+        private readonly AppDbContext appDbContext;
+        private readonly IAuthorizationManager _authorizationManager;
+        public LocationController(ILocationService locationService, AppDbContext appDbContext, IAuthorizationManager authorizationManager)
         {
             this.service = locationService;
+            this.appDbContext = appDbContext;
+            this._authorizationManager = authorizationManager;
         }
         [Authorize(Roles = "Admin")]
         [HttpGet]
