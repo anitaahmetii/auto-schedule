@@ -153,11 +153,11 @@ function App() {
           <Route path="/RaportetAnuluara" element={<RaportetAnuluara />} />
 
           <Route path='/Group' element={<AdminRoute component={GroupTable} />} />
-          <Route path="/AddGroup" element={<AdminRoute component={EditGroup} />} />
+          <Route path="/AddGroup" element={<AdminRoute component={AddGroup} />} />
           <Route path='/EditGroup/:id' element={<AdminRoute component={EditGroup} />} />
 
           <Route path='/Course' element={<AdminRoute component={CourseTable} />} />
-          <Route path="/AddCourse" element={<AdminRoute component={EditCourse} />} />
+          <Route path="/AddCourse" element={<AdminRoute component={AddCourse} />} />
           <Route path='/EditCourse/:id' element={<AdminRoute component={EditCourse} />} />
 
           <Route path="/hall" element={<AdminRoute component={HallTable} />} />
